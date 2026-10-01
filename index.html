@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Giant Chatbot AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="design-system/dist/tokens.css" />
+<link rel="stylesheet" href="app.css" />
+<link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
+</head>
+<body>
+
+<!-- ============ Header ============ -->
+<header class="header">
+  <div class="spec-brand">
+    <button class="back" data-action="go-home" aria-label="返回"><svg class="i" data-i="arrow-left"></svg></button>
+    <span class="spec-brand-ico"><svg class="i" data-i="chart"></svg></span>
+    業務助理 <span class="pilot">Pilot</span>
+  </div>
+  <div class="header-right">
+    <button class="user-btn" data-pop="pop-user"><span class="avatar-d">D</span><svg class="i chev" data-i="chevron-down"></svg></button>
+  </div>
+</header>
+
+<!-- MCP Tool: registered servers and Outlook integration -->
+<div class="popover" id="pop-mcp">
+  <div class="pop-head">
+    <div>
+      <div class="pop-title">MCP Tool</div>
+      <div class="pop-sub">管理工作工具與帳號連線</div>
+    </div>
+    <span class="total-badge">4 個 MCP</span>
+  </div>
+  <div class="integration-group">
+    <div class="integration-label">帳號整合</div>
+    <details class="outlook-integration">
+      <summary><span class="icon-tile"><svg class="i" data-i="mail"></svg></span><span class="integration-name">Outlook<span>郵件與行事曆</span></span><span class="connection-status"><span></span>已連線</span><svg class="i" data-i="chevron-down"></svg></summary>
+      <div class="outlook-body"><p>已保留 Outlook 授權，可使用已啟用的 Outlook 功能。</p><button class="btn-danger-outline" data-action="toast" data-msg="中斷 Outlook 連線（示意）"><svg class="i" data-i="unplug"></svg>中斷 Outlook 連線</button></div>
+    </details>
+  </div>
+  <div class="integration-label server-label">MCP Servers</div>
+  <div class="mcp-list" id="mcp-list"></div>
+  <div class="pop-foot">狀態代表設定 / 授權狀態，不是即時連線檢查。</div>
+</div>
+
+<!-- Knowledge popover -->
+<div class="popover" id="pop-kb">
+  <div class="pop-head">
+    <div class="pop-title">個人知識文件</div>
+    <div class="pop-sub">需啟用「個人知識庫」，Agent 才能讀取這些文件。</div>
+  </div>
+  <label class="dropzone">
+    <input type="file" hidden accept=".pdf,.docx,.txt,.md,.xlsx" />
+    <b>拖放文件到此處，或點擊選擇檔案</b>
+    <div>PDF、DOCX、TXT、MD、XLSX；最多 50 MiB</div>
+  </label>
+  <div class="kb-empty">尚無個人知識文件。</div>
+</div>
+
+<!-- User menu -->
+<div class="popover" id="pop-user">
+  <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
+  <div class="menu-sep"></div>
+  <button class="menu-item danger" onclick="location.href='login.html'"><svg class="i" data-i="logout"></svg>登出</button>
+</div>
+
+<!-- ============ Sidebar ============ -->
+<button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄"><svg class="i" data-i="chevron-left"></svg></button>
+<aside class="sidebar" aria-label="工作空間導覽">
+  <a class="sidebar-brand" href="index.html" aria-label="Giant Gina 首頁"><img src="assets/giant-g.svg" alt="Giant" /><span>Gina<span>Giant 內部 AI 助理</span></span></a>
+  <div class="side-top">
+    <button class="btn-new" data-action="new-chat"><svg class="i" data-i="pencil"></svg><span id="new-label">發起新對話</span></button>
+  </div>
+  <nav class="workspace-tools" aria-label="工具與知識">
+    <button class="side-tool" data-pop="pop-mcp" aria-haspopup="dialog" aria-expanded="false"><svg class="i" data-i="server"></svg><span>MCP Tool</span><span class="tool-count">4</span></button>
+    <details class="sidebar-agents">
+      <summary class="side-tool"><svg class="i" data-i="users"></svg><span>Agents</span><svg class="i agents-chevron" data-i="chevron-down"></svg></summary>
+      <div class="agents-list">
+        <button class="agent-row" data-action="go-specialist"><svg class="i" data-i="chart"></svg>業務助理</button>
+        <button class="agent-row" data-action="toast" data-msg="測試Agent 專員頁（示意）"><svg class="i" data-i="monitor"></svg>測試助手</button>
+        <button class="agent-row" data-action="translate"><svg class="i" data-i="languages"></svg>翻譯</button>
+      </div>
+    </details>
+    <button class="side-tool" data-action="open-skills"><svg class="i" data-i="wrench"></svg><span>Skills</span></button>
+    <button class="side-tool" data-pop="pop-kb" aria-haspopup="dialog" aria-expanded="false"><svg class="i" data-i="book-open"></svg><span>個人知識</span><span class="tool-count">0</span></button>
+  </nav>
+  <div class="side-scroll">
+    <div class="main-only">
+      <div class="side-label">對話記錄</div>
+      <div class="search"><svg class="i" data-i="search"></svg><input id="hist-search" placeholder="搜尋對話..." /></div>
+      <div id="hist-list"></div>
+    </div>
+    <div class="spec-only">
+      <div class="side-label">業務助理 · 歷史對話</div>
+      <div class="spec-empty">尚無與這位專員的對話紀錄</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ Main ============ -->
+<main class="main">
+  <div class="scroll" id="scroll">
+    <section class="hero" id="hero">
+      <div class="hero-avatar"><img class="gina-img" alt="Gina" /></div>
+      <h1>嗨，我是 Gina</h1>
+      <div class="desc">助你釐清問題、拆解任務，並在需要時請合適的專員一起處理。</div>
+      <div class="chips">
+        <button class="chip" data-prompt="幫我把這個想法整理成需求">整理需求</button>
+        <button class="chip" data-prompt="幫我審閱一份合約">審閱合約</button>
+        <button class="chip" data-prompt="幫我安排一場會議">安排會議</button>
+        <button class="chip" data-prompt="幫我整理這份文件">整理文件</button>
+      </div>
+    </section>
+
+    <section class="spec-hero" id="spec-hero">
+      <div class="spec-title">
+        <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
+        <div><h1>業務助理</h1><div class="s">業務助理</div></div>
+      </div>
+      <div class="desc">協助製作報價單、追蹤訂單進度、彙整業務數據並查詢CRM資訊的業務型助理。</div>
+    </section>
+
+    <section class="thread" id="thread"></section>
+  </div>
+
+  <div class="bottom">
+    <!-- Specialist: MCP -->
+    <div class="capcard spec-only" id="spec-card">
+      <div class="cap-head" data-action="toggle-card">
+        <span class="ic"><svg class="i" data-i="server"></svg></span>
+        <b>MCP</b><span class="m">0 個已啟用</span><span class="m">·</span>
+        <span class="m m-inline"><svg class="i" data-i="wrench"></svg>0 個 Tool 可用</span>
+        <span class="tog"><svg class="i" data-i="info"></svg><svg class="i chev" data-i="chevron-up"></svg></span>
+      </div>
+      <div class="cap-body">
+        <div class="cap-empty">目前沒有啟用的 MCP server。</div>
+        <div class="cap-go"><button data-action="toast" data-msg="前往 Agent 設定（示意）"><svg class="i" data-i="settings"></svg>前往 Agent 設定</button></div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
+      <div class="composer-toolbar">
+        <button class="cbtn plus" data-action="toggle-tools" aria-label="聊天工具" aria-expanded="false"><svg class="i" data-i="plus"></svg><span class="tip">聊天工具</span></button>
+        <button class="collaborators main-only" data-action="toggle-agents" aria-controls="agent-picker" aria-expanded="false"><svg class="i" data-i="users"></svg>協作專員<svg class="i" data-i="chevron-down"></svg></button>
+        <span class="toolbar-spacer"></span>
+        <button class="cbtn mic main-only" aria-label="語音輸入"><svg class="i" data-i="mic"></svg></button>
+        <button class="cbtn send" id="send" data-action="send" aria-label="送出"><svg class="i" data-i="send"></svg></button>
+      </div>
+      <div class="agent-picker" id="agent-picker" hidden>
+        <div class="picker-label">選擇協作專員</div>
+        <button data-action="go-specialist"><svg class="i" data-i="chart"></svg>業務助理</button>
+        <button data-action="toast" data-msg="測試Agent 專員頁（示意）"><svg class="i" data-i="monitor"></svg>測試助手</button>
+        <button data-action="translate"><svg class="i" data-i="languages"></svg>翻譯</button>
+      </div>
+      <div class="toolmenu" id="toolmenu">
+        <div class="tm-item" data-tool="upload"><svg class="i" data-i="paperclip"></svg>上傳檔案</div>
+        <div class="tm-sep"></div>
+        <div class="tm-item toggle" data-tool="web"><svg class="i" data-i="search"></svg>網路搜尋<svg class="i ck" data-i="check"></svg></div>
+        <div class="tm-item toggle" data-tool="kb"><svg class="i" data-i="book-open"></svg>個人知識庫<svg class="i ck" data-i="check"></svg></div>
+        <div class="tm-item toggle on" data-tool="skills"><svg class="i" data-i="wrench"></svg>個人 Skills<svg class="i ck" data-i="check"></svg></div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="usage">57,057 / ∞</span>
+    </div>
+  </div>
+</main>
+
+<!-- ============ Drawers ============ -->
+<div class="overlay" id="overlay" data-action="close-drawers"></div>
+
+<aside class="drawer" id="drawer-skills">
+  <div class="dr-head">
+    <div><div class="t">個人 Skills</div><div class="s">只有你能管理；每次聊天仍需在工具選單中啟用。</div></div>
+    <button class="dr-close" data-action="close-drawers" aria-label="關閉"><svg class="i" data-i="x"></svg></button>
+  </div>
+  <div class="dr-body">
+    <div class="skill-actions">
+      <button class="btn-primary"><svg class="i" data-i="wrench"></svg>建立 Skill</button>
+      <button class="btn-outline"><svg class="i" data-i="archive"></svg>ZIP 匯入</button>
+      <button class="btn-outline"><svg class="i" data-i="git-branch"></svg>GitHub 匯入</button>
+    </div>
+    <div class="skill-card">
+      <div class="icon-tile"><svg class="i" data-i="wrench"></svg></div>
+      <div class="meta"><div class="nm">email-priority</div><div class="ds">Outlook 郵件優先級判斷。使用 Outlook 郵件工具讀取信件並依重要性排序</div></div>
+      <span class="use">使用中</span><svg class="i go" data-i="chevron-right"></svg>
+    </div>
+  </div>
+</aside>
+
+<aside class="drawer" id="drawer-exec">
+  <div class="dr-head">
+    <div><div class="t">執行過程</div><div class="s" id="exec-sub">5 個 subagent / tool 步驟</div></div>
+    <button class="dr-close" data-action="close-drawers" aria-label="關閉"><svg class="i" data-i="x"></svg></button>
+  </div>
+  <div class="dr-body" id="exec-body"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const GINA_IMG="assets/gina-avatar-hd.png";
+function ginaAvatar(){return `<img src="${GINA_IMG}" alt="Gina" width="1254" height="1254" draggable="false" />
+  <svg class="gina-eyes" viewBox="0 0 1254 1254" aria-hidden="true">
+    <ellipse cx="529" cy="629" rx="44" ry="71" fill="#fff" />
+    <ellipse cx="724" cy="628" rx="44" ry="71" fill="#fff" />
+    <g class="gina-pupils" fill="#242424">
+      <ellipse cx="529" cy="629" rx="37" ry="60" />
+      <ellipse cx="724" cy="628" rx="37" ry="60" />
+      <ellipse cx="541" cy="599" rx="10" ry="14" fill="#fff" />
+      <ellipse cx="736" cy="598" rx="10" ry="14" fill="#fff" />
+    </g>
+    <g class="gina-eyelids">
+      <ellipse cx="515" cy="623" rx="73" ry="106" fill="#ffcc9d" />
+      <ellipse cx="734" cy="621" rx="74" ry="106" fill="#ffcc9d" />
+      <path d="M467 620 Q516 648 563 620 M684 620 Q734 648 783 620" fill="none" stroke="#945d3f" stroke-width="9" stroke-linecap="round" />
+    </g>
+  </svg>`;}
+document.querySelector('.hero-avatar').innerHTML=ginaAvatar();
+/* ---------- Icons (lucide-style) ---------- */
+const ICONS = {
+  "pencil":'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+  "circle-check":'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  "server":'<rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>',
+  "book-open":'<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  "book":'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>',
+  "wrench":'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  "chevron-down":'<path d="m6 9 6 6 6-6"/>',
+  "chevron-up":'<path d="m18 15-6-6-6 6"/>',
+  "chevron-left":'<path d="m15 18-6-6 6-6"/>',
+  "chevron-right":'<path d="m9 18 6-6-6-6"/>',
+  "arrow-left":'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  "search":'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  "message":'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  "languages":'<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+  "download":'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+  "trash":'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+  "users":'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  "plus":'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  "mic":'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+  "send":'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  "paperclip":'<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
+  "check":'<path d="M20 6 9 17l-5-5"/>',
+  "x":'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  "monitor":'<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+  "chart":'<path d="M4 20h16"/><path d="M8 16v-4"/><path d="M12 16V7"/><path d="M16 16v-6"/>',
+  "mail":'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  "unplug":'<path d="m19 5 3-3"/><path d="m2 22 3-3"/><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/>',
+  "list-box":'<rect width="18" height="16" x="3" y="4" rx="2"/><path d="M7 9h.01"/><path d="M7 15h.01"/><path d="M11 9h6"/><path d="M11 15h6"/>',
+  "grid":'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  "logout":'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>',
+  "archive":'<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/>',
+  "git-branch":'<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+  "settings":'<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+  "info":'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'
+};
+const svg = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]||''}</svg>`;
+function hydrateIcons(root=document){
+  root.querySelectorAll('svg[data-i]').forEach(el=>{
+    el.setAttribute('viewBox','0 0 24 24');
+    el.innerHTML = ICONS[el.dataset.i]||'';
+    el.removeAttribute('data-i');
+  });
+}
+hydrateIcons();
+
+/* ---------- Data ---------- */
+const MCPS = [
+  ["Atlassian","https://mcp.atlassian.com/v1/mcp/authv2"],
+  ["Context7","https://mcp.context7.com/mcp"],
+  ["GitHub","https://api.githubcopilot.com/mcp/"],
+  ["nova mcp","https://mcp.example.com/nova"]
+];
+document.getElementById('mcp-list').innerHTML = MCPS.map(([n,u])=>`
+  <div class="mcp-row"><div class="icon-tile">${svg('server')}</div>
+  <div class="mcp-meta"><div class="mcp-name">${n}</div><div class="mcp-url">${u}</div></div>
+  <span class="ok-dot">${svg('circle-check')}</span></div>`).join('');
+
+const HISTORY = [
+  "請幫我確認今天有幾封未讀信件",
+  "過去三天有什麼我需要注意的信件？",
+  "幫我看這一個禮拜, 有哪些信是需要我回覆的",
+  "你可以幫忙建立個人 skill 嗎?",
+  "我想知道目前申請健保加保的狀態",
+  "你可以看到 HR-Docs 這個 folder 嗎?",
+  "在我的 inbox 有幾封未讀的信",
+  "給我需要處理的 5–10 封信，依優先順序排列"
+];
+let activeHist = -1;
+function renderHistory(){
+  const q = document.getElementById('hist-search').value.trim();
+  document.getElementById('hist-list').innerHTML = HISTORY.map((t,i)=>
+    (!q || t.includes(q)) ? `<button class="hist ${i===activeHist?'active':''}" data-hist="${i}">${svg('message')}<span>${t}</span></button>` : ''
+  ).join('');
+}
+renderHistory();
+document.getElementById('hist-search').addEventListener('input', renderHistory);
+
+const EXEC_STEPS = [
+  {name:"Gina", type:"Subagent", time:"14.8 秒", child:false},
+  {name:"skill_workspace_resolved 工具", type:"Tool", time:"剛剛", child:true},
+  {name:"skill_workspace_resolved 工具", type:"Tool", time:"剛剛", child:true},
+  {name:"skill_workspace_resolved 工具", type:"Tool", time:"剛剛", child:true},
+  {name:"gina_specialists_list_available 工具", type:"Tool", time:"剛剛", child:true}
+];
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const body = document.body;
+const thread = $('#thread');
+const input = $('#input');
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1600);
+}
+function nowHM(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function closePops(except){
+  document.querySelectorAll('.popover.open').forEach(p=>{if(p.id!==except)p.classList.remove('open')});
+  document.querySelectorAll('[data-pop].active').forEach(b=>{if(b.dataset.pop!==except){b.classList.remove('active');b.setAttribute('aria-expanded','false')}});
+}
+function positionPop(pop, anchor){
+  const r=anchor.getBoundingClientRect();
+  const w=pop.offsetWidth, h=pop.offsetHeight;
+  const fromSidebar=!!anchor.closest('.sidebar');
+  const left=fromSidebar ? r.right+16 : r.right-w;
+  const top=fromSidebar ? r.top : r.bottom+10;
+  pop.style.right='auto';
+  pop.style.left=Math.max(12,Math.min(left,window.innerWidth-w-12))+'px';
+  pop.style.top=Math.max(12,Math.min(top,window.innerHeight-h-12))+'px';
+}
+function openPop(id, anchor){
+  const pop=document.getElementById(id);
+  const wasOpen=pop.classList.contains('open');
+  closePops();
+  if(wasOpen) return;
+  pop.classList.add('open');anchor.classList.add('active');anchor.setAttribute('aria-expanded','true');
+  positionPop(pop,anchor);
+}
+window.addEventListener('resize',()=>document.querySelectorAll('.popover.open').forEach(pop=>{
+  const anchor=document.querySelector(`[data-pop="${pop.id}"].active`);
+  if(anchor)positionPop(pop,anchor);
+}));
+function closeAgents(){
+  $('#agent-picker').hidden=true;
+  $('.collaborators').setAttribute('aria-expanded','false');
+}
+function closeTools(){
+  $('#toolmenu').classList.remove('open');$('.cbtn.plus').classList.remove('open');$('.cbtn.plus').setAttribute('aria-expanded','false');closeAgents();
+}
+function openDrawer(id){closePops();body.classList.remove('mobile-nav-open');$('#overlay').classList.add('open');document.getElementById(id).classList.add('open')}
+function closeDrawers(){$('#overlay').classList.remove('open');document.querySelectorAll('.drawer.open').forEach(d=>d.classList.remove('open'))}
+function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
+
+function openExec(steps=EXEC_STEPS){
+  $('#exec-sub').textContent=`${steps.length} 個 subagent / tool 步驟`;
+  $('#exec-body').innerHTML=steps.map(s=>`
+    <div class="exec-item ${s.child?'child':''}">
+      <div class="tt">${svg('check')}${s.name}</div>
+      <div class="kv"><span class="k">類型</span><span class="val">${s.type}</span><span class="k">狀態</span><span class="val">已完成</span><span class="k">事件時間</span><span class="val">${s.time}</span></div>
+    </div>`).join('');
+  openDrawer('drawer-exec');
+}
+
+/* ---------- Views ---------- */
+function goHome(){
+  closeTools();body.classList.remove('mobile-nav-open');
+  body.classList.remove('specialist','chatting');
+  $('#new-label').textContent='發起新對話';
+  $('#hero').style.display='';$('#spec-hero').style.display='none';
+  thread.innerHTML='';activeHist=-1;renderHistory();
+}
+function goSpecialist(){
+  closeTools();body.classList.remove('mobile-nav-open');
+  body.classList.remove('chatting');body.classList.add('specialist');
+  $('#new-label').textContent='開始新對話';
+  $('#hero').style.display='none';$('#spec-hero').style.display='flex';
+  thread.innerHTML='';
+}
+function startChat(){body.classList.add('chatting');body.classList.remove('mobile-nav-open');}
+
+function userMsg(text,time=nowHM()){
+  const el=document.createElement('div');el.className='msg-user';
+  el.innerHTML=`<div class="col"><div class="bubble-user"></div><div class="msg-time">${time}</div></div><div class="d-square">D</div>`;
+  el.querySelector('.bubble-user').textContent=text;
+  thread.appendChild(el);return el;
+}
+function aiMsg(html){
+  const el=document.createElement('div');el.className='msg-ai';
+  el.innerHTML=`<div class="ai-avatar">${ginaAvatar()}</div><div class="ai-col"><div class="bubble-ai">${html}</div></div>`;
+  thread.appendChild(el);return el;
+}
+function finishAi(el,time,steps=EXEC_STEPS.length){
+  const col=el.querySelector('.ai-col');
+  col.insertAdjacentHTML('beforeend',`<div class="ai-time">${time}</div>
+    <button class="btn-dl">${svg('download')}下載</button>
+    <div class="exec-bar">${svg('check')}執行過程已完成 · ${steps} 個步驟<a data-action="open-exec">查看詳情</a></div>`);
+}
+
+const REPLY_NO_MAIL = `<p>目前我沒有連接郵件相關的工具或專門的郵件助理，因此<b>無法直接存取您的信箱</b>來查詢未讀信件數量。</p>
+<p>要查詢今天的未讀信件，您可以：</p>
+<ul><li><b>直接開啟 Outlook / Gmail</b> 等郵件客戶端查看未讀數量</li><li><b>若您的環境有設定 Outlook MCP 工具，請聯繫管理員啟用郵件相關整合</b>，之後我就能協助您查詢</li></ul>
+<p>如果您有其他需要我協助的事項，歡迎告訴我！😊</p>`;
+
+function loadConversation(i){
+  closeTools();
+  body.classList.remove('specialist');$('#new-label').textContent='發起新對話';
+  activeHist=i;renderHistory();
+  thread.innerHTML='';startChat();
+  userMsg(HISTORY[i],'13:35');
+  if(i===HISTORY.length-1){
+    const el=aiMsg(`<p>我已讀取你的收件匣，最需要處理的是王小明的 <b>Gina UI</b> Teams 會議邀請，我已先幫你擬好回覆，請在下方確認是否寄出。</p>`);
+    finishAi(el,'17:24',8);
+    el.querySelector('.ai-col').insertAdjacentHTML('beforeend',actionCardHTML());
+  } else {
+    const el=aiMsg(REPLY_NO_MAIL);finishAi(el,'13:36');
+  }
+  $('#scroll').scrollTop=0;
+}
+
+function actionCardHTML(){
+  return `<div class="pending-label">待處理操作</div>
+  <div class="action-card">
+    <h3>確認寄出 Outlook 郵件？</h3>
+    <div class="lb">收件者</div><div class="v">王小明 &lt;xiaoming.wang@example.com&gt;</div>
+    <div class="lb">主旨</div><div class="v">Re: Gina UI</div>
+    <div class="lb">內文</div>
+    <textarea>Hi 小明,
+
+感謝您的會議邀請，我可以參加這次 Gina UI 的 Teams 會議，屆時見！
+
+Best regards</textarea>
+    <div class="lb">有效期限</div><div class="v">2026-09-30T09:28:50.607Z</div>
+    <div class="note">郵件尚未寄出；只能透過此卡片明確確認。聊天文字不會視為確認。</div>
+    <div class="action-btns"><button class="btn-confirm" data-action="confirm-send">確認寄出</button><button class="btn-cancel" data-action="cancel-send">取消</button></div>
+  </div>`;
+}
+
+/* ---------- Sending (simulated streaming) ---------- */
+function recommendationReply(text){
+  const replies={
+    '幫我把這個想法整理成需求':'<p>請貼上你的想法或背景。我會協助整理成目標、使用情境、功能需求與驗收條件。</p>',
+    '幫我審閱一份合約':'<p>請上傳合約或貼上要審閱的條款，並告訴我你關注的部分。我會協助整理重點、疑問與需要確認的事項。</p>',
+    '幫我安排一場會議':'<p>請提供會議主題、參與者、預計時長與可用時段。我會先協助整理會議安排。</p>',
+    '幫我整理這份文件':'<p>請上傳文件或貼上內容。我會協助整理摘要、重點與待辦事項。</p>'
+  };
+  return replies[text] || '';
+}
+function send(){
+  const text=input.value.trim(); if(!text) return;
+  input.value='';autosize();updateSend();closeTools();
+  if(!body.classList.contains('chatting')){thread.innerHTML='';startChat();}
+  userMsg(text);
+  const specialist=body.classList.contains('specialist');
+  const el=aiMsg(`<div class="status-line"><span class="spinner"></span><span>${specialist?'業務助理':'Gina'} 正在等待處理結果...</span></div><div class="stream"></div><div class="status-line small"><span class="spinner"></span><span>${specialist?'業務助理':'Gina'} 正在處理...</span></div>`);
+  scrollBottom();
+  const recommendation = recommendationReply(text);
+  const target = recommendation || (specialist
+    ? `<p>收到！目前我尚未啟用任何 MCP server，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>`
+    : `<p>今天（9/30）共收到 <b>5 封信件</b>，依優先級整理如下：</p><hr><h4>高優先（來自主管 / 需今日回覆）</h4><ul><li><b>Re: Gina UI</b> — 王小明邀請你參加 Teams 會議，需要回覆是否出席</li><li><b>Q4 預算確認</b> — 財務部請你於今日下班前確認數字</li></ul><h4>中優先</h4><ul><li><b>MCP 整合進度同步</b> — 專案週報，建議本週內閱讀</li><li><b>健保加保申請</b> — HR 通知文件已受理</li></ul><h4>低優先</h4><ul><li><b>電子報</b> — 產業新聞摘要，可稍後再看</li></ul>`);
+  const stream=el.querySelector('.stream');
+  const tokens=target.split(/(<[^>]+>)/).flatMap(p=>p.startsWith('<')?[p]:p.match(/.{1,3}/gsu)||[]);
+  let i=0,buf='';
+  const tick=setInterval(()=>{
+    for(let k=0;k<3&&i<tokens.length;k++) buf+=tokens[i++];
+    stream.innerHTML=buf;scrollBottom();
+    if(i>=tokens.length){
+      clearInterval(tick);
+      el.querySelectorAll('.status-line').forEach(s=>s.remove());
+      finishAi(el,nowHM());scrollBottom();
+    }
+  },40);
+}
+
+/* ---------- Composer ---------- */
+function autosize(){input.style.height='24px';input.style.height=Math.min(input.scrollHeight,144)+'px'}
+function updateSend(){$('#send').classList.toggle('ready',!!input.value.trim())}
+input.addEventListener('input',()=>{autosize();updateSend()});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});
+
+/* ---------- Event delegation ---------- */
+document.addEventListener('click',e=>{
+  const popBtn=e.target.closest('[data-pop]');
+  if(popBtn){e.stopPropagation();closeTools();openPop(popBtn.dataset.pop,popBtn);return;}
+
+  const tm=e.target.closest('.tm-item');
+  if(tm){
+    if(tm.classList.contains('toggle')){
+      tm.classList.toggle('on');
+    } else {document.querySelector('.dropzone input').click();closeTools();}
+    return;
+  }
+  const chip=e.target.closest('.chip');
+  if(chip){input.value=chip.dataset.prompt;send();return;}
+  const h=e.target.closest('[data-hist]');
+  if(h){loadConversation(+h.dataset.hist);return;}
+
+  const a=e.target.closest('[data-action]');
+  if(!a){
+    if(!e.target.closest('.popover')) closePops();
+    if(!e.target.closest('.toolmenu')) closeTools();
+    return;
+  }
+  switch(a.dataset.action){
+    case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}closePops();break;}
+    case 'toggle-tools': {e.stopPropagation();closePops();closeAgents();const m=$('#toolmenu');const o=!m.classList.contains('open');m.classList.toggle('open',o);$('.cbtn.plus').classList.toggle('open',o);$('.cbtn.plus').setAttribute('aria-expanded',String(o));break;}
+    case 'toggle-agents': {const open=$('#agent-picker').hidden;closeTools();closePops();$('#agent-picker').hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
+    case 'translate': {goHome();input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
+    case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
+    case 'open-skills': openDrawer('drawer-skills'); break;
+    case 'open-exec': openExec(); break;
+    case 'close-drawers': closeDrawers(); break;
+    case 'go-home': goHome(); break;
+    case 'go-specialist': goSpecialist(); break;
+    case 'new-chat': body.classList.contains('specialist')?goSpecialist():goHome(); break;
+    case 'send': send(); break;
+    case 'confirm-send': a.closest('.action-btns').outerHTML='<div class="action-done">✅ 郵件已寄出。</div>'; break;
+    case 'cancel-send': a.closest('.action-btns').outerHTML='<div class="action-done">已取消，郵件未寄出。</div>'; break;
+    case 'toast': closePops();closeAgents(); toast(a.dataset.msg); break;
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePops();closeTools();closeDrawers();body.classList.remove('mobile-nav-open');}});
+</script>
+<script src="gina-gaze.js"></script>
+</body>
+</html>

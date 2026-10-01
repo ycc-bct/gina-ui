@@ -1,0 +1,241 @@
+{
+  "theme": {
+    "$description": "淺色主題（目前使用中）。元件只引用這一層。",
+    "bg": {
+      "app": {
+        "$type": "color",
+        "$value": "{color.gray.100}",
+        "$description": "App 外框後方的背景"
+      },
+      "canvas": {
+        "$type": "color",
+        "$value": "{color.gray.50}",
+        "$description": "工作區畫布"
+      },
+      "surface": {
+        "$type": "color",
+        "$value": "{color.gray.25}",
+        "$description": "側欄、彈出層、抽屜、AI 泡泡"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "{color.gray.0}",
+        "$description": "輸入框、卡片"
+      },
+      "field": {
+        "$type": "color",
+        "$value": "{color.gray.75}",
+        "$description": "搜尋欄、協作專員按鈕"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "{color.gray.100}",
+        "$description": "列表、按鈕 hover"
+      },
+      "selected": {
+        "$type": "color",
+        "$value": "{color.gray.150}",
+        "$description": "選取、按下、使用者泡泡"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "#25272822",
+        "$description": "抽屜後方遮罩"
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.gray.900}",
+        "$description": "標題、內文"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{color.gray.700}",
+        "$description": "次要文字、側欄項目"
+      },
+      "tertiary": {
+        "$type": "color",
+        "$value": "{color.gray.600}",
+        "$description": "說明、時間、計數"
+      },
+      "placeholder": {
+        "$type": "color",
+        "$value": "{color.gray.550}",
+        "$description": "placeholder"
+      },
+      "disabled": {
+        "$type": "color",
+        "$value": "{color.gray.550}",
+        "$description": "停用"
+      },
+      "inverse": {
+        "$type": "color",
+        "$value": "{color.gray.0}",
+        "$description": "深色按鈕上的文字"
+      }
+    },
+    "icon": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.gray.700}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{color.gray.600}"
+      }
+    },
+    "border": {
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.gray.200}",
+        "$description": "卡片、側欄、分隔線"
+      },
+      "default": {
+        "$type": "color",
+        "$value": "{color.gray.300}",
+        "$description": "按鈕、欄位"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "{color.gray.400}",
+        "$description": "hover 框線"
+      },
+      "focus": {
+        "$type": "color",
+        "$value": "{color.gray.500}",
+        "$description": "輸入框 focus"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "{color.gray.700}",
+        "$description": "鍵盤 focus outline，2px，offset 3px"
+      }
+    },
+    "action": {
+      "primary": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.gray.800}",
+          "$description": "確認寄出、送出（可送出）"
+        },
+        "bgHover": {
+          "$type": "color",
+          "$value": "{color.gray.950}"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "{color.gray.0}"
+        }
+      },
+      "secondary": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.gray.100}",
+          "$description": "發起新對話"
+        },
+        "bgHover": {
+          "$type": "color",
+          "$value": "{color.gray.150}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{color.gray.200}"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "{color.gray.900}"
+        }
+      },
+      "disabled": {
+        "bg": {
+          "$type": "color",
+          "$value": "{color.gray.100}",
+          "$description": "送出（未輸入）"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "{color.gray.550}"
+        }
+      }
+    },
+    "status": {
+      "success": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.green.600}",
+          "$description": "綠色文字（D2）"
+        },
+        "icon": {
+          "$type": "color",
+          "$value": "{color.green.500}",
+          "$description": "連線圓點、完成勾勾（D2）"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.green.50}"
+        }
+      },
+      "danger": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.red.500}",
+          "$description": "登出、中斷連線、錯誤"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.red.50}"
+        }
+      },
+      "warning": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.amber.500}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.amber.50}"
+        }
+      },
+      "info": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.blue.500}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.blue.50}"
+        }
+      }
+    },
+    "shadow": {
+      "xs": {
+        "$type": "shadow",
+        "$value": "{shadow.xs}"
+      },
+      "sm": {
+        "$type": "shadow",
+        "$value": "{shadow.sm}"
+      },
+      "md": {
+        "$type": "shadow",
+        "$value": "{shadow.md}"
+      },
+      "lg": {
+        "$type": "shadow",
+        "$value": "{shadow.lg}"
+      },
+      "frame": {
+        "$type": "shadow",
+        "$value": "{shadow.frame}"
+      },
+      "focus": {
+        "$type": "shadow",
+        "$value": "0 0 0 3px #30323306",
+        "$description": "輸入框 focus 時的淡外圈"
+      }
+    }
+  }
+}

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-Hant-TW" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gina Tokens</title>
+<link rel="icon" type="image/svg+xml" href="../assets/giant-g.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="dist/tokens.css" />
+<style>
+  /* This page uses only tokens, so it doubles as a check that the theme swap works. */
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg-canvas);color:var(--text-primary);font-family:var(--font-family-sans);font-size:var(--font-size-14);line-height:var(--font-line-height-normal);-webkit-font-smoothing:antialiased}
+  header{position:sticky;top:0;z-index:var(--z-header);display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-6);background:var(--bg-surface);border-bottom:1px solid var(--border-subtle)}
+  header img{width:28px;height:28px}
+  header b{font-size:var(--font-size-18)}
+  header span{color:var(--text-tertiary);font-size:var(--font-size-13)}
+  nav{margin-left:auto;display:flex;gap:var(--space-1);flex-wrap:wrap}
+  nav a{color:var(--text-secondary);text-decoration:none;font-size:var(--font-size-13);padding:var(--space-1h) var(--space-2h);border-radius:var(--radius-md)}
+  nav a:hover{background:var(--bg-hover)}
+  main{max-width:1120px;margin:0 auto;padding:var(--space-8) var(--space-6) var(--space-12)}
+  section{margin-bottom:var(--space-12)}
+  h2{font-size:var(--font-size-18);font-weight:var(--font-weight-semibold);margin:0 0 var(--space-1)}
+  h3{font-size:var(--font-size-14);font-weight:var(--font-weight-semibold);color:var(--text-secondary);margin:var(--space-6) 0 var(--space-3)}
+  .lead{color:var(--text-tertiary);font-size:var(--font-size-13);margin:0 0 var(--space-4)}
+  code{font-family:var(--font-family-mono);font-size:var(--font-size-12)}
+
+  .theme-toggle{display:inline-flex;padding:3px;border-radius:var(--radius-md);background:var(--bg-field);border:1px solid var(--border-subtle)}
+  .theme-toggle button{border:0;background:transparent;color:var(--text-secondary);font:inherit;font-size:var(--font-size-13);padding:var(--space-1) var(--space-3);border-radius:var(--radius-sm);cursor:pointer}
+  .theme-toggle button[aria-pressed="true"]{background:var(--bg-raised);color:var(--text-primary);box-shadow:var(--shadow-xs)}
+  .draft{display:none;margin-left:var(--space-2);font-size:var(--font-size-12);color:var(--status-warning-fg);background:var(--status-warning-bg);padding:2px var(--space-2);border-radius:var(--radius-sm)}
+  [data-theme="dark"] .draft{display:inline-block}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-3)}
+  .swatch{border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-surface)}
+  .swatch .chip{height:56px;border-bottom:1px solid var(--border-subtle)}
+  .swatch .meta{padding:var(--space-2) var(--space-3)}
+  .swatch .meta div{font-size:var(--font-size-12);color:var(--text-tertiary);overflow-wrap:anywhere}
+  .ramp{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border-subtle)}
+  .ramp div{height:72px;padding:var(--space-1h);font-size:11px;display:flex;flex-direction:column;justify-content:flex-end}
+
+  table{width:100%;border-collapse:collapse;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);overflow:hidden}
+  th,td{text-align:left;padding:var(--space-2h) var(--space-3);border-bottom:1px solid var(--border-subtle);vertical-align:middle}
+  th{font-size:var(--font-size-12);font-weight:var(--font-weight-medium);color:var(--text-tertiary);background:var(--bg-canvas)}
+  tr:last-child td{border-bottom:0}
+  .bar{height:12px;background:var(--action-primary-bg);border-radius:2px}
+  .rbox{width:64px;height:48px;background:var(--bg-selected);border:1px solid var(--border-default)}
+  .sbox{height:72px;background:var(--bg-raised);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--text-tertiary);font-size:var(--font-size-12)}
+  .ok{color:var(--status-success-fg)} .warn{color:var(--status-warning-fg)} .bad{color:var(--status-danger-fg)}
+
+  /* Component samples, built from component tokens */
+  .states{display:grid;grid-template-columns:140px repeat(5,1fr);gap:var(--space-2) var(--space-3);align-items:center;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-4);overflow-x:auto}
+  .states .h{font-size:var(--font-size-12);color:var(--text-tertiary)}
+  .btn{height:var(--component-button-height);padding:0 var(--component-button-padding-x);border-radius:var(--component-button-radius);font:inherit;font-size:var(--component-button-font-size);font-weight:var(--font-weight-medium);display:inline-flex;align-items:center;justify-content:center;gap:var(--component-button-gap);border:1px solid transparent;cursor:pointer;white-space:nowrap}
+  .btn.primary{background:var(--action-primary-bg);color:var(--action-primary-fg)}
+  .btn.primary.is-hover,.btn.primary:hover{background:var(--action-primary-bg-hover)}
+  .btn.secondary{background:var(--action-secondary-bg);border-color:var(--action-secondary-border);color:var(--action-secondary-fg);box-shadow:var(--shadow-xs)}
+  .btn.secondary.is-hover,.btn.secondary:hover{background:var(--action-secondary-bg-hover)}
+  .btn.outline{background:var(--bg-raised);border-color:var(--border-default);color:var(--text-primary)}
+  .btn.outline.is-hover,.btn.outline:hover{background:var(--bg-hover);border-color:var(--border-strong)}
+  .btn.ghost{background:transparent;color:var(--text-tertiary)}
+  .btn.ghost.is-hover,.btn.ghost:hover{background:var(--bg-hover);color:var(--text-primary)}
+  .btn.danger{background:transparent;border-color:var(--border-default);color:var(--status-danger-fg)}
+  .btn.danger.is-hover,.btn.danger:hover{background:var(--status-danger-bg)}
+  .btn.is-pressed{background:var(--bg-selected)}
+  .btn.primary.is-pressed{background:var(--action-primary-bg-hover)}
+  .btn.danger.is-pressed{background:var(--status-danger-bg)}
+  .btn.is-focus,.btn:focus-visible,.nav.is-focus,.field.is-focus input{outline:2px solid var(--focus-ring);outline-offset:3px}
+  .btn:disabled{background:var(--action-disabled-bg);color:var(--action-disabled-fg);border-color:transparent;box-shadow:none;cursor:not-allowed}
+  .btn.outline:disabled,.btn.ghost:disabled,.btn.danger:disabled{background:transparent;border-color:var(--border-subtle)}
+  .spin{width:14px;height:14px;border-radius:50%;border:2px solid currentColor;border-top-color:transparent;animation:spin .8s linear infinite;opacity:.8}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){.spin{animation:none}}
+
+  .nav{height:var(--component-nav-item-height);padding:0 var(--component-nav-item-padding-x);border-radius:var(--component-nav-item-radius);display:flex;align-items:center;gap:var(--component-nav-item-gap);font-size:var(--component-nav-item-font-size);color:var(--text-secondary)}
+  .nav.is-hover{background:var(--bg-hover);color:var(--text-primary)}
+  .nav.is-selected{background:var(--bg-selected);color:var(--text-primary);font-weight:var(--font-weight-medium)}
+  .nav.is-disabled{color:var(--text-disabled)}
+  .nav .n{margin-left:auto;font-size:var(--font-size-12);color:var(--text-tertiary)}
+
+  .field{position:relative}
+  .field input{width:100%;height:var(--component-field-height);border-radius:var(--component-field-radius);background:var(--bg-field);border:1px solid transparent;padding:0 var(--space-3);font:inherit;font-size:var(--component-field-font-size);color:var(--text-primary)}
+  .field input::placeholder{color:var(--text-placeholder)}
+  .field.is-hover input{border-color:var(--border-subtle)}
+  .field.is-focus input{background:var(--bg-raised);border-color:var(--border-focus)}
+  .field input:disabled{color:var(--text-disabled)}
+  .field.is-error input{border-color:var(--status-danger-fg)}
+  .field .msg{font-size:var(--font-size-12);color:var(--status-danger-fg);margin-top:var(--space-1)}
+
+  .send{width:36px;height:36px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;background:var(--action-disabled-bg);color:var(--action-disabled-fg)}
+  .send.ready{background:var(--action-primary-bg);color:var(--action-primary-fg)}
+  .send.ready.is-hover{background:var(--action-primary-bg-hover)}
+  .send svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .status{display:inline-flex;align-items:center;gap:var(--space-1h);font-size:var(--font-size-12);color:var(--text-secondary)}
+  .status i{width:6px;height:6px;border-radius:50%;display:block}
+  .bubbles{display:flex;flex-direction:column;gap:var(--space-4);max-width:var(--layout-chat-max-width);background:var(--bg-canvas);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6)}
+  .b-user{align-self:flex-end;max-width:min(80%,var(--layout-user-bubble-max-width));background:var(--bg-selected);padding:var(--component-bubble-padding-user);border-radius:var(--radius-xl) var(--radius-xl) var(--radius-xs) var(--radius-xl);font-size:var(--component-bubble-font-size);line-height:var(--font-line-height-reading)}
+  .b-ai{max-width:var(--layout-ai-bubble-max-width);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:var(--component-bubble-padding-ai);border-radius:var(--radius-xs) var(--radius-xl) var(--radius-xl) var(--radius-xl);font-size:var(--component-bubble-font-size);line-height:var(--font-line-height-reading)}
+  .b-err{margin-top:var(--space-3);background:var(--status-danger-bg);color:var(--status-danger-fg);border-radius:var(--radius-md);padding:var(--space-2h) var(--space-3);font-size:var(--font-size-13);display:flex;align-items:center;gap:var(--space-3)}
+  .b-err .btn{margin-left:auto;height:30px}
+  .new{font-size:11px;color:var(--status-info-fg);background:var(--status-info-bg);border-radius:var(--radius-sm);padding:1px 6px;margin-left:var(--space-1)}
+  @media (max-width: 640px){
+    header{flex-wrap:wrap;padding:var(--space-3) var(--space-4)}
+    main{padding:var(--space-6) var(--space-4)}
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="../assets/giant-g.svg" alt="" />
+  <div><b>Gina Tokens</b> <span>v1.0</span></div>
+  <div class="theme-toggle" role="group" aria-label="主題">
+    <button type="button" data-set-theme="light" aria-pressed="true">淺色</button>
+    <button type="button" data-set-theme="dark" aria-pressed="false">深色</button>
+  </div>
+  <span class="draft">深色為草案</span>
+  <nav>
+    <a href="#color">顏色</a><a href="#type">字體</a><a href="#space">間距</a><a href="#radius">圓角</a><a href="#shadow">陰影</a><a href="#components">元件狀態</a>
+  </nav>
+</header>
+
+<main>
+  <section id="color">
+    <h2>語意色</h2>
+    <p class="lead">元件只使用這一層。切換上方深淺色可以看到同一個 token 在兩種主題的值。</p>
+    <div id="semantic"></div>
+    <h3>基礎暖灰階 <code>--color-gray-*</code></h3>
+    <div class="ramp" id="ramp"></div>
+    <h3>狀態色</h3>
+    <div class="grid" id="status"></div>
+  </section>
+
+  <section id="type">
+    <h2>字體</h2>
+    <p class="lead">Inter + Noto Sans TC。中文段落行高 1.8。</p>
+    <table><thead><tr><th>Token</th><th>大小</th><th>範例</th><th>用途</th></tr></thead><tbody id="typeRows"></tbody></table>
+  </section>
+
+  <section id="space">
+    <h2>間距</h2>
+    <p class="lead">4px 為基準；<code>0h</code>、<code>1h</code>、<code>2h</code>、<code>3h</code> 只用於元件內部。</p>
+    <table><thead><tr><th>Token</th><th>值</th><th style="width:60%"></th></tr></thead><tbody id="spaceRows"></tbody></table>
+  </section>
+
+  <section id="radius">
+    <h2>圓角</h2>
+    <p class="lead">內層圓角不大於外層。</p>
+    <div class="grid" id="radiusGrid"></div>
+  </section>
+
+  <section id="shadow">
+    <h2>陰影</h2>
+    <p class="lead">層級越高陰影越大。卡片、泡泡、側欄不用陰影。</p>
+    <div class="grid" id="shadowGrid"></div>
+  </section>
+
+  <section id="components">
+    <h2>元件狀態</h2>
+    <p class="lead">樣本只用 token 組成。<span class="new">新增</span> 是原型中還沒有、交接時要補的狀態。</p>
+
+    <h3>按鈕</h3>
+    <div class="states" id="btnStates"></div>
+
+    <h3>側欄項目</h3>
+    <div class="states" style="grid-template-columns:140px repeat(5,1fr)">
+      <span></span><span class="h">預設</span><span class="h">hover</span><span class="h">選取</span><span class="h">focus</span><span class="h">停用 <span class="new">新增</span></span>
+      <span class="h">Nav item</span>
+      <div class="nav">MCP Tool<span class="n">4</span></div>
+      <div class="nav is-hover">MCP Tool<span class="n">4</span></div>
+      <div class="nav is-selected">MCP Tool<span class="n">4</span></div>
+      <div class="nav is-focus">MCP Tool<span class="n">4</span></div>
+      <div class="nav is-disabled">MCP Tool<span class="n">4</span></div>
+    </div>
+
+    <h3>欄位</h3>
+    <div class="states">
+      <span></span><span class="h">預設</span><span class="h">hover</span><span class="h">focus</span><span class="h">停用</span><span class="h">錯誤 <span class="new">新增</span></span>
+      <span class="h">Field</span>
+      <div class="field"><input placeholder="搜尋對話..." /></div>
+      <div class="field is-hover"><input placeholder="搜尋對話..." /></div>
+      <div class="field is-focus"><input value="合約" /></div>
+      <div class="field"><input placeholder="搜尋對話..." disabled /></div>
+      <div class="field is-error"><input value="abc" /><div class="msg">找不到符合的對話</div></div>
+    </div>
+
+    <h3>送出按鈕與連線狀態</h3>
+    <div class="states" style="grid-template-columns:140px repeat(5,1fr)">
+      <span></span><span class="h">不可送出</span><span class="h">可送出</span><span class="h">hover</span><span class="h">回覆中 <span class="new">新增</span></span><span></span>
+      <span class="h">Send</span>
+      <span class="send"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
+      <span class="send ready"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
+      <span class="send ready is-hover"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
+      <span class="send ready"><svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" stroke="none"/></svg></span>
+      <span></span>
+      <span></span><span class="h">已連線</span><span class="h">未連線 <span class="new">新增</span></span><span class="h">需重新授權 <span class="new">新增</span></span><span class="h">錯誤 <span class="new">新增</span></span><span class="h">連線中 <span class="new">新增</span></span>
+      <span class="h">Connection</span>
+      <span class="status"><i style="background:var(--status-success-fg)"></i>已連線</span>
+      <span class="status"><i style="background:var(--text-disabled)"></i>未連線</span>
+      <span class="status"><i style="background:var(--status-warning-fg)"></i>需重新授權</span>
+      <span class="status"><i style="background:var(--status-danger-fg)"></i>授權失敗</span>
+      <span class="status"><span class="spin"></span>連線中…</span>
+    </div>
+
+    <h3>對話訊息</h3>
+    <div class="bubbles">
+      <div class="b-user">Gina，可以幫我看一下今天有什麼重要的信件需要我處理的嗎？</div>
+      <div class="b-ai">今天（9/30）共收到 <b>5 封信件</b>，依優先級整理如下：王小明的 Gina UI 會議邀請需要回覆是否出席。</div>
+      <div class="b-ai">我正在讀取你的收件匣…
+        <div class="b-err">無法連線到 Outlook，請稍後再試。<span class="new">新增</span><button class="btn outline" type="button">重試</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const css = getComputedStyle(document.documentElement);
+const read = name => css.getPropertyValue(name).trim();
+const refresh = () => { renderColors(); renderShadows(); };
+
+const SEMANTIC = {
+  '背景': ['bg-app','bg-canvas','bg-surface','bg-raised','bg-field','bg-hover','bg-selected','bg-overlay'],
+  '文字與圖示': ['text-primary','text-secondary','text-tertiary','text-placeholder','text-inverse','icon-default','icon-muted'],
+  '框線與 focus': ['border-subtle','border-default','border-strong','border-focus','focus-ring'],
+  '動作': ['action-primary-bg','action-primary-bg-hover','action-primary-fg','action-secondary-bg','action-secondary-bg-hover','action-secondary-border','action-disabled-bg','action-disabled-fg'],
+};
+const GRAYS = ['0','25','50','75','100','150','200','300','400','500','550','600','700','800','900','950'];
+const STATUS = ['success','danger','warning','info'];
+
+function luminance(hex){
+  const h = hex.replace('#','').slice(0,6);
+  if (h.length < 6) return null;
+  const c = [0,2,4].map(i => parseInt(h.substr(i,2),16)/255).map(v => v <= .03928 ? v/12.92 : ((v+.055)/1.055)**2.4);
+  return .2126*c[0] + .7152*c[1] + .0722*c[2];
+}
+const contrast = (a,b) => { const x=luminance(a), y=luminance(b); return x==null||y==null ? '' : ((Math.max(x,y)+.05)/(Math.min(x,y)+.05)).toFixed(2); };
+
+function swatch(name, extra=''){
+  const v = read('--'+name);
+  return `<div class="swatch"><div class="chip" style="background:var(--${name})"></div><div class="meta"><code>--${name}</code><div>${v}${extra}</div></div></div>`;
+}
+function renderColors(){
+  const canvas = read('--bg-canvas');
+  document.getElementById('semantic').innerHTML = Object.entries(SEMANTIC).map(([group, names]) =>
+    `<h3>${group}</h3><div class="grid">${names.map(n => {
+      const isText = /^(text|icon|focus)/.test(n);
+      const cr = isText ? contrast(read('--'+n), n === 'text-inverse' ? read('--action-primary-bg') : canvas) : '';
+      const cls = cr === '' ? '' : cr >= 4.5 ? 'ok' : cr >= 3 ? 'warn' : 'bad';
+      return swatch(n, cr ? ` · <span class="${cls}">對比 ${cr}</span>` : '');
+    }).join('')}</div>`).join('');
+  document.getElementById('ramp').innerHTML = GRAYS.map(g => {
+    const v = read('--color-gray-'+g), dark = luminance(v) < .3;
+    return `<div style="background:${v};color:${dark?'#fdfdfc':'#252728'}"><b>${g}</b>${v}</div>`;
+  }).join('');
+  document.getElementById('status').innerHTML = STATUS.map(s => {
+    const fg = read(`--status-${s}-fg`), bg = read(`--status-${s}-bg`), surf = read('--bg-surface');
+    const cr = contrast(fg, surf);
+    return `<div class="swatch"><div class="chip" style="background:${bg};display:flex;align-items:center;padding:0 12px;gap:8px;color:${fg};font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:${fg}"></span>${s}</div><div class="meta"><code>--status-${s}-fg / -bg</code><div>${fg} / ${bg} · <span class="${cr>=4.5?'ok':'warn'}">對比 ${cr}</span></div></div></div>`;
+  }).join('');
+}
+
+const TYPE = [['28','嗨，我是 Gina','首頁標題（600）'],['18','Gina','品牌名稱（700）'],['16','你的工作協作中樞','副標；手機輸入框'],['15','今天共收到 5 封信件，依優先級整理如下。','對話內容（行高 1.8）'],['14','MCP Tool　Skills　個人知識','介面預設'],['13','整理需求　審閱合約','說明、chip、按鈕'],['12','17:21　共 4 個','標籤、時間、計數']];
+document.getElementById('typeRows').innerHTML = TYPE.map(([s,t,u]) =>
+  `<tr><td><code>--font-size-${s}</code></td><td>${s}px</td><td style="font-size:var(--font-size-${s});font-weight:${s==='28'?600:s==='18'?700:400}">${t}</td><td style="color:var(--text-tertiary);font-size:var(--font-size-12)">${u}</td></tr>`).join('');
+
+const SPACE = ['0h','1','1h','2','2h','3','3h','4','5','6','8','10','12'];
+document.getElementById('spaceRows').innerHTML = SPACE.map(s =>
+  `<tr><td><code>--space-${s}</code></td><td>${read('--space-'+s)}</td><td><div class="bar" style="width:var(--space-${s})"></div></td></tr>`).join('');
+
+const RADIUS = [['xs','泡泡尖角'],['sm','小 icon 按鈕'],['md','按鈕、欄位'],['lg','選單'],['xl','彈出層、泡泡'],['2xl','側欄、抽屜、輸入框'],['3xl','App 外框'],['full','圓形']];
+document.getElementById('radiusGrid').innerHTML = RADIUS.map(([r,u]) =>
+  `<div class="swatch" style="padding:var(--space-4);display:flex;gap:var(--space-3);align-items:center"><div class="rbox" style="border-radius:var(--radius-${r})"></div><div><code>--radius-${r}</code><div style="font-size:var(--font-size-12);color:var(--text-tertiary)">${read('--radius-'+r)} · ${u}</div></div></div>`).join('');
+
+const SHADOWS = [['xs','按鈕'],['sm','輸入框'],['md','下拉選單'],['lg','彈出層、抽屜'],['frame','App 外框']];
+function renderShadows(){
+  document.getElementById('shadowGrid').innerHTML = SHADOWS.map(([s,u]) =>
+    `<div><div class="sbox" style="box-shadow:var(--shadow-${s})">${u}</div><div style="margin-top:var(--space-2)"><code>--shadow-${s}</code></div></div>`).join('');
+}
+
+const BTN = [['primary','Primary','確認寄出'],['secondary','Secondary','發起新對話'],['outline','Outline','取消'],['ghost','Ghost','清除所有對話'],['danger','Danger','中斷連線']];
+document.getElementById('btnStates').innerHTML =
+  `<span></span><span class="h">預設</span><span class="h">hover</span><span class="h">按下</span><span class="h">停用</span><span class="h">載入 <span class="new">新增</span></span>` +
+  BTN.map(([k,label,text]) => `<span class="h">${label}</span>
+    <button class="btn ${k}" type="button">${text}</button>
+    <button class="btn ${k} is-hover" type="button">${text}</button>
+    <button class="btn ${k} is-pressed" type="button">${text}</button>
+    <button class="btn ${k}" type="button" disabled>${text}</button>
+    <button class="btn ${k}" type="button" aria-busy="true"><span class="spin"></span>${text}</button>`).join('');
+
+document.querySelectorAll('[data-set-theme]').forEach(b => b.addEventListener('click', () => {
+  const theme = b.dataset.setTheme;
+  document.documentElement.dataset.theme = theme;
+  document.querySelectorAll('[data-set-theme]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  try { localStorage.setItem('gina-token-theme', theme); } catch {}
+  refresh();
+}));
+try {
+  const saved = localStorage.getItem('gina-token-theme');
+  if (saved) document.querySelector(`[data-set-theme="${saved}"]`)?.click();
+} catch {}
+refresh();
+</script>
+</body>
+</html>

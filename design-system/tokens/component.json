@@ -1,0 +1,170 @@
+{
+  "$description": "元件層 token：只放元件專屬、會被多處共用或 RD 需要明確知道的值。顏色一律引用 theme 層。",
+  "component": {
+    "button": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{size.control.md}"
+      },
+      "heightLg": {
+        "$type": "dimension",
+        "$value": "{size.control.lg}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      },
+      "paddingX": {
+        "$type": "dimension",
+        "$value": "{space.3}"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{space.2}"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.13}"
+      },
+      "fontSizeLg": {
+        "$type": "dimension",
+        "$value": "{font.size.14}"
+      }
+    },
+    "iconButton": {
+      "size": {
+        "$type": "dimension",
+        "$value": "{size.control.md}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      }
+    },
+    "navItem": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{size.control.md}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      },
+      "paddingX": {
+        "$type": "dimension",
+        "$value": "{space.2h}"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{space.2h}"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.14}"
+      }
+    },
+    "chip": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{size.control.md}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      },
+      "paddingX": {
+        "$type": "dimension",
+        "$value": "{space.4}"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.13}"
+      }
+    },
+    "field": {
+      "height": {
+        "$type": "dimension",
+        "$value": "{size.control.md}"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.14}"
+      }
+    },
+    "composer": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.2xl}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{space.3h}"
+      },
+      "minHeight": {
+        "$type": "dimension",
+        "$value": "72px"
+      },
+      "textMaxHeight": {
+        "$type": "dimension",
+        "$value": "144px",
+        "$description": "約 6 行，之後捲動"
+      }
+    },
+    "bubble": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.xl}"
+      },
+      "tailRadius": {
+        "$type": "dimension",
+        "$value": "{radius.xs}"
+      },
+      "paddingAi": {
+        "$type": "dimension",
+        "$value": "18px 20px"
+      },
+      "paddingUser": {
+        "$type": "dimension",
+        "$value": "12px 18px"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "{font.size.15}"
+      }
+    },
+    "menu": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.lg}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{space.1h}"
+      },
+      "itemHeight": {
+        "$type": "dimension",
+        "$value": "{size.control.md}"
+      }
+    },
+    "popover": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.xl}"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "18px"
+      }
+    },
+    "drawer": {
+      "radius": {
+        "$type": "dimension",
+        "$value": "{radius.2xl}"
+      }
+    }
+  }
+}
