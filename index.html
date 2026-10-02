@@ -205,14 +205,6 @@
   </div>
 </aside>
 
-<aside class="drawer" id="drawer-exec">
-  <div class="dr-head">
-    <div><div class="t">執行過程</div><div class="s" id="exec-sub">5 個 subagent / tool 步驟</div></div>
-    <button class="dr-close" data-action="close-drawers" aria-label="關閉"><svg class="i" data-i="x"></svg></button>
-  </div>
-  <div class="dr-body" id="exec-body"></div>
-</aside>
-
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -251,6 +243,7 @@ const ICONS = {
   "message":'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
   "languages":'<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
   "download":'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+  "more-horizontal":'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
   "trash":'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
   "users":'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
   "plus":'<path d="M5 12h14"/><path d="M12 5v14"/>',
@@ -314,12 +307,10 @@ function renderHistory(){
 renderHistory();
 document.getElementById('hist-search').addEventListener('input', renderHistory);
 
-const EXEC_STEPS = [
-  {name:"Gina", type:"Subagent", time:"14.8 秒", child:false},
-  {name:"skill_workspace_resolved 工具", type:"Tool", time:"剛剛", child:true},
-  {name:"skill_workspace_resolved 工具", type:"Tool", time:"剛剛", child:true},
-  {name:"skill_workspace_resolved 工具", type:"Tool", time:"剛剛", child:true},
-  {name:"gina_specialists_list_available 工具", type:"Tool", time:"剛剛", child:true}
+const EXEC_RESOURCES = [
+  {name:"email-priority", type:"Skill"},
+  {name:"Outlook 郵件", type:"整合"},
+  {name:"Outlook Calendar", type:"MCP"}
 ];
 
 /* ---------- Helpers ---------- */
@@ -365,19 +356,14 @@ function closeAgents(){
 function closeTools(){
   $('#toolmenu').classList.remove('open');$('.cbtn.plus').classList.remove('open');$('.cbtn.plus').setAttribute('aria-expanded','false');closeAgents();
 }
+function closeDownloadMenus(except){
+  document.querySelectorAll('.download-menu').forEach(menu=>{
+    if(menu!==except){menu.hidden=true;menu.previousElementSibling.setAttribute('aria-expanded','false')}
+  });
+}
 function openDrawer(id){closePops();body.classList.remove('mobile-nav-open');$('#overlay').classList.add('open');document.getElementById(id).classList.add('open')}
 function closeDrawers(){$('#overlay').classList.remove('open');document.querySelectorAll('.drawer.open').forEach(d=>d.classList.remove('open'))}
 function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
-
-function openExec(steps=EXEC_STEPS){
-  $('#exec-sub').textContent=`${steps.length} 個 subagent / tool 步驟`;
-  $('#exec-body').innerHTML=steps.map(s=>`
-    <div class="exec-item ${s.child?'child':''}">
-      <div class="tt">${svg('check')}${s.name}</div>
-      <div class="kv"><span class="k">類型</span><span class="val">${s.type}</span><span class="k">狀態</span><span class="val">已完成</span><span class="k">事件時間</span><span class="val">${s.time}</span></div>
-    </div>`).join('');
-  openDrawer('drawer-exec');
-}
 
 /* ---------- Views ---------- */
 function goHome(){
@@ -404,14 +390,31 @@ function userMsg(text,time=nowHM()){
 }
 function aiMsg(html){
   const el=document.createElement('div');el.className='msg-ai';
-  el.innerHTML=`<div class="ai-avatar">${ginaAvatar()}</div><div class="ai-col"><div class="bubble-ai">${html}</div></div>`;
+  el.innerHTML=`<div class="ai-avatar">${ginaAvatar()}</div><div class="ai-col">
+    <div class="bubble-wrap">
+      <div class="bubble-ai">${html}</div>
+      <button class="message-more" data-action="toggle-download" aria-label="更多下載選項" aria-haspopup="menu" aria-expanded="false">${svg('more-horizontal')}</button>
+      <div class="download-menu" role="menu" hidden>
+        <button class="download-option" role="menuitem" data-format="txt">純文字 (.txt)</button>
+        <button class="download-option" role="menuitem" data-format="md">Markdown (.md)</button>
+        <button class="download-option" role="menuitem" data-format="png">圖片 (.png)</button>
+        <button class="download-option" role="menuitem" data-format="pdf">PDF (.pdf)</button>
+        <button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button>
+      </div>
+    </div>
+  </div>`;
   thread.appendChild(el);return el;
 }
-function finishAi(el,time,steps=EXEC_STEPS.length){
+function executionDetailsHTML(steps){
+  return `<details class="execution-details">
+    <summary><span>已完成 ${steps} 個執行步驟</span><span class="execution-expand"><span class="execution-expand-closed">展開</span><span class="execution-expand-open">收合</span></span></summary>
+    <ul>${EXEC_RESOURCES.map(resource=>`<li><span>${resource.type}</span>${resource.name}</li>`).join('')}</ul>
+  </details>`;
+}
+function finishAi(el,time,steps=5){
   const col=el.querySelector('.ai-col');
-  col.insertAdjacentHTML('beforeend',`<div class="ai-time">${time}</div>
-    <button class="btn-dl">${svg('download')}下載</button>
-    <div class="exec-bar">${svg('check')}執行過程已完成 · ${steps} 個步驟<a data-action="open-exec">查看詳情</a></div>`);
+  col.querySelector('.bubble-wrap').insertAdjacentHTML('beforebegin',executionDetailsHTML(steps));
+  col.insertAdjacentHTML('beforeend',`<div class="ai-time">${time}</div>`);
 }
 
 const REPLY_NO_MAIL = `<p>目前我沒有連接郵件相關的工具或專門的郵件助理，因此<b>無法直接存取您的信箱</b>來查詢未讀信件數量。</p>
@@ -565,6 +568,11 @@ document.addEventListener('click',e=>{
   if(chip){input.value=chip.dataset.prompt;send();return;}
   const replyOption=e.target.closest('.reply-option');
   if(replyOption){input.value=replyOption.dataset.prompt;send();return;}
+  const downloadOption=e.target.closest('.download-option');
+  if(downloadOption){
+    const label=downloadOption.textContent.trim();
+    closeDownloadMenus();toast(`已選擇 ${label} 下載（示意）`);return;
+  }
   const h=e.target.closest('[data-hist]');
   if(h){loadConversation(+h.dataset.hist);return;}
 
@@ -572,16 +580,17 @@ document.addEventListener('click',e=>{
   if(!a){
     if(!e.target.closest('.popover')) closePops();
     if(!e.target.closest('.toolmenu')) closeTools();
+    if(!e.target.closest('.bubble-wrap')) closeDownloadMenus();
     return;
   }
   switch(a.dataset.action){
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}closePops();break;}
     case 'toggle-tools': {e.stopPropagation();closePops();closeAgents();const m=$('#toolmenu');const o=!m.classList.contains('open');m.classList.toggle('open',o);$('.cbtn.plus').classList.toggle('open',o);$('.cbtn.plus').setAttribute('aria-expanded',String(o));break;}
     case 'toggle-agents': {const open=$('#agent-picker').hidden;closeTools();closePops();$('#agent-picker').hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
+    case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'translate': {goHome();input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
     case 'open-skills': openDrawer('drawer-skills'); break;
-    case 'open-exec': openExec(); break;
     case 'close-drawers': closeDrawers(); break;
     case 'go-home': goHome(); break;
     case 'go-specialist': goSpecialist(); break;
@@ -592,7 +601,7 @@ document.addEventListener('click',e=>{
     case 'toast': closePops();closeAgents(); toast(a.dataset.msg); break;
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePops();closeTools();closeDrawers();body.classList.remove('mobile-nav-open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePops();closeTools();closeDownloadMenus();closeDrawers();body.classList.remove('mobile-nav-open');}});
 </script>
 <script src="gina-gaze.js"></script>
 </body>
