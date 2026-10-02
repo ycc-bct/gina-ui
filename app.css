@@ -22,6 +22,9 @@ body.specialist .spec-brand{display:flex}
 .spec-brand-ico svg{width:var(--size-icon-sm);height:var(--size-icon-sm)}
 .pilot{font-size:var(--font-size-12);font-weight:var(--font-weight-medium);color:var(--text-tertiary);border:1px solid var(--border-default);border-radius:var(--radius-full);padding:var(--space-0h) var(--space-2);background:var(--bg-surface)}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:var(--space-3)}
+.outlook-tag{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border:1px solid var(--border-subtle);border-radius:var(--radius-full);background:var(--bg-field);color:var(--text-secondary);font-size:var(--font-size-12);font-weight:var(--font-weight-medium);white-space:nowrap}
+.outlook-tag:hover,.outlook-tag.active{background:var(--bg-selected);border-color:var(--border-default)}
+.outlook-tag-dot{width:7px;height:7px;border-radius:var(--radius-full);background:var(--status-success-icon);box-shadow:0 0 0 2px var(--status-success-bg)}
 .user-btn{display:flex;align-items:center;gap:var(--space-1h);border:0;background:none;padding:var(--space-1);border-radius:var(--radius-full)}
 .user-btn:hover,.user-btn.active{background:var(--bg-hover)}
 .avatar-d{width:var(--size-control-sm);height:var(--size-control-sm);border-radius:var(--radius-full);background:var(--bg-selected);color:var(--text-secondary);font-size:var(--font-size-13);font-weight:var(--font-weight-medium);display:flex;align-items:center;justify-content:center}
@@ -328,6 +331,8 @@ body.chatting .thread{display:block}
   .collapse-btn,body.collapsed .collapse-btn{top:var(--space-6);left:var(--space-4);width:var(--size-control-sm);height:var(--size-control-sm);transform:rotate(180deg)}
   body.mobile-nav-open .collapse-btn{transform:none}
   .header,body.collapsed .header{top:var(--space-5);left:62px;right:var(--space-4);height:var(--size-control-lg)}
+  .header-right{gap:var(--space-1h)}
+  .outlook-tag{height:28px;padding:0 9px}
   .main,body.collapsed .main{top:76px;left:0;right:0;bottom:var(--space-2)}
   .hero{padding:var(--space-6) var(--space-3h)}
   .hero h1{font-size:var(--font-size-26)}
