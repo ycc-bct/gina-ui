@@ -265,12 +265,8 @@ body.chatting .thread{display:block}
 .review-card:hover .review-expand,.review-card:focus-within .review-expand{opacity:1;pointer-events:auto}
 .review-expand:hover{background:var(--bg-hover)}
 .review-expand svg,.review-dialog-close svg{width:var(--size-icon-md);height:var(--size-icon-md)}
-.review-copy{padding-right:var(--space-6);font-size:var(--font-size-14);line-height:var(--font-line-height-reading);color:var(--text-secondary)}
-.review-copy h4{margin:0 0 var(--space-2);color:var(--text-primary)}
-.review-copy h4:not(:first-child){margin-top:var(--space-5)}
-.review-copy ol{margin:var(--space-2) 0 0;padding-left:22px}
-.review-copy pre{margin:var(--space-4) 0 0;padding:var(--space-4);overflow:auto;border:1px solid var(--border-subtle);border-radius:var(--radius-md);background:var(--bg-surface);color:var(--text-primary);font-family:var(--font-family-mono);font-size:var(--font-size-13);line-height:1.65;tab-size:2}
-.review-copy code{font-family:inherit}
+.review-copy{padding-right:var(--space-6);font-family:var(--font-family-mono);font-size:var(--font-size-12);line-height:1.75;color:var(--text-secondary)}
+.review-plain-text{min-width:max-content;margin:0;padding:0;border:0;background:transparent;color:inherit;font:inherit;white-space:pre;tab-size:2}
 .message-more{position:absolute;top:10px;right:10px;width:var(--size-control-xs);height:var(--size-control-xs);display:flex;align-items:center;justify-content:center;padding:0;border:0;border-radius:var(--radius-sm);background:var(--bg-hover);color:var(--icon-muted);opacity:0;pointer-events:none;transition:opacity var(--motion-duration-fast),background var(--motion-duration-fast)}
 .message-more svg{width:var(--size-icon-md);height:var(--size-icon-md)}
 .bubble-wrap:hover .message-more,.bubble-wrap:focus-within .message-more,.message-more[aria-expanded="true"]{opacity:1;pointer-events:auto}
@@ -307,7 +303,7 @@ body.chatting .thread{display:block}
 .review-dialog-close{width:var(--size-control-sm);height:var(--size-control-sm);display:flex;align-items:center;justify-content:center;padding:0;border:0;border-radius:var(--radius-md);background:transparent;color:var(--icon-default)}
 .review-dialog-close:hover{background:var(--bg-hover)}
 .review-dialog-content{flex:1;min-height:0;overflow:auto;padding:var(--space-6) clamp(var(--space-5),8vw,120px)}
-.review-dialog-content .review-copy{max-width:900px;margin:0 auto;padding:0;font-size:var(--font-size-15)}
+.review-dialog-content .review-copy{max-width:1000px;margin:0 auto;padding:0;font-size:var(--font-size-12)}
 
 /* Pending action card */
 .pending-label{margin:22px var(--space-1) var(--space-2h);font-size:var(--font-size-13);font-weight:var(--font-weight-semibold);color:var(--text-secondary)}

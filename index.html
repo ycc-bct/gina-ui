@@ -509,11 +509,12 @@ function richResponseHTML(){
         <button class="review-expand" data-action="open-review" aria-label="展開完整檢閱畫面">${svg('maximize')}</button>
         <div class="review-card-content" tabindex="0" aria-label="可捲動的長篇內容">
           <div class="review-copy">
-            <h4>郵件摘要處理範例</h4>
-            <p>這個範例會先篩選未讀郵件，再依優先級排序，最後產生適合快速檢閱的摘要。</p>
-            <pre><code>async function summarizeInbox(messages) {
-  const unread = messages.filter(message =&gt; !message.isRead);
+            <pre class="review-plain-text">郵件摘要處理範例
 
+這個流程會先讀取使用者有權限查看的郵件，再篩選未讀項目，依寄件者、時效與待辦需求計算優先級，最後產生適合快速檢閱的摘要。
+
+async function summarizeInbox(messages) {
+  const unread = messages.filter(message =&gt; !message.isRead);
   const prioritized = unread.sort((a, b) =&gt; {
     return b.priorityScore - a.priorityScore;
   });
@@ -521,13 +522,29 @@ function richResponseHTML(){
   return prioritized.map(message =&gt; ({
     subject: message.subject,
     sender: message.sender,
+    receivedAt: message.receivedAt,
     summary: message.preview,
+    priority: message.priorityScore,
     requiresReply: message.requiresReply
   }));
-}</code></pre>
-            <h4>處理方式</h4>
-            <ol><li>讀取使用者有權限查看的郵件。</li><li>依寄件者、時效與待辦需求計算優先級。</li><li>輸出摘要並標記需要回覆的項目。</li></ol>
-            <p>若內容包含更多程式碼、紀錄或文件段落，可以繼續在卡片內捲動查看。</p>
+}
+
+處理流程
+1. 讀取最近七天的郵件，保留使用者目前有權限查看的內容。
+2. 排除已封存、垃圾郵件與不需要採取行動的系統通知。
+3. 依寄件者、截止時間、關鍵字與是否需要回覆計算優先級。
+4. 將內容整理成寄件者、主旨、摘要、待辦事項與建議回覆時間。
+5. 若郵件包含會議邀請，同步檢查行事曆是否已有時間衝突。
+6. 回覆前先呈現草稿，等待使用者明確確認後才執行寄送。
+
+輸出規則
+- 每封郵件只保留完成判斷所需的資訊。
+- 相同討論串合併呈現，避免重複列出相近內容。
+- 有期限的項目優先標示日期與剩餘處理時間。
+- 無法判斷優先級時保留原始順序，並說明需要補充的資訊。
+- 任何寄送、刪除或變更行事曆的操作，都必須再次取得使用者確認。
+
+這個區塊可以容納更長的程式碼、系統紀錄、研究資料或文件內容。使用者可以直接在卡片內捲動閱讀，也可以使用右上角按鈕展開完整檢閱畫面。</pre>
           </div>
         </div>
       </div>
