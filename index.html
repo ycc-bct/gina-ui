@@ -294,6 +294,7 @@ document.getElementById('mcp-list').innerHTML = MCPS.map(([n,u])=>`
   <span class="ok-dot">${svg('circle-check')}</span></div>`).join('');
 
 const HISTORY = [
+  "Gina 可以用哪些格式回覆？",
   "請幫我確認今天有幾封未讀信件",
   "過去三天有什麼我需要注意的信件？",
   "幫我看這一個禮拜, 有哪些信是需要我回覆的",
@@ -418,13 +419,67 @@ const REPLY_NO_MAIL = `<p>目前我沒有連接郵件相關的工具或專門的
 <ul><li><b>直接開啟 Outlook / Gmail</b> 等郵件客戶端查看未讀數量</li><li><b>若您的環境有設定 Outlook MCP 工具，請聯繫管理員啟用郵件相關整合</b>，之後我就能協助您查詢</li></ul>
 <p>如果您有其他需要我協助的事項，歡迎告訴我！😊</p>`;
 
+function richResponseHTML(){
+  return `<div class="rich-response">
+    <p>我可以依照你的需求，用不同格式呈現回覆內容。以下是常見的五種方式：</p>
+
+    <section class="response-section">
+      <h3><span>1</span>表格</h3>
+      <p>適合比較項目、整理需求清單或呈現欄位化資訊。</p>
+      <div class="response-table-wrap">
+        <table class="response-table">
+          <thead><tr><th>需求項目</th><th>說明</th><th>優先級</th></tr></thead>
+          <tbody>
+            <tr><td>登入流程</td><td>支援公司帳號單一登入</td><td>高</td></tr>
+            <tr><td>對話匯出</td><td>將結果整理成可分享文件</td><td>中</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="response-section">
+      <h3><span>2</span>條列式清單</h3>
+      <p>適合步驟說明與重點摘要。</p>
+      <ol class="response-list"><li>確認目標與使用情境</li><li>整理需求與限制條件</li><li>確認優先順序與下一步</li></ol>
+    </section>
+
+    <section class="response-section">
+      <h3><span>3</span>問答式</h3>
+      <p>適合釐清需求或整理常見問題。</p>
+      <dl class="response-qa">
+        <div><dt>這個功能給誰使用？</dt><dd>提供 Giant 內部同仁處理日常工作。</dd></div>
+        <div><dt>需要先準備什麼？</dt><dd>提供目標、背景資料與期望完成時間即可。</dd></div>
+      </dl>
+    </section>
+
+    <section class="response-section">
+      <h3><span>4</span>結構化文件</h3>
+      <p>適合完整需求書或提案，依序整理背景、目標、範圍、需求細項與限制條件。</p>
+      <div class="document-outline"><b>專案需求草稿</b><span>背景與目標</span><span>功能範圍</span><span>驗收條件</span></div>
+    </section>
+
+    <section class="response-section">
+      <h3><span>5</span>互動式選項</h3>
+      <p>需要快速確認方向時，我會提供最多三個可以直接點選的下一步。</p>
+      <div class="response-actions">
+        <button class="reply-option" data-prompt="請用表格幫我整理需求">用表格整理</button>
+        <button class="reply-option" data-prompt="請用條列清單幫我整理需求">用條列整理</button>
+        <button class="reply-option" data-prompt="請先問我幾個問題來釐清需求">先釐清需求</button>
+      </div>
+    </section>
+  </div>`;
+}
+
 function loadConversation(i){
   closeTools();
   body.classList.remove('specialist');$('#new-label').textContent='發起新對話';
   activeHist=i;renderHistory();
   thread.innerHTML='';startChat();
   userMsg(HISTORY[i],'13:35');
-  if(i===HISTORY.length-1){
+  if(i===0){
+    const el=aiMsg(richResponseHTML());
+    finishAi(el,'09:42',5);
+  } else if(i===HISTORY.length-1){
     const el=aiMsg(`<p>我已讀取你的收件匣，最需要處理的是王小明的 <b>Gina UI</b> Teams 會議邀請，我已先幫你擬好回覆，請在下方確認是否寄出。</p>`);
     finishAi(el,'17:24',8);
     el.querySelector('.ai-col').insertAdjacentHTML('beforeend',actionCardHTML());
@@ -508,6 +563,8 @@ document.addEventListener('click',e=>{
   }
   const chip=e.target.closest('.chip');
   if(chip){input.value=chip.dataset.prompt;send();return;}
+  const replyOption=e.target.closest('.reply-option');
+  if(replyOption){input.value=replyOption.dataset.prompt;send();return;}
   const h=e.target.closest('[data-hist]');
   if(h){loadConversation(+h.dataset.hist);return;}
 
