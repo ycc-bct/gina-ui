@@ -154,6 +154,15 @@
       </div>
     </div>
 
+    <div class="composer-suggestions main-only" id="composer-suggestions" hidden>
+      <div class="composer-suggestions-label">接下來想怎麼整理？</div>
+      <div class="composer-suggestions-actions">
+        <button class="reply-option" data-prompt="請用表格幫我整理需求">用表格整理</button>
+        <button class="reply-option" data-prompt="請用條列清單幫我整理需求">用條列整理</button>
+        <button class="reply-option" data-prompt="請先問我幾個問題來釐清需求">先釐清需求</button>
+      </div>
+    </div>
+
     <div class="composer">
       <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
       <div class="composer-toolbar">
@@ -255,6 +264,7 @@ const ICONS = {
   "monitor":'<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
   "chart":'<path d="M4 20h16"/><path d="M8 16v-4"/><path d="M12 16V7"/><path d="M16 16v-6"/>',
   "mail":'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  "calendar":'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/>',
   "unplug":'<path d="m19 5 3-3"/><path d="m2 22 3-3"/><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/>',
   "list-box":'<rect width="18" height="16" x="3" y="4" rx="2"/><path d="M7 9h.01"/><path d="M7 15h.01"/><path d="M11 9h6"/><path d="M11 15h6"/>',
   "grid":'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
@@ -301,16 +311,16 @@ let activeHist = -1;
 function renderHistory(){
   const q = document.getElementById('hist-search').value.trim();
   document.getElementById('hist-list').innerHTML = HISTORY.map((t,i)=>
-    (!q || t.includes(q)) ? `<button class="hist ${i===activeHist?'active':''}" data-hist="${i}">${svg('message')}<span>${t}</span></button>` : ''
+    (!q || t.includes(q)) ? `<button class="hist ${i===activeHist?'active':''}" data-hist="${i}"><span>${t}</span></button>` : ''
   ).join('');
 }
 renderHistory();
 document.getElementById('hist-search').addEventListener('input', renderHistory);
 
 const EXEC_RESOURCES = [
-  {name:"email-priority", type:"Skill"},
-  {name:"Outlook 郵件", type:"整合"},
-  {name:"Outlook Calendar", type:"MCP"}
+  {name:"email-priority", type:"Skill", icon:"wrench"},
+  {name:"Outlook 郵件", type:"整合", icon:"mail"},
+  {name:"Outlook Calendar", type:"MCP", icon:"calendar"}
 ];
 
 /* ---------- Helpers ---------- */
@@ -364,11 +374,16 @@ function closeDownloadMenus(except){
 function openDrawer(id){closePops();body.classList.remove('mobile-nav-open');$('#overlay').classList.add('open');document.getElementById(id).classList.add('open')}
 function closeDrawers(){$('#overlay').classList.remove('open');document.querySelectorAll('.drawer.open').forEach(d=>d.classList.remove('open'))}
 function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
+function setComposerSuggestions(show){
+  const suggestions=$('#composer-suggestions');
+  suggestions.hidden=!show;
+}
 
 /* ---------- Views ---------- */
 function goHome(){
   closeTools();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
+  setComposerSuggestions(false);
   $('#new-label').textContent='發起新對話';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
   thread.innerHTML='';activeHist=-1;renderHistory();
@@ -376,6 +391,7 @@ function goHome(){
 function goSpecialist(){
   closeTools();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
+  setComposerSuggestions(false);
   $('#new-label').textContent='開始新對話';
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
   thread.innerHTML='';
@@ -407,8 +423,8 @@ function aiMsg(html){
 }
 function executionDetailsHTML(steps){
   return `<details class="execution-details">
-    <summary><span>已完成 ${steps} 個執行步驟</span><span class="execution-expand"><span class="execution-expand-closed">展開</span><span class="execution-expand-open">收合</span></span></summary>
-    <ul>${EXEC_RESOURCES.map(resource=>`<li><span>${resource.type}</span>${resource.name}</li>`).join('')}</ul>
+    <summary aria-label="展開或收合執行步驟"><span>已完成 ${steps} 個執行步驟</span><span class="execution-expand" aria-hidden="true">${svg('chevron-down')}</span></summary>
+    <ul>${EXEC_RESOURCES.map(resource=>`<li><span class="execution-resource-icon">${svg(resource.icon)}</span><span class="execution-resource-type">${resource.type}</span><span>${resource.name}</span></li>`).join('')}</ul>
   </details>`;
 }
 function finishAi(el,time,steps=5){
@@ -424,10 +440,10 @@ const REPLY_NO_MAIL = `<p>目前我沒有連接郵件相關的工具或專門的
 
 function richResponseHTML(){
   return `<div class="rich-response">
-    <p>我可以依照你的需求，用不同格式呈現回覆內容。以下是常見的五種方式：</p>
+    <p>我可以依照你的需求，用不同格式呈現回覆內容。以下是常見的六種方式：</p>
 
     <section class="response-section">
-      <h3><span>1</span>表格</h3>
+      <h3>📊 表格</h3>
       <p>適合比較項目、整理需求清單或呈現欄位化資訊。</p>
       <div class="response-table-wrap">
         <table class="response-table">
@@ -441,13 +457,13 @@ function richResponseHTML(){
     </section>
 
     <section class="response-section">
-      <h3><span>2</span>條列式清單</h3>
+      <h3>📋 條列式清單</h3>
       <p>適合步驟說明與重點摘要。</p>
       <ol class="response-list"><li>確認目標與使用情境</li><li>整理需求與限制條件</li><li>確認優先順序與下一步</li></ol>
     </section>
 
     <section class="response-section">
-      <h3><span>3</span>問答式</h3>
+      <h3>💬 問答式</h3>
       <p>適合釐清需求或整理常見問題。</p>
       <dl class="response-qa">
         <div><dt>這個功能給誰使用？</dt><dd>提供 Giant 內部同仁處理日常工作。</dd></div>
@@ -456,19 +472,20 @@ function richResponseHTML(){
     </section>
 
     <section class="response-section">
-      <h3><span>4</span>結構化文件</h3>
+      <h3>🗂️ 結構化文件</h3>
       <p>適合完整需求書或提案，依序整理背景、目標、範圍、需求細項與限制條件。</p>
       <div class="document-outline"><b>專案需求草稿</b><span>背景與目標</span><span>功能範圍</span><span>驗收條件</span></div>
     </section>
 
     <section class="response-section">
-      <h3><span>5</span>互動式選項</h3>
-      <p>需要快速確認方向時，我會提供最多三個可以直接點選的下一步。</p>
-      <div class="response-actions">
-        <button class="reply-option" data-prompt="請用表格幫我整理需求">用表格整理</button>
-        <button class="reply-option" data-prompt="請用條列清單幫我整理需求">用條列整理</button>
-        <button class="reply-option" data-prompt="請先問我幾個問題來釐清需求">先釐清需求</button>
-      </div>
+      <h3>↗️ 互動式選項</h3>
+      <p>需要快速確認方向時，我會在輸入框上方提供最多三個可以直接點選的下一步。</p>
+    </section>
+
+    <section class="response-section">
+      <h3>💡 引用區塊</h3>
+      <p>適合特別標示結論、提醒或引用內容。</p>
+      <blockquote><p>先確認目標與使用情境，再決定最適合的回覆格式。</p><cite>Gina 的整理建議</cite></blockquote>
     </section>
   </div>`;
 }
@@ -478,6 +495,7 @@ function loadConversation(i){
   body.classList.remove('specialist');$('#new-label').textContent='發起新對話';
   activeHist=i;renderHistory();
   thread.innerHTML='';startChat();
+  setComposerSuggestions(i===0);
   userMsg(HISTORY[i],'13:35');
   if(i===0){
     const el=aiMsg(richResponseHTML());
@@ -522,7 +540,7 @@ function recommendationReply(text){
 }
 function send(){
   const text=input.value.trim(); if(!text) return;
-  input.value='';autosize();updateSend();closeTools();
+  input.value='';autosize();updateSend();closeTools();setComposerSuggestions(false);
   if(!body.classList.contains('chatting')){thread.innerHTML='';startChat();}
   userMsg(text);
   const specialist=body.classList.contains('specialist');
