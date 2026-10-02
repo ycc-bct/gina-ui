@@ -20,7 +20,7 @@
     業務助理 <span class="pilot">Pilot</span>
   </div>
   <div class="header-right">
-    <button class="outlook-tag" data-pop="pop-mcp" aria-haspopup="dialog" aria-expanded="false" aria-label="Outlook 已連線，開啟 MCP Tool">
+    <button class="outlook-tag" data-pop="pop-outlook" aria-haspopup="dialog" aria-expanded="false" aria-label="Outlook 已連線，開啟 Outlook 設定">
       <span class="outlook-tag-dot" aria-hidden="true"></span>
       <span>Outlook 已連線</span>
     </button>
@@ -28,23 +28,33 @@
   </div>
 </header>
 
-<!-- MCP Tool: registered servers and Outlook integration -->
+<!-- Outlook integration -->
+<div class="popover" id="pop-outlook">
+  <div class="pop-head outlook-panel-head">
+    <div>
+      <div class="pop-title">Outlook</div>
+      <div class="pop-sub">郵件與行事曆整合</div>
+    </div>
+    <span class="connection-status"><span></span>已連線</span>
+  </div>
+  <div class="outlook-body">
+    <div class="outlook-account">
+      <span class="icon-tile"><svg class="i" data-i="mail"></svg></span>
+      <div><b>Outlook</b><span>Gina 可以使用已啟用的郵件與行事曆功能。</span></div>
+    </div>
+    <button class="btn-danger-outline" data-action="toast" data-msg="中斷 Outlook 連線（示意）"><svg class="i" data-i="unplug"></svg>中斷 Outlook 連線</button>
+  </div>
+</div>
+
+<!-- MCP Tool: registered servers -->
 <div class="popover" id="pop-mcp">
   <div class="pop-head">
     <div>
       <div class="pop-title">MCP Tool</div>
-      <div class="pop-sub">管理工作工具與帳號連線</div>
+      <div class="pop-sub">管理已註冊的 MCP servers</div>
     </div>
     <span class="total-badge">4 個 MCP</span>
   </div>
-  <div class="integration-group">
-    <div class="integration-label">帳號整合</div>
-    <details class="outlook-integration">
-      <summary><span class="icon-tile"><svg class="i" data-i="mail"></svg></span><span class="integration-name">Outlook<span>郵件與行事曆</span></span><span class="connection-status"><span></span>已連線</span><svg class="i" data-i="chevron-down"></svg></summary>
-      <div class="outlook-body"><p>已保留 Outlook 授權，可使用已啟用的 Outlook 功能。</p><button class="btn-danger-outline" data-action="toast" data-msg="中斷 Outlook 連線（示意）"><svg class="i" data-i="unplug"></svg>中斷 Outlook 連線</button></div>
-    </details>
-  </div>
-  <div class="integration-label server-label">MCP Servers</div>
   <div class="mcp-list" id="mcp-list"></div>
   <div class="pop-foot">狀態代表設定 / 授權狀態，不是即時連線檢查。</div>
 </div>

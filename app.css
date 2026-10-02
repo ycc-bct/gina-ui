@@ -40,27 +40,22 @@ body.specialist .spec-brand{display:flex}
 .icon-tile{width:38px;height:38px;border-radius:var(--radius-md);background:var(--bg-hover);color:var(--icon-default);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .total-badge{height:var(--size-control-xs);padding:3px var(--space-2h);border-radius:var(--radius-full);background:var(--bg-hover);color:var(--text-tertiary);font-size:var(--font-size-12);font-weight:var(--font-weight-semibold);white-space:nowrap}
 
+/* Outlook */
+#pop-outlook{width:var(--layout-popover-width)}
+.outlook-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3)}
+.connection-status{display:inline-flex;align-items:center;gap:5px;font-size:var(--font-size-12);color:var(--text-secondary);white-space:nowrap}
+.connection-status>span{width:6px;height:6px;border-radius:var(--radius-full);background:var(--status-success-icon)}
+.outlook-body{padding:var(--component-popover-padding)}
+.outlook-account{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4)}
+.outlook-account b{display:block;font-size:var(--font-size-14);font-weight:var(--font-weight-semibold)}
+.outlook-account div>span{display:block;margin-top:3px;font-size:var(--font-size-13);line-height:var(--font-line-height-normal);color:var(--text-tertiary)}
+
 /* MCP Tool */
 #pop-mcp{width:var(--layout-popover-width)}
 #pop-mcp .pop-head{display:flex;justify-content:space-between;gap:var(--space-2h)}
-.integration-group{padding:var(--space-4) var(--space-4) 0}
-.integration-label{font-size:var(--font-size-12);color:var(--text-tertiary);margin-bottom:var(--space-2h)}
-.server-label{margin:var(--component-popover-padding) var(--component-popover-padding) 0}
-.outlook-integration{border:1px solid var(--border-subtle);border-radius:var(--radius-md)}
-.outlook-integration summary{display:flex;align-items:center;gap:var(--space-2h);padding:var(--space-3);cursor:pointer;list-style:none;border-radius:var(--radius-md)}
-.outlook-integration summary:hover{background:var(--bg-hover)}
-.outlook-integration summary::-webkit-details-marker{display:none}
-.outlook-integration summary>svg{width:13px;transition:transform var(--motion-duration-fast) var(--motion-easing-out)}
-.outlook-integration[open] summary>svg{transform:rotate(180deg)}
-.integration-name{flex:1;font-size:var(--font-size-14);font-weight:var(--font-weight-medium)}
-.integration-name>span{display:block;font-size:var(--font-size-12);font-weight:var(--font-weight-regular);color:var(--text-tertiary)}
-.connection-status{display:inline-flex;align-items:center;gap:5px;font-size:var(--font-size-12);color:var(--text-secondary);white-space:nowrap}
-.connection-status>span{width:6px;height:6px;border-radius:var(--radius-full);background:var(--status-success-icon)}
-.outlook-body{padding:0 var(--space-3) var(--space-3)}
-.outlook-body p{margin:0 0 var(--space-3);font-size:var(--font-size-13);line-height:var(--font-line-height-reading);color:var(--text-tertiary)}
 .btn-danger-outline{width:100%;height:var(--component-button-height);display:flex;align-items:center;justify-content:center;gap:var(--space-2);border:1px solid var(--border-default);border-radius:var(--component-button-radius);background:transparent;color:var(--status-danger-fg);font-size:var(--component-button-font-size);font-weight:var(--font-weight-medium)}
 .btn-danger-outline:hover{background:var(--status-danger-bg)}
-.mcp-list{padding:var(--space-0h) var(--component-popover-padding) var(--space-3h)}
+.mcp-list{padding:var(--space-2) var(--component-popover-padding) var(--space-3h)}
 .mcp-row{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2h) 0}
 .mcp-meta{flex:1;min-width:0}
 .mcp-name{font-size:var(--font-size-14)}
