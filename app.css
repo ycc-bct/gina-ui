@@ -192,15 +192,11 @@ body.collapsed .header{left:76px}
 .cbtn.send.ready:hover{background:var(--action-primary-bg-hover)}
 .tip{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);display:none;padding:3px 7px;border:1px solid var(--border-subtle);border-radius:var(--radius-xs);background:var(--bg-surface);color:var(--text-primary);font-size:var(--font-size-12);white-space:nowrap;pointer-events:none}
 .cbtn.plus:hover .tip{display:block}
-.collaborators{display:inline-flex;align-items:center;gap:7px;height:var(--component-button-height);padding:0 var(--space-2h);border:1px solid var(--border-subtle);border-radius:var(--component-button-radius);background:var(--bg-field);color:var(--text-secondary);font-size:var(--font-size-13);white-space:nowrap}
-.collaborators svg{width:var(--size-icon-sm);height:var(--size-icon-sm)}
-.collaborators:hover,.collaborators[aria-expanded="true"]{background:var(--bg-selected)}
 .foot{display:flex;justify-content:flex-end;align-items:center;gap:var(--space-3h);padding:var(--space-2h) var(--space-1) var(--space-1);font-size:var(--font-size-12);color:var(--text-tertiary)}
 body.specialist .foot{display:none}
 
 /* Dropdown menus in the composer */
-.toolmenu,.agent-picker{position:absolute;bottom:62px;padding:var(--component-menu-padding);border:1px solid var(--border-subtle);border-radius:var(--component-menu-radius);background:var(--bg-surface);box-shadow:var(--shadow-md);z-index:var(--z-dropdown)}
-.toolmenu{left:14px;width:252px;display:none}
+.toolmenu{position:absolute;bottom:62px;left:14px;width:252px;display:none;padding:var(--component-menu-padding);border:1px solid var(--border-subtle);border-radius:var(--component-menu-radius);background:var(--bg-surface);box-shadow:var(--shadow-md);z-index:var(--z-dropdown)}
 .toolmenu.open{display:block}
 .tm-item{display:flex;align-items:center;gap:var(--space-3);height:44px;padding:0 var(--space-3h);border-radius:var(--radius-md);font-size:var(--font-size-14);font-weight:var(--font-weight-medium);cursor:pointer}
 .tm-item:hover{background:var(--bg-hover)}
@@ -208,11 +204,6 @@ body.specialist .foot{display:none}
 .tm-item .ck{margin-left:auto;color:var(--text-primary);display:none}
 .tm-item.on .ck{display:block}
 .tm-sep{height:1px;margin:var(--space-1h) var(--space-0h) var(--space-2h);background:var(--border-subtle)}
-.agent-picker{left:54px;width:var(--layout-menu-width);max-width:calc(100% - 68px)}
-.agent-picker[hidden]{display:none}
-.picker-label{padding:var(--space-2) var(--space-2h);font-size:var(--font-size-12);color:var(--text-tertiary)}
-.agent-picker button{display:flex;align-items:center;gap:var(--space-2h);width:100%;padding:var(--space-2h);border:0;border-radius:var(--radius-md);background:transparent;text-align:left;font-size:var(--font-size-14)}
-.agent-picker button:hover{background:var(--bg-hover)}
 
 /* ---------- Conversation ---------- */
 .thread{display:none;width:100%;max-width:var(--layout-chat-max-width);margin:0 auto;padding:30px var(--space-5)}
@@ -278,6 +269,9 @@ body.chatting .thread{display:block}
 .execution-details{margin:0 0 var(--space-2);color:var(--text-tertiary);font-size:var(--font-size-12)}
 .execution-details summary{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);min-height:var(--size-control-xs);padding:0 var(--space-1);list-style:none;cursor:pointer}
 .execution-details summary::-webkit-details-marker{display:none}
+.execution-summary-copy{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2)}
+.execution-agent-tag{display:inline-flex;align-items:center;gap:var(--space-1);min-height:22px;padding:0 var(--space-2);border:1px solid var(--border-subtle);border-radius:var(--radius-full);background:var(--bg-raised);color:var(--text-secondary);font-size:var(--font-size-12);white-space:nowrap}
+.execution-agent-tag svg{width:var(--size-icon-sm);height:var(--size-icon-sm)}
 .execution-expand{display:inline-flex;align-items:center;justify-content:center;width:var(--size-control-xs);height:var(--size-control-xs);border-radius:var(--radius-sm);color:var(--icon-muted)}
 .execution-details summary:hover .execution-expand{background:var(--bg-hover);color:var(--icon-default)}
 .execution-expand svg{width:var(--size-icon-sm);height:var(--size-icon-sm);transition:transform var(--motion-duration-fast) var(--motion-easing-out)}
@@ -398,7 +392,6 @@ body.chatting .thread{display:block}
   .composer textarea{font-size:var(--font-size-16)}
   .cbtn{width:var(--size-control-sm)}
   .cbtn.send{width:var(--component-icon-button-size)}
-  .collaborators{padding:0 7px}
   .thread{padding:var(--space-5) var(--space-3)}
   .ai-avatar{width:var(--size-avatar-sm);height:var(--size-avatar-sm)}
   .msg-ai{gap:var(--space-2)}

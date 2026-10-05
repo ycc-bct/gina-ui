@@ -167,16 +167,9 @@
       <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
       <div class="composer-toolbar">
         <button class="cbtn plus" data-action="toggle-tools" aria-label="聊天工具" aria-expanded="false"><svg class="i" data-i="plus"></svg><span class="tip">聊天工具</span></button>
-        <button class="collaborators main-only" data-action="toggle-agents" aria-controls="agent-picker" aria-expanded="false"><svg class="i" data-i="users"></svg>協作專員<svg class="i" data-i="chevron-down"></svg></button>
         <span class="toolbar-spacer"></span>
         <button class="cbtn mic main-only" aria-label="語音輸入"><svg class="i" data-i="mic"></svg></button>
         <button class="cbtn send" id="send" data-action="send" aria-label="送出"><svg class="i" data-i="send"></svg></button>
-      </div>
-      <div class="agent-picker" id="agent-picker" hidden>
-        <div class="picker-label">選擇協作專員</div>
-        <button data-action="go-specialist"><svg class="i" data-i="chart"></svg>業務助理</button>
-        <button data-action="toast" data-msg="測試Agent 專員頁（示意）"><svg class="i" data-i="monitor"></svg>測試助手</button>
-        <button data-action="translate"><svg class="i" data-i="languages"></svg>翻譯</button>
       </div>
       <div class="toolmenu" id="toolmenu">
         <div class="tm-item" data-tool="upload"><svg class="i" data-i="paperclip"></svg>上傳檔案</div>
@@ -373,12 +366,8 @@ window.addEventListener('resize',()=>document.querySelectorAll('.popover.open').
   const anchor=document.querySelector(`[data-pop="${pop.id}"].active`);
   if(anchor)positionPop(pop,anchor);
 }));
-function closeAgents(){
-  $('#agent-picker').hidden=true;
-  $('.collaborators').setAttribute('aria-expanded','false');
-}
 function closeTools(){
-  $('#toolmenu').classList.remove('open');$('.cbtn.plus').classList.remove('open');$('.cbtn.plus').setAttribute('aria-expanded','false');closeAgents();
+  $('#toolmenu').classList.remove('open');$('.cbtn.plus').classList.remove('open');$('.cbtn.plus').setAttribute('aria-expanded','false');
 }
 function closeDownloadMenus(except){
   document.querySelectorAll('.download-menu').forEach(menu=>{
@@ -435,15 +424,15 @@ function aiMsg(html){
   </div>`;
   thread.appendChild(el);return el;
 }
-function executionDetailsHTML(steps){
+function executionDetailsHTML(steps,agentName){
   return `<details class="execution-details">
-    <summary aria-label="展開或收合執行步驟"><span>已完成 ${steps} 個執行步驟</span><span class="execution-expand" aria-hidden="true">${svg('chevron-down')}</span></summary>
+    <summary aria-label="展開或收合執行步驟"><span class="execution-summary-copy"><span>已完成 ${steps} 個執行步驟</span><span class="execution-agent-tag">${svg('users')}AI Agent · ${agentName}</span></span><span class="execution-expand" aria-hidden="true">${svg('chevron-down')}</span></summary>
     <ul>${EXEC_RESOURCES.map(resource=>`<li><span class="execution-resource-icon">${svg(resource.icon)}</span><span class="execution-resource-type">${resource.type}</span><span>${resource.name}</span></li>`).join('')}</ul>
   </details>`;
 }
-function finishAi(el,time,steps=5){
+function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?'業務助理':'Gina'){
   const col=el.querySelector('.ai-col');
-  col.querySelector('.bubble-wrap').insertAdjacentHTML('beforebegin',executionDetailsHTML(steps));
+  col.querySelector('.bubble-wrap').insertAdjacentHTML('beforebegin',executionDetailsHTML(steps,agentName));
   col.insertAdjacentHTML('beforeend',`<div class="ai-time">${time}</div>`);
 }
 
@@ -665,8 +654,7 @@ document.addEventListener('click',e=>{
   }
   switch(a.dataset.action){
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}closePops();break;}
-    case 'toggle-tools': {e.stopPropagation();closePops();closeAgents();const m=$('#toolmenu');const o=!m.classList.contains('open');m.classList.toggle('open',o);$('.cbtn.plus').classList.toggle('open',o);$('.cbtn.plus').setAttribute('aria-expanded',String(o));break;}
-    case 'toggle-agents': {const open=$('#agent-picker').hidden;closeTools();closePops();$('#agent-picker').hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
+    case 'toggle-tools': {e.stopPropagation();closePops();const m=$('#toolmenu');const o=!m.classList.contains('open');m.classList.toggle('open',o);$('.cbtn.plus').classList.toggle('open',o);$('.cbtn.plus').setAttribute('aria-expanded',String(o));break;}
     case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'open-review': {const source=a.closest('.review-card').querySelector('.review-card-content');$('#review-dialog-content').innerHTML=source.innerHTML;$('#review-dialog').showModal();break;}
     case 'close-review': $('#review-dialog').close(); break;
@@ -680,7 +668,7 @@ document.addEventListener('click',e=>{
     case 'send': send(); break;
     case 'confirm-send': a.closest('.action-btns').outerHTML='<div class="action-done">✅ 郵件已寄出。</div>'; break;
     case 'cancel-send': a.closest('.action-btns').outerHTML='<div class="action-done">已取消，郵件未寄出。</div>'; break;
-    case 'toast': closePops();closeAgents(); toast(a.dataset.msg); break;
+    case 'toast': closePops();toast(a.dataset.msg); break;
   }
 });
 $('#review-dialog').addEventListener('click',e=>{if(e.target===$('#review-dialog'))$('#review-dialog').close()});
