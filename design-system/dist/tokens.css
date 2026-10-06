@@ -131,13 +131,13 @@
 /* Light theme (default) */
 :root,
 [data-theme="light"] {
-  --bg-app: var(--color-gray-100);
-  --bg-canvas: var(--color-gray-50);
-  --bg-surface: var(--color-gray-25);
+  --bg-app: oklch(95.5% 0.014 260);
+  --bg-canvas: oklch(98% 0.006 260);
+  --bg-surface: oklch(99.4% 0.002 260);
   --bg-raised: var(--color-gray-0);
-  --bg-field: var(--color-gray-75);
-  --bg-hover: var(--color-gray-100);
-  --bg-selected: var(--color-gray-150);
+  --bg-field: oklch(97% 0.008 260);
+  --bg-hover: var(--accent-blue-bg);
+  --bg-selected: var(--accent-blue-bg);
   --bg-overlay: #25272822;
   --text-primary: var(--color-gray-900);
   --text-secondary: var(--color-gray-700);
@@ -150,15 +150,15 @@
   --border-subtle: var(--color-gray-200);
   --border-default: var(--color-gray-300);
   --border-strong: var(--color-gray-400);
-  --border-focus: var(--color-gray-500);
-  --focus-ring: var(--color-gray-700);
-  --action-primary-bg: var(--color-gray-800);
-  --action-primary-bg-hover: var(--color-gray-950);
-  --action-primary-fg: var(--color-gray-0);
-  --action-secondary-bg: var(--color-gray-100);
-  --action-secondary-bg-hover: var(--color-gray-150);
-  --action-secondary-border: var(--color-gray-200);
-  --action-secondary-fg: var(--color-gray-900);
+  --border-focus: var(--accent-blue-fg);
+  --focus-ring: var(--accent-blue-fg);
+  --action-primary-bg: #aad7f3;
+  --action-primary-bg-hover: #93cbee;
+  --action-primary-fg: #174c6e;
+  --action-secondary-bg: var(--bg-surface);
+  --action-secondary-bg-hover: var(--accent-blue-bg);
+  --action-secondary-border: var(--border-default);
+  --action-secondary-fg: var(--text-secondary);
   --action-disabled-bg: var(--color-gray-100);
   --action-disabled-fg: var(--color-gray-550);
   --status-success-fg: var(--color-green-600);
@@ -175,7 +175,24 @@
   --shadow-md: 0 8px 28px #25272812;
   --shadow-lg: 0 12px 40px #25272814, 0 2px 6px #25272806;
   --shadow-frame: 0 16px 48px #25272808;
-  --shadow-focus: 0 0 0 3px #30323306;
+  --shadow-focus: 0 0 0 3px #254fc414;
+  --accent-blue-bg: #e9f5fd;
+  --accent-blue-border: #aad7f3;
+  --accent-blue-fg: #176394;
+  --accent-pink-bg: #fff0f6;
+  --accent-pink-border: #f2cbdc;
+  --accent-pink-fg: #a52c65;
+  --accent-amber-bg: #fff6df;
+  --accent-amber-border: #ecd79f;
+  --accent-amber-fg: #865b08;
+  --accent-green-bg: #eaf6ef;
+  --accent-green-border: #bbddc9;
+  --accent-green-fg: #236644;
+  --glass-surface: oklch(99.5% 0.004 260 / 0.78);
+  --glass-border: oklch(100% 0 0 / 0.88);
+  --glass-blue: oklch(83% 0.065 260 / 0.24);
+  --glass-pink: oklch(89% 0.055 345 / 0.20);
+  --glass-amber: oklch(92% 0.055 85 / 0.16);
 }
 
 /* Dark theme (draft — not yet validated on screens) */

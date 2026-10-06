@@ -4,17 +4,17 @@
     "bg": {
       "app": {
         "$type": "color",
-        "$value": "{color.gray.100}",
+        "$value": "oklch(95.5% 0.014 260)",
         "$description": "App 外框後方的背景"
       },
       "canvas": {
         "$type": "color",
-        "$value": "{color.gray.50}",
+        "$value": "oklch(98% 0.006 260)",
         "$description": "工作區畫布"
       },
       "surface": {
         "$type": "color",
-        "$value": "{color.gray.25}",
+        "$value": "oklch(99.4% 0.002 260)",
         "$description": "側欄、彈出層、抽屜、AI 泡泡"
       },
       "raised": {
@@ -24,17 +24,17 @@
       },
       "field": {
         "$type": "color",
-        "$value": "{color.gray.75}",
+        "$value": "oklch(97% 0.008 260)",
         "$description": "搜尋欄、協作專員按鈕"
       },
       "hover": {
         "$type": "color",
-        "$value": "{color.gray.100}",
+        "$value": "{theme.accent.blue.bg}",
         "$description": "列表、按鈕 hover"
       },
       "selected": {
         "$type": "color",
-        "$value": "{color.gray.150}",
+        "$value": "{theme.accent.blue.bg}",
         "$description": "選取、按下、使用者泡泡"
       },
       "overlay": {
@@ -103,14 +103,14 @@
       },
       "focus": {
         "$type": "color",
-        "$value": "{color.gray.500}",
+        "$value": "{theme.accent.blue.fg}",
         "$description": "輸入框 focus"
       }
     },
     "focus": {
       "ring": {
         "$type": "color",
-        "$value": "{color.gray.700}",
+        "$value": "{theme.accent.blue.fg}",
         "$description": "鍵盤 focus outline，2px，offset 3px"
       }
     },
@@ -118,35 +118,35 @@
       "primary": {
         "bg": {
           "$type": "color",
-          "$value": "{color.gray.800}",
+          "$value": "#aad7f3",
           "$description": "確認寄出、送出（可送出）"
         },
         "bgHover": {
           "$type": "color",
-          "$value": "{color.gray.950}"
+          "$value": "#93cbee"
         },
         "fg": {
           "$type": "color",
-          "$value": "{color.gray.0}"
+          "$value": "#174c6e"
         }
       },
       "secondary": {
         "bg": {
           "$type": "color",
-          "$value": "{color.gray.100}",
+          "$value": "{theme.bg.surface}",
           "$description": "發起新對話"
         },
         "bgHover": {
           "$type": "color",
-          "$value": "{color.gray.150}"
+          "$value": "{theme.accent.blue.bg}"
         },
         "border": {
           "$type": "color",
-          "$value": "{color.gray.200}"
+          "$value": "{theme.border.default}"
         },
         "fg": {
           "$type": "color",
-          "$value": "{color.gray.900}"
+          "$value": "{theme.text.secondary}"
         }
       },
       "disabled": {
@@ -233,8 +233,88 @@
       },
       "focus": {
         "$type": "shadow",
-        "$value": "0 0 0 3px #30323306",
+        "$value": "0 0 0 3px #254fc414",
         "$description": "輸入框 focus 時的淡外圈"
+      }
+    },
+    "accent": {
+      "blue": {
+        "bg": {
+          "$type": "color",
+          "$value": "#e9f5fd"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "#aad7f3"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#176394"
+        }
+      },
+      "pink": {
+        "bg": {
+          "$type": "color",
+          "$value": "#fff0f6"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "#f2cbdc"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#a52c65"
+        }
+      },
+      "amber": {
+        "bg": {
+          "$type": "color",
+          "$value": "#fff6df"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "#ecd79f"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#865b08"
+        }
+      },
+      "green": {
+        "bg": {
+          "$type": "color",
+          "$value": "#eaf6ef"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "#bbddc9"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#236644"
+        }
+      }
+    },
+    "glass": {
+      "surface": {
+        "$type": "color",
+        "$value": "oklch(99.5% 0.004 260 / 0.78)"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "oklch(100% 0 0 / 0.88)"
+      },
+      "blue": {
+        "$type": "color",
+        "$value": "oklch(83% 0.065 260 / 0.24)"
+      },
+      "pink": {
+        "$type": "color",
+        "$value": "oklch(89% 0.055 345 / 0.20)"
+      },
+      "amber": {
+        "$type": "color",
+        "$value": "oklch(92% 0.055 85 / 0.16)"
       }
     }
   }

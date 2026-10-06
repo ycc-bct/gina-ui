@@ -1,7 +1,7 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.0 · 2026-10-01 · 決策紀錄見 `decisions.md`
+> 版本：v1.1 · 2026-10-06 · 決策紀錄見 `decisions.md`
 
 | 檔案 | 內容 |
 |---|---|
@@ -379,7 +379,8 @@ Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）�
 | 透明 | bg `bg-hover`、字 `text-primary` | bg `bg-selected`、字 `text-primary`、字重 500 | 字 `text-disabled`，不可點 |
 
 - 計數（MCP Tool 4、個人知識 0）：12px、`text-tertiary`、靠右（D11）。
-- 分類標籤（對話記錄）：12px / 500、`text-tertiary`（D11）。
+- 分類標籤（對話記錄）：12px / 500、`text-tertiary`（D11）；搜尋 icon 放在標題右側。
+- 點擊對話記錄右側的搜尋 icon 後，標題列在原位置切換成 Search bar，不新增第二列。關閉或按 Esc 時清除關鍵字並還原標題列。
 - 「選取」也用於對應彈出層開啟中（例：MCP Tool 彈出層打開時）。
 - 對話記錄標題單行，超出用「…」；hover 顯示完整標題（tooltip）。
 - Agents 可展開：箭頭旋轉 180°（150ms），子項目左縮排 18px。
@@ -401,6 +402,8 @@ Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）�
 | 預設 | hover | focus | 停用 | 錯誤（新增） |
 |---|---|---|---|---|
 | 如上 | 框 `border-subtle` | bg `bg-raised`、框 `border-focus` | 字 `text-disabled` | 框 `status-danger-fg`，下方 12px 錯誤訊息 |
+
+搜尋對話預設不顯示完整欄位，只顯示在「對話記錄」右側的 Search icon。展開後 Search bar 取代同一個標題列；右側提供關閉 icon，輸入時即時篩選對話。
 
 ### 12.7 輸入框 Composer
 
@@ -520,6 +523,27 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 - 眼睛跟隨滑鼠：位移最多水平 16、垂直 12（SVG 單位）。
 - 眨眼：每 3.5–6.5 秒一次，200ms。
 - 減少動態效果時：關閉眼睛動畫，只顯示靜態圖。
+
+### 12.19 個人 Skills 與 Skill Builder
+
+#### Skills Panel
+
+- 從使用者頭像選單進入「Skills」，右側開啟 400px Drawer；桌機會將主要內容往左推，手機以浮層覆蓋。
+- Panel 頂端只有一個與 Skill card 等寬的「＋ 新增 Skill」Outline 按鈕。
+- 點擊後，以浮動選單覆蓋 Skill list，不改變既有卡片的位置。選項為「建立 Skill」、「從 ZIP 匯入」與「從 Git 匯入」。
+- Skill card 的名稱與說明分行呈現：名稱使用 mono 14px / 600，說明使用 13px `text-tertiary`，最多兩行，超出截斷。
+- 卡片顯示「草稿」或「使用中」狀態。刪除操作不出現在 Skill list。
+
+#### 建立與編輯
+
+- 「建立 Skill」開啟全螢幕 Dialog。欄位依序為名稱、說明、指令。
+- 名稱只接受小寫英文字母、數字、連字號與底線，正規表示式為 `[a-z0-9_-]+`；不可包含大寫或空白。
+- 新 Skill 第一次只能「儲存草稿」，不顯示發布與版本選擇。
+- 第一次草稿建立成功後，立即加入 Skill list、關閉全螢幕 Dialog，並回到原本保持開啟的 Skills Panel。
+- 再次從 Skill list 開啟草稿時，Dialog 右上角顯示草稿版本選單、「儲存草稿」與「發布」。
+- 草稿版本以建立時間命名，例如「10/06 16:35:20 建立的草稿」；每次儲存產生一筆新版本，選取舊版本時將內容載入欄位供檢視或建立下一版。
+- 發布只在已建立草稿後提供。發布後狀態改為「已發布／使用中」，版本選單與發布按鈕隱藏；再次修改時需先儲存為新草稿。
+- 已建立的 Skill（草稿或已發布）在 Dialog 內容底部顯示「刪除 Skill」Outline 按鈕。刪除後關閉 Dialog、回到 Skills Panel 並更新清單。
 
 ---
 

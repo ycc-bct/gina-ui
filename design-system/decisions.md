@@ -30,3 +30,13 @@
 - MCP 列表、執行過程列的勾勾維持灰色（`icon-muted` / `icon-default`）；只有「已連線」圓點與執行步驟的勾勾用綠色。
 - 個人知識上傳區改為區塊顯示（原本是行內元素，邊距不生效）。
 - 登入頁改為與工作區相同的暖灰風格，使用新的 Gina 頭像。
+
+## 2026-10-06 — Color accents and subtle glass
+
+- Reference: supplied mobile onboarding recording with a bright canvas and blue, pink, amber and green accents.
+- Blue identifies MCP and primary actions; pink identifies Agents; amber identifies Skills; green identifies connected Outlook and knowledge tools.
+- Accent text/background contrast ratios: blue 6.26:1, pink 6.05:1, amber 5.55:1, green 6.19:1.
+- Sidebar and composer use a translucent surface with 16px backdrop blur when supported; otherwise they retain an opaque surface.
+- AI bubbles and the review panel remain opaque. User bubbles use a pale blue background with the existing dark body text. Reply typography and reading widths are preserved.
+- Source palette lives in tokens/theme.light.json; generated CSS and JSON are rebuilt with build-tokens.mjs.
+- Browser visual verification was blocked by the browser policy for local file URLs. Token resolution, accent contrast, JavaScript syntax and whitespace checks passed.

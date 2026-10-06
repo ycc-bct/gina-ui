@@ -24,6 +24,9 @@
       <span class="outlook-tag-dot" aria-hidden="true"></span>
       <span>Outlook 已連線</span>
     </button>
+    <button class="agents-menu-btn" data-pop="pop-agents" aria-haspopup="menu" aria-expanded="false">
+      <svg class="i" data-i="users"></svg><span>Agents</span><svg class="i chev" data-i="chevron-down"></svg>
+    </button>
     <button class="user-btn" data-pop="pop-user"><span class="avatar-d">D</span><svg class="i chev" data-i="chevron-down"></svg></button>
   </div>
 </header>
@@ -46,35 +49,40 @@
   </div>
 </div>
 
-<!-- MCP Tool: registered servers -->
-<div class="popover" id="pop-mcp">
-  <div class="pop-head">
-    <div>
-      <div class="pop-title">MCP Tool</div>
-      <div class="pop-sub">管理已註冊的 MCP servers</div>
-    </div>
-    <span class="total-badge">4 個 MCP</span>
-  </div>
-  <div class="mcp-list" id="mcp-list"></div>
-  <div class="pop-foot">狀態代表設定 / 授權狀態，不是即時連線檢查。</div>
+<!-- Agents menu -->
+<div class="popover" id="pop-agents" role="menu" aria-label="Agents">
+  <div class="agent-menu-label">可用協作 Agents</div>
+  <button class="menu-item" role="menuitem" data-action="go-specialist"><svg class="i" data-i="chart"></svg><span><b>業務助理</b><small>報價、訂單與 CRM</small></span></button>
+  <button class="menu-item" role="menuitem" data-action="toast" data-msg="測試助手專員頁（示意）"><svg class="i" data-i="monitor"></svg><span><b>測試助手</b><small>測試規劃與結果整理</small></span></button>
+  <button class="menu-item" role="menuitem" data-action="translate"><svg class="i" data-i="languages"></svg><span><b>翻譯</b><small>多語內容翻譯</small></span></button>
 </div>
 
+<!-- MCP Tool: registered servers -->
+<aside class="drawer" id="drawer-mcp" aria-label="MCP Tool" inert>
+  <div class="dr-head"><div><div class="t">MCP Tool</div><div class="s">管理已註冊的 MCP servers</div></div><button class="dr-close" data-action="close-drawers" aria-label="關閉MCP Tool"><svg class="i" data-i="x"></svg></button></div>
+  <div class="dr-body">  <div class="mcp-list" id="mcp-list"></div>
+  <div class="pop-foot">狀態代表設定 / 授權狀態，不是即時連線檢查。</div>
+</div>
+</aside>
+
 <!-- Knowledge popover -->
-<div class="popover" id="pop-kb">
-  <div class="pop-head">
-    <div class="pop-title">個人知識文件</div>
-    <div class="pop-sub">需啟用「個人知識庫」，Agent 才能讀取這些文件。</div>
-  </div>
-  <label class="dropzone">
+<aside class="drawer" id="drawer-kb" aria-label="個人知識" inert>
+  <div class="dr-head"><div><div class="t">個人知識</div><div class="s">管理可供 Agent 讀取的個人文件</div></div><button class="dr-close" data-action="close-drawers" aria-label="關閉個人知識"><svg class="i" data-i="x"></svg></button></div>
+  <div class="dr-body">  <label class="dropzone">
     <input type="file" hidden accept=".pdf,.docx,.txt,.md,.xlsx" />
     <b>拖放文件到此處，或點擊選擇檔案</b>
     <div>PDF、DOCX、TXT、MD、XLSX；最多 50 MiB</div>
   </label>
   <div class="kb-empty">尚無個人知識文件。</div>
 </div>
+</aside>
 
 <!-- User menu -->
 <div class="popover" id="pop-user">
+  <button class="menu-item" data-action="open-mcp"><svg class="i" data-i="server"></svg>MCP Tool</button>
+  <button class="menu-item" data-action="open-skills"><svg class="i" data-i="wrench"></svg>Skills</button>
+  <button class="menu-item" data-action="open-kb"><svg class="i" data-i="book-open"></svg>個人知識</button>
+  <div class="menu-sep"></div>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
   <div class="menu-sep"></div>
   <button class="menu-item danger" onclick="location.href='login.html'"><svg class="i" data-i="logout"></svg>登出</button>
@@ -87,23 +95,19 @@
   <div class="side-top">
     <button class="btn-new" data-action="new-chat"><svg class="i" data-i="pencil"></svg><span id="new-label">發起新對話</span></button>
   </div>
-  <nav class="workspace-tools" aria-label="工具與知識">
-    <button class="side-tool" data-pop="pop-mcp" aria-haspopup="dialog" aria-expanded="false"><svg class="i" data-i="server"></svg><span>MCP Tool</span><span class="tool-count">4</span></button>
-    <details class="sidebar-agents">
-      <summary class="side-tool"><svg class="i" data-i="users"></svg><span>Agents</span><svg class="i agents-chevron" data-i="chevron-down"></svg></summary>
-      <div class="agents-list">
-        <button class="agent-row" data-action="go-specialist"><svg class="i" data-i="chart"></svg>業務助理</button>
-        <button class="agent-row" data-action="toast" data-msg="測試Agent 專員頁（示意）"><svg class="i" data-i="monitor"></svg>測試助手</button>
-        <button class="agent-row" data-action="translate"><svg class="i" data-i="languages"></svg>翻譯</button>
-      </div>
-    </details>
-    <button class="side-tool" data-action="open-skills"><svg class="i" data-i="wrench"></svg><span>Skills</span></button>
-    <button class="side-tool" data-pop="pop-kb" aria-haspopup="dialog" aria-expanded="false"><svg class="i" data-i="book-open"></svg><span>個人知識</span><span class="tool-count">0</span></button>
-  </nav>
   <div class="side-scroll">
     <div class="main-only">
-      <div class="side-label">對話記錄</div>
-      <div class="search"><svg class="i" data-i="search"></svg><input id="hist-search" placeholder="搜尋對話..." /></div>
+      <div class="history-toolbar" id="history-toolbar">
+        <div class="history-heading">
+          <span>對話記錄</span>
+          <button type="button" data-action="open-history-search" aria-label="搜尋對話" aria-expanded="false" aria-controls="history-search"><svg class="i" data-i="search"></svg></button>
+        </div>
+        <div class="history-search" id="history-search" hidden>
+          <svg class="i" data-i="search"></svg>
+          <input id="hist-search" type="search" placeholder="搜尋對話..." aria-label="搜尋對話" />
+          <button type="button" data-action="close-history-search" aria-label="關閉搜尋"><svg class="i" data-i="x"></svg></button>
+        </div>
+      </div>
       <div id="hist-list"></div>
     </div>
     <div class="spec-only">
@@ -154,29 +158,16 @@
       </div>
     </div>
 
-    <div class="composer-suggestions main-only" id="composer-suggestions" hidden>
-      <div class="composer-suggestions-label">接下來想怎麼整理？</div>
-      <div class="composer-suggestions-actions">
-        <button class="reply-option" data-prompt="請用表格幫我整理需求">用表格整理</button>
-        <button class="reply-option" data-prompt="請用條列清單幫我整理需求">用條列整理</button>
-        <button class="reply-option" data-prompt="請先問我幾個問題來釐清需求">先釐清需求</button>
-      </div>
-    </div>
-
     <div class="composer">
       <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
       <div class="composer-toolbar">
-        <button class="cbtn plus" data-action="toggle-tools" aria-label="聊天工具" aria-expanded="false"><svg class="i" data-i="plus"></svg><span class="tip">聊天工具</span></button>
+        <button class="cbtn attach" data-action="add-file" aria-label="新增檔案"><svg class="i" data-i="paperclip"></svg><span class="tip">新增檔案</span></button>
+        <input id="composer-file" type="file" hidden multiple />
+        <button class="composer-tool-toggle" data-tool="web" aria-pressed="false"><svg class="i" data-i="search"></svg><span>網路搜尋</span></button>
+        <button class="composer-tool-toggle" data-tool="kb" aria-pressed="false"><svg class="i" data-i="book-open"></svg><span>個人知識</span></button>
+        <button class="composer-tool-toggle" data-tool="skills" aria-pressed="false"><svg class="i" data-i="wrench"></svg><span>Skills</span></button>
         <span class="toolbar-spacer"></span>
-        <button class="cbtn mic main-only" aria-label="語音輸入"><svg class="i" data-i="mic"></svg></button>
         <button class="cbtn send" id="send" data-action="send" aria-label="送出"><svg class="i" data-i="send"></svg></button>
-      </div>
-      <div class="toolmenu" id="toolmenu">
-        <div class="tm-item" data-tool="upload"><svg class="i" data-i="paperclip"></svg>上傳檔案</div>
-        <div class="tm-sep"></div>
-        <div class="tm-item toggle" data-tool="web"><svg class="i" data-i="search"></svg>網路搜尋<svg class="i ck" data-i="check"></svg></div>
-        <div class="tm-item toggle" data-tool="kb"><svg class="i" data-i="book-open"></svg>個人知識庫<svg class="i ck" data-i="check"></svg></div>
-        <div class="tm-item toggle on" data-tool="skills"><svg class="i" data-i="wrench"></svg>個人 Skills<svg class="i ck" data-i="check"></svg></div>
       </div>
     </div>
     <div class="foot">
@@ -188,24 +179,87 @@
 <!-- ============ Drawers ============ -->
 <div class="overlay" id="overlay" data-action="close-drawers"></div>
 
-<aside class="drawer" id="drawer-skills">
+<aside class="drawer" id="drawer-skills" aria-label="個人 Skills" inert>
   <div class="dr-head">
     <div><div class="t">個人 Skills</div><div class="s">只有你能管理；每次聊天仍需在工具選單中啟用。</div></div>
     <button class="dr-close" data-action="close-drawers" aria-label="關閉"><svg class="i" data-i="x"></svg></button>
   </div>
   <div class="dr-body">
-    <div class="skill-actions">
-      <button class="btn-primary"><svg class="i" data-i="wrench"></svg>建立 Skill</button>
-      <button class="btn-outline"><svg class="i" data-i="archive"></svg>ZIP 匯入</button>
-      <button class="btn-outline"><svg class="i" data-i="git-branch"></svg>GitHub 匯入</button>
-    </div>
-    <div class="skill-card">
-      <div class="icon-tile"><svg class="i" data-i="wrench"></svg></div>
-      <div class="meta"><div class="nm">email-priority</div><div class="ds">Outlook 郵件優先級判斷。使用 Outlook 郵件工具讀取信件並依重要性排序</div></div>
-      <span class="use">使用中</span><svg class="i go" data-i="chevron-right"></svg>
-    </div>
+    <section class="skill-subview" id="skill-list-view" aria-label="所有 Skills">
+      <div class="skill-add-control">
+        <button class="skill-add-button" type="button" data-action="toggle-skill-add" aria-expanded="false" aria-controls="skill-add-menu">
+          <svg class="i" data-i="plus"></svg><span>新增 Skill</span>
+        </button>
+        <div class="skill-add-menu" id="skill-add-menu" hidden>
+          <button class="skill-add-option" type="button" data-action="skill-create">
+            <span class="skill-option-icon"><svg class="i" data-i="wrench"></svg></span>
+            <span><b>建立 Skill</b><small>從空白開始建立個人 Skill</small></span>
+          </button>
+          <button class="skill-add-option" type="button" data-action="skill-zip">
+            <span class="skill-option-icon"><svg class="i" data-i="archive"></svg></span>
+            <span><b>從 ZIP 匯入</b><small>從電腦選擇一個 .zip 檔案</small></span>
+          </button>
+          <button class="skill-add-option" type="button" data-action="skill-git">
+            <span class="skill-option-icon"><svg class="i" data-i="git-branch"></svg></span>
+            <span><b>從 Git 匯入</b><small>貼上 Git repository 連結</small></span>
+          </button>
+        </div>
+        <input id="skill-zip-input" type="file" accept=".zip,application/zip" hidden />
+      </div>
+      <div class="skill-list" id="skill-list"></div>
+    </section>
+
+    <section class="skill-subview skill-form-view" id="skill-git-view" aria-labelledby="skill-git-title" hidden>
+      <button class="skill-back" type="button" data-action="skill-list"><svg class="i" data-i="arrow-left"></svg>所有 Skills</button>
+      <h2 id="skill-git-title">從 Git 匯入 Skill</h2>
+      <p class="skill-form-copy">輸入可存取的 Git repository 連結，匯入後可再檢查內容。</p>
+      <div class="skill-form">
+        <label for="skill-git-url">Git repository 連結</label>
+        <input id="skill-git-url" type="url" inputmode="url" placeholder="https://github.com/organization/skill" required />
+      </div>
+      <div class="skill-form-actions">
+        <button class="btn-outline" type="button" data-action="skill-list">取消</button>
+        <button class="btn-primary" type="button" data-action="skill-import-git">匯入</button>
+      </div>
+    </section>
   </div>
 </aside>
+
+<dialog class="skill-editor-dialog" id="skill-editor-dialog" aria-labelledby="skill-editor-title">
+  <div class="skill-editor-shell">
+    <header class="skill-editor-header">
+      <div class="skill-editor-identity">
+        <button class="skill-editor-close" type="button" data-action="close-skill-editor" aria-label="關閉 Skill 編輯器"><svg class="i" data-i="x"></svg></button>
+        <div>
+          <div class="skill-editor-title-row"><h2 id="skill-editor-title">建立個人 Skill</h2><span class="skill-editor-status" id="skill-editor-status">未儲存</span></div>
+        </div>
+      </div>
+      <div class="skill-editor-actions">
+        <label class="skill-version-control" for="skill-version-select" hidden><span>草稿版本</span><select id="skill-version-select" aria-label="選擇草稿版本" disabled><option>尚未建立草稿</option></select></label>
+        <button class="btn-outline" type="button" data-action="save-skill-draft">儲存草稿</button>
+        <button class="btn-primary" type="button" data-action="publish-skill" hidden>發布</button>
+      </div>
+    </header>
+    <main class="skill-editor-content">
+      <div class="skill-editor-intro">
+        <h3>Skill 設定</h3>
+        <p>定義名稱、用途與執行指令。儲存或發布時會自動保留一筆版本紀錄。</p>
+      </div>
+      <div class="skill-form skill-editor-form">
+        <label for="skill-name">名稱</label>
+        <input id="skill-name" type="text" placeholder="my-workflow" pattern="[a-z0-9_-]+" aria-describedby="skill-name-rule" required />
+        <small class="skill-field-rule" id="skill-name-rule">只能使用小寫英文字母、數字、連字號（-）與底線（_），不可包含大寫或空白。</small>
+        <label for="skill-description">說明</label>
+        <textarea id="skill-description" rows="3" placeholder="簡短說明這個 Skill 的用途"></textarea>
+        <label for="skill-instructions">指令</label>
+        <textarea id="skill-instructions" class="skill-instructions" rows="14" placeholder="輸入 Agent 使用這個 Skill 時應遵循的指令" required></textarea>
+      </div>
+      <div class="skill-editor-footer">
+        <button class="skill-editor-delete" type="button" data-action="delete-skill" hidden><svg class="i" data-i="trash"></svg>刪除 Skill</button>
+      </div>
+    </main>
+  </div>
+</dialog>
 
 <aside class="review-panel" id="review-panel" aria-labelledby="review-panel-title" aria-hidden="true">
   <header class="review-panel-header">
@@ -326,6 +380,11 @@ function renderHistory(){
 }
 renderHistory();
 document.getElementById('hist-search').addEventListener('input', renderHistory);
+function setHistorySearch(open){
+  const heading=$('#history-toolbar .history-heading'),search=$('#history-search'),button=$('[data-action="open-history-search"]'),input=$('#hist-search');
+  heading.hidden=open;search.hidden=!open;button.setAttribute('aria-expanded',String(open));
+  if(open){input.focus()}else{input.value='';renderHistory();button.focus()}
+}
 
 const EXEC_RESOURCES = [
   {name:"email-priority", type:"Skill", icon:"wrench"},
@@ -333,11 +392,100 @@ const EXEC_RESOURCES = [
   {name:"Outlook Calendar", type:"MCP", icon:"calendar"}
 ];
 
+const SKILLS = [{
+  id:'email-priority',
+  name:'email-priority',
+  description:'Outlook 郵件優先級判斷。使用 Outlook 郵件工具讀取信件並依重要性排序',
+  instructions:'讀取 Outlook 郵件後，依寄件者、截止時間與是否需要回覆判斷優先級，並整理成摘要。',
+  status:'published',
+  versions:[
+    {number:1,status:'draft',savedAt:'10/05 15:40',name:'email-priority',description:'Outlook 郵件優先級判斷',instructions:'讀取 Outlook 郵件並整理需要處理的項目。'},
+    {number:2,status:'published',savedAt:'10/06 09:20',name:'email-priority',description:'Outlook 郵件優先級判斷。使用 Outlook 郵件工具讀取信件並依重要性排序',instructions:'讀取 Outlook 郵件後，依寄件者、截止時間與是否需要回覆判斷優先級，並整理成摘要。'}
+  ]
+}];
+let activeSkillId=null;
+function escapeHTML(value){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
+function renderSkillList(){
+  $('#skill-list').innerHTML=SKILLS.map(skill=>`<div class="skill-card">
+    <button class="skill-card-open" type="button" data-action="open-skill-editor" data-skill-id="${escapeHTML(skill.id)}">
+      <span class="icon-tile">${svg('wrench')}</span>
+      <span class="meta"><span class="nm">${escapeHTML(skill.name)}</span><span class="ds">${escapeHTML(skill.description||'尚未加入說明')}</span></span>
+      <span class="use">${skill.status==='published'?'使用中':'草稿'}</span>${svg('chevron-right')}
+    </button>
+  </div>`).join('');
+}
+function skillStatusLabel(status){return status==='published'?'已發布':'草稿'}
+function setSkillEditorVersion(skill,versionNumber){
+  const version=skill.versions.find(item=>item.number===Number(versionNumber))||skill.versions.at(-1);
+  if(!version)return;
+  $('#skill-name').value=version.name;$('#skill-description').value=version.description;$('#skill-instructions').value=version.instructions;
+  $('#skill-editor-status').textContent=skillStatusLabel(version.status);
+  $('#skill-version-select').value=String(version.number);
+}
+function refreshSkillVersions(skill){
+  const select=$('#skill-version-select'),control=select.closest('.skill-version-control');
+  const drafts=skill?skill.versions.filter(version=>version.status==='draft'):[];
+  const canSwitch=!!skill&&skill.status==='draft'&&drafts.length>0;
+  control.hidden=!canSwitch;select.disabled=!canSwitch;
+  select.innerHTML=canSwitch?drafts.slice().reverse().map(version=>`<option value="${version.number}">${version.savedAt} 建立的草稿</option>`).join(''):'<option>尚未建立草稿</option>';
+  if(skill)setSkillEditorVersion(skill,(canSwitch?drafts.at(-1):skill.versions.at(-1)).number);
+}
+function openSkillEditor(skillId=null){
+  $('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false');
+  activeSkillId=skillId;
+  const skill=SKILLS.find(item=>item.id===skillId);
+  $('#skill-editor-title').textContent=skill?skill.name:'建立個人 Skill';
+  $('#skill-editor-status').textContent=skill?skillStatusLabel(skill.status):'未儲存';
+  $('[data-action="publish-skill"]').hidden=!skill||skill.status!=='draft';
+  $('[data-action="delete-skill"]').hidden=!skill;
+  if(skill){refreshSkillVersions(skill)}else{$('#skill-name').value='';$('#skill-description').value='';$('#skill-instructions').value='';refreshSkillVersions(null)}
+  const dialog=$('#skill-editor-dialog');if(!dialog.open)dialog.showModal();
+  setTimeout(()=>$('#skill-name').focus(),0);
+}
+function validateSkillEditor(){
+  const name=$('#skill-name'),instructions=$('#skill-instructions');
+  name.setCustomValidity('');name.removeAttribute('aria-invalid');instructions.setCustomValidity('');
+  if(!name.value.trim()||!/^[a-z0-9_-]+$/.test(name.value)){
+    name.setCustomValidity('名稱只能使用小寫英文字母、數字、連字號與底線，不可包含大寫或空白。');name.setAttribute('aria-invalid','true');name.reportValidity();name.focus();return false;
+  }
+  if(!instructions.value.trim()){instructions.setCustomValidity('請輸入 Skill 指令。');instructions.reportValidity();instructions.focus();return false}
+  return true;
+}
+function createSkillSnapshot(status){
+  const now=new Date(),savedAt=`${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  return {name:$('#skill-name').value.trim(),description:$('#skill-description').value.trim(),instructions:$('#skill-instructions').value.trim(),status,savedAt};
+}
+function saveSkillDraft(){
+  if(!validateSkillEditor())return;
+  const snapshot=createSkillSnapshot('draft');
+  let skill=SKILLS.find(item=>item.id===activeSkillId);
+  const isNew=!skill;
+  if(!skill){skill={id:`${snapshot.name}-${Date.now()}`,versions:[]};SKILLS.unshift(skill);activeSkillId=skill.id}
+  snapshot.number=(skill.versions.at(-1)?.number||0)+1;
+  skill.versions.push(snapshot);Object.assign(skill,snapshot);
+  $('#skill-editor-title').textContent=skill.name;$('[data-action="publish-skill"]').hidden=false;$('[data-action="delete-skill"]').hidden=false;
+  refreshSkillVersions(skill);renderSkillList();
+  toast(`${skill.name} 已儲存為 ${snapshot.savedAt} 建立的草稿`);
+  if(isNew){$('#skill-editor-dialog').close();resetSkillPanel()}
+}
+function publishSkill(){
+  const skill=SKILLS.find(item=>item.id===activeSkillId);if(!skill||skill.status!=='draft')return;
+  if(!validateSkillEditor())return;
+  const snapshot=createSkillSnapshot('published');snapshot.number=(skill.versions.at(-1)?.number||0)+1;
+  skill.versions.push(snapshot);Object.assign(skill,snapshot);
+  $('#skill-editor-status').textContent='已發布';$('[data-action="publish-skill"]').hidden=true;$('[data-action="delete-skill"]').hidden=false;
+  refreshSkillVersions(skill);renderSkillList();toast(`${skill.name} 已發布`);
+}
+function deleteSkill(skillId){
+  const index=SKILLS.findIndex(skill=>skill.id===skillId);if(index<0)return;
+  const [removed]=SKILLS.splice(index,1);$('#skill-editor-dialog').close();activeSkillId=null;renderSkillList();toast(`${removed.name} 已刪除`);
+}
 /* ---------- Helpers ---------- */
 const $ = s => document.querySelector(s);
 const body = document.body;
 const thread = $('#thread');
 const input = $('#input');
+renderSkillList();
 function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('show');
   clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1600);
@@ -369,9 +517,7 @@ window.addEventListener('resize',()=>document.querySelectorAll('.popover.open').
   const anchor=document.querySelector(`[data-pop="${pop.id}"].active`);
   if(anchor)positionPop(pop,anchor);
 }));
-function closeTools(){
-  $('#toolmenu').classList.remove('open');$('.cbtn.plus').classList.remove('open');$('.cbtn.plus').setAttribute('aria-expanded','false');
-}
+function closeTools(){}
 function closeDownloadMenus(except){
   document.querySelectorAll('.download-menu').forEach(menu=>{
     if(menu!==except){menu.hidden=true;menu.previousElementSibling.setAttribute('aria-expanded','false')}
@@ -397,27 +543,31 @@ async function copyText(text,successMessage){
   toast(successMessage);
 }
 function readableText(element){return (element.innerText||element.textContent||'').trim()}
-function openDrawer(id){closePops();body.classList.remove('mobile-nav-open');$('#overlay').classList.add('open');document.getElementById(id).classList.add('open')}
-function closeDrawers(){$('#overlay').classList.remove('open');document.querySelectorAll('.drawer.open').forEach(d=>d.classList.remove('open'))}
-function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
-function setComposerSuggestions(show){
-  const suggestions=$('#composer-suggestions');
-  suggestions.hidden=!show;
+function resetSkillPanel(){
+  document.querySelectorAll('#drawer-skills .skill-subview').forEach(view=>view.hidden=true);
+  $('#skill-list-view').hidden=false;
+  $('#skill-add-menu').hidden=true;
+  $('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false');
 }
-
+function showSkillView(id){
+  document.querySelectorAll('#drawer-skills .skill-subview').forEach(view=>view.hidden=true);
+  const view=document.getElementById(id);view.hidden=false;
+  const field=view.querySelector('input,textarea');if(field)field.focus();
+}
+function openDrawer(id){closePops();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');if(id==='drawer-skills')resetSkillPanel();body.classList.add('drawer-panel-open');$('#overlay').classList.add('open');const panel=document.getElementById(id);panel.inert=false;panel.classList.add('open');panel.querySelector('.dr-close').focus()}
+function closeDrawers(){body.classList.remove('drawer-panel-open');$('#overlay').classList.remove('open');document.querySelectorAll('.drawer.open').forEach(d=>{if(d.contains(document.activeElement))$('.user-btn').focus();d.classList.remove('open');d.inert=true});resetSkillPanel()}
+function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
 /* ---------- Views ---------- */
 function goHome(){
-  closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
+  closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
-  setComposerSuggestions(false);
   $('#new-label').textContent='發起新對話';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
   thread.innerHTML='';activeHist=-1;renderHistory();
 }
 function goSpecialist(){
-  closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
+  closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
-  setComposerSuggestions(false);
   $('#new-label').textContent='開始新對話';
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
   thread.innerHTML='';
@@ -426,7 +576,7 @@ function startChat(){body.classList.add('chatting');body.classList.remove('mobil
 
 function userMsg(text,time=nowHM()){
   const el=document.createElement('div');el.className='msg-user';
-  el.innerHTML=`<div class="col"><div class="bubble-user"></div><div class="msg-time">${time}</div></div><div class="d-square">D</div>`;
+  el.innerHTML=`<div class="col"><div class="bubble-user"></div><div class="msg-time">${time}</div></div>`;
   el.querySelector('.bubble-user').textContent=text;
   thread.appendChild(el);return el;
 }
@@ -442,7 +592,7 @@ function aiMsg(html){
 function executionDetailsHTML(steps,agentName){
   return `<details class="execution-details">
     <summary aria-label="展開或收合執行步驟"><span class="execution-summary-copy"><span>已完成 ${steps} 個執行步驟</span><span class="execution-agent-tag">${svg('users')}AI Agent · ${agentName}</span></span><span class="execution-expand" aria-hidden="true">${svg('chevron-down')}</span></summary>
-    <ul>${EXEC_RESOURCES.map(resource=>`<li><span class="execution-resource-icon">${svg(resource.icon)}</span><span class="execution-resource-type">${resource.type}</span><span>${resource.name}</span></li>`).join('')}</ul>
+    <ul>${EXEC_RESOURCES.map(resource=>`<li data-resource-type="${resource.type}"><span class="execution-resource-icon">${svg(resource.icon)}</span><span class="execution-resource-type">${resource.type}</span><span>${resource.name}</span></li>`).join('')}</ul>
   </details>`;
 }
 function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?'業務助理':'Gina'){
@@ -561,7 +711,6 @@ function loadConversation(i){
   body.classList.remove('specialist');$('#new-label').textContent='發起新對話';
   activeHist=i;renderHistory();
   thread.innerHTML='';startChat();
-  setComposerSuggestions(i===0);
   userMsg(HISTORY[i],'13:35');
   if(i===0){
     const el=aiMsg(richResponseHTML());
@@ -594,19 +743,52 @@ Best regards</textarea>
   </div>`;
 }
 
-/* ---------- Sending (simulated streaming) ---------- */
+/* ---------- Sending (simulated loading) ---------- */
+const REPLY_LOADING_DURATION=2000;
 function recommendationReply(text){
   const replies={
     '幫我把這個想法整理成需求':'<p>請貼上你的想法或背景。我會協助整理成目標、使用情境、功能需求與驗收條件。</p>',
     '幫我審閱一份合約':'<p>請上傳合約或貼上要審閱的條款，並告訴我你關注的部分。我會協助整理重點、疑問與需要確認的事項。</p>',
     '幫我安排一場會議':'<p>請提供會議主題、參與者、預計時長與可用時段。我會先協助整理會議安排。</p>',
-    '幫我整理這份文件':'<p>請上傳文件或貼上內容。我會協助整理摘要、重點與待辦事項。</p>'
+    '幫我整理這份文件':'<p>請上傳文件或貼上內容。我會協助整理摘要、重點與待辦事項。</p>',
+    '內部工作流程':'<p>了解，這是一個內部工作流程。請告訴我目前最花時間或最容易出錯的步驟。</p>',
+    '客戶服務流程':'<p>了解，這是一個客戶服務流程。請告訴我主要服務的客群，以及目前最常遇到的問題。</p>',
+    '資料整理與報表':'<p>了解，你想改善資料整理與報表。請提供資料來源，以及希望最後看到的指標。</p>',
+    '付款與費用':'<p>我會優先檢查付款條件、額外費用與逾期責任。請上傳合約或貼上相關條款。</p>',
+    '責任與賠償':'<p>我會優先檢查責任範圍、賠償上限與例外條款。請上傳合約或貼上相關條款。</p>',
+    '終止與續約':'<p>我會優先檢查終止條件、通知期限與自動續約。請上傳合約或貼上相關條款。</p>',
+    '30 分鐘':'<p>會議長度設定為 30 分鐘。請再提供參與者與可用日期。</p>',
+    '45 分鐘':'<p>會議長度設定為 45 分鐘。請再提供參與者與可用日期。</p>',
+    '60 分鐘':'<p>會議長度設定為 60 分鐘。請再提供參與者與可用日期。</p>',
+    '重點摘要':'<p>我會整理成精簡的重點摘要。請上傳文件或貼上內容。</p>',
+    '待辦清單':'<p>我會找出行動項目、負責人與期限。請上傳文件或貼上內容。</p>',
+    '完整架構':'<p>我會依主題重整完整架構與層級。請上傳文件或貼上內容。</p>',
+    '提供客戶或訂單資訊':'<p>請輸入客戶名稱、訂單編號，或直接貼上目前已有的資料。</p>',
+    '說明想整理的結果':'<p>請描述你希望得到報價、進度摘要、風險清單或其他結果。</p>',
+    '補充相關背景':'<p>請補充這項工作的背景、目前進度與需要完成的時間。</p>'
   };
   return replies[text] || '';
 }
+function clarificationOptions(text,specialist){
+  const options={
+    '幫我把這個想法整理成需求':['內部工作流程','客戶服務流程','資料整理與報表'],
+    '幫我審閱一份合約':['付款與費用','責任與賠償','終止與續約'],
+    '幫我安排一場會議':['30 分鐘','45 分鐘','60 分鐘'],
+    '幫我整理這份文件':['重點摘要','待辦清單','完整架構']
+  };
+  if(options[text]) return options[text];
+  if(['提供客戶或訂單資訊','說明想整理的結果','補充相關背景'].includes(text))return [];
+  return specialist?['提供客戶或訂單資訊','說明想整理的結果','補充相關背景']:[];
+}
+function clarificationOptionsHTML(options){
+  return `<div class="clarification-options" aria-label="需要補充的資訊">
+    <div class="clarification-options-label">接下來想怎麼整理？</div>
+    <div class="clarification-options-actions">${options.map(option=>`<button class="reply-option" data-prompt="${option}">${option}</button>`).join('')}</div>
+  </div>`;
+}
 function send(){
   const text=input.value.trim(); if(!text) return;
-  input.value='';autosize();updateSend();closeTools();setComposerSuggestions(false);
+  input.value='';autosize();updateSend();closeTools();
   if(!body.classList.contains('chatting')){thread.innerHTML='';startChat();}
   userMsg(text);
   const specialist=body.classList.contains('specialist');
@@ -617,17 +799,14 @@ function send(){
     ? `<p>收到！目前我尚未啟用任何 MCP server，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>`
     : `<p>今天（9/30）共收到 <b>5 封信件</b>，依優先級整理如下：</p><hr><h4>高優先（來自主管 / 需今日回覆）</h4><ul><li><b>Re: Gina UI</b> — 王小明邀請你參加 Teams 會議，需要回覆是否出席</li><li><b>Q4 預算確認</b> — 財務部請你於今日下班前確認數字</li></ul><h4>中優先</h4><ul><li><b>MCP 整合進度同步</b> — 專案週報，建議本週內閱讀</li><li><b>健保加保申請</b> — HR 通知文件已受理</li></ul><h4>低優先</h4><ul><li><b>電子報</b> — 產業新聞摘要，可稍後再看</li></ul>`);
   const stream=el.querySelector('.stream');
-  const tokens=target.split(/(<[^>]+>)/).flatMap(p=>p.startsWith('<')?[p]:p.match(/.{1,3}/gsu)||[]);
-  let i=0,buf='';
-  const tick=setInterval(()=>{
-    for(let k=0;k<3&&i<tokens.length;k++) buf+=tokens[i++];
-    stream.innerHTML=buf;scrollBottom();
-    if(i>=tokens.length){
-      clearInterval(tick);
-      el.querySelectorAll('.status-line').forEach(s=>s.remove());
-      finishAi(el,nowHM());scrollBottom();
-    }
-  },40);
+  setTimeout(()=>{
+    stream.innerHTML=target;
+    el.querySelectorAll('.status-line').forEach(s=>s.remove());
+    finishAi(el,nowHM());
+    const options=clarificationOptions(text,specialist);
+    if(options.length)el.querySelector('.bubble-wrap').insertAdjacentHTML('afterend',clarificationOptionsHTML(options));
+    scrollBottom();
+  },REPLY_LOADING_DURATION);
 }
 
 /* ---------- Composer ---------- */
@@ -635,23 +814,41 @@ function autosize(){input.style.height='24px';input.style.height=Math.min(input.
 function updateSend(){$('#send').classList.toggle('ready',!!input.value.trim())}
 input.addEventListener('input',()=>{autosize();updateSend()});
 input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});
+$('#composer-file').addEventListener('change',e=>{
+  const count=e.target.files.length;
+  if(count)toast(count===1?`已加入 ${e.target.files[0].name}`:`已加入 ${count} 個檔案`);
+  e.target.value='';
+});
+$('#skill-zip-input').addEventListener('change',e=>{
+  const file=e.target.files[0];
+  if(file)toast(`已選擇 ${file.name}，準備匯入 Skill（示意）`);
+  e.target.value='';
+});
+$('#skill-name').addEventListener('input',e=>{e.target.setCustomValidity('');e.target.removeAttribute('aria-invalid')});
+$('#skill-instructions').addEventListener('input',e=>e.target.setCustomValidity(''));
+$('#skill-version-select').addEventListener('change',e=>{
+  const skill=SKILLS.find(item=>item.id===activeSkillId);if(skill)setSkillEditorVersion(skill,e.target.value);
+});
 
 /* ---------- Event delegation ---------- */
 document.addEventListener('click',e=>{
   const popBtn=e.target.closest('[data-pop]');
   if(popBtn){e.stopPropagation();closeTools();openPop(popBtn.dataset.pop,popBtn);return;}
 
-  const tm=e.target.closest('.tm-item');
-  if(tm){
-    if(tm.classList.contains('toggle')){
-      tm.classList.toggle('on');
-    } else {document.querySelector('.dropzone input').click();closeTools();}
+  const toolToggle=e.target.closest('.composer-tool-toggle');
+  if(toolToggle){
+    const active=toolToggle.getAttribute('aria-pressed')!=='true';
+    toolToggle.setAttribute('aria-pressed',String(active));toolToggle.classList.toggle('active',active);
     return;
   }
   const chip=e.target.closest('.chip');
   if(chip){input.value=chip.dataset.prompt;send();return;}
   const replyOption=e.target.closest('.reply-option');
-  if(replyOption){input.value=replyOption.dataset.prompt;send();return;}
+  if(replyOption){
+    const group=replyOption.closest('.clarification-options');
+    if(group){group.querySelectorAll('.reply-option').forEach(option=>option.disabled=true);replyOption.classList.add('selected')}
+    input.value=replyOption.dataset.prompt;send();return;
+  }
   const downloadOption=e.target.closest('.download-option');
   if(downloadOption){
     const label=downloadOption.textContent.trim();
@@ -663,13 +860,15 @@ document.addEventListener('click',e=>{
   const a=e.target.closest('[data-action]');
   if(!a){
     if(!e.target.closest('.popover')) closePops();
-    if(!e.target.closest('.toolmenu')) closeTools();
     if(!e.target.closest('.ai-actions')) closeDownloadMenus();
+    if(!e.target.closest('.skill-add-control')){$('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false')}
     return;
   }
   switch(a.dataset.action){
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}closePops();break;}
-    case 'toggle-tools': {e.stopPropagation();closePops();const m=$('#toolmenu');const o=!m.classList.contains('open');m.classList.toggle('open',o);$('.cbtn.plus').classList.toggle('open',o);$('.cbtn.plus').setAttribute('aria-expanded',String(o));break;}
+    case 'open-history-search': setHistorySearch(true); break;
+    case 'close-history-search': setHistorySearch(false); break;
+    case 'add-file': $('#composer-file').click(); break;
     case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'copy-message': {closeDownloadMenus();copyText(readableText(a.closest('.ai-col').querySelector('.bubble-ai')),'已複製回覆');break;}
     case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
@@ -678,7 +877,24 @@ document.addEventListener('click',e=>{
     case 'close-review-panel': closeReviewPanel(); break;
     case 'translate': {goHome();input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
+    case 'open-mcp': openDrawer('drawer-mcp'); break;
+    case 'open-kb': openDrawer('drawer-kb'); break;
     case 'open-skills': openDrawer('drawer-skills'); break;
+    case 'toggle-skill-add': {const menu=$('#skill-add-menu');const open=menu.hidden;menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
+    case 'skill-create': openSkillEditor(); break;
+    case 'skill-zip': {$('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false');$('#skill-zip-input').click();break;}
+    case 'skill-git': showSkillView('skill-git-view'); break;
+    case 'skill-list': resetSkillPanel(); break;
+    case 'open-skill-editor': openSkillEditor(a.dataset.skillId); break;
+    case 'close-skill-editor': $('#skill-editor-dialog').close(); break;
+    case 'save-skill-draft': saveSkillDraft(); break;
+    case 'publish-skill': publishSkill(); break;
+    case 'delete-skill': deleteSkill(activeSkillId); break;
+    case 'skill-import-git': {
+      const url=$('#skill-git-url');
+      if(!url.value.trim()||!url.checkValidity()){url.reportValidity();url.focus();break;}
+      toast('已從 Git 匯入 Skill（示意）');url.value='';resetSkillPanel();break;
+    }
     case 'close-drawers': closeDrawers(); break;
     case 'go-home': goHome(); break;
     case 'go-specialist': goSpecialist(); break;
@@ -689,7 +905,7 @@ document.addEventListener('click',e=>{
     case 'toast': closePops();toast(a.dataset.msg); break;
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#history-search').hidden)setHistorySearch(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
 <script src="gina-gaze.js"></script>
 </body>

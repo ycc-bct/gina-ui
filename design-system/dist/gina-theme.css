@@ -131,13 +131,13 @@
 
 :root,
 [data-theme="light"] {
-  --gina-bg-app: #eeeeec;
-  --gina-bg-canvas: #f7f7f6;
-  --gina-bg-surface: #fcfcfb;
+  --gina-bg-app: oklch(95.5% 0.014 260);
+  --gina-bg-canvas: oklch(98% 0.006 260);
+  --gina-bg-surface: oklch(99.4% 0.002 260);
   --gina-bg-raised: #fdfdfc;
-  --gina-bg-field: #f4f4f2;
-  --gina-bg-hover: #eeeeec;
-  --gina-bg-selected: #e9eae6;
+  --gina-bg-field: oklch(97% 0.008 260);
+  --gina-bg-hover: #e9f5fd;
+  --gina-bg-selected: #e9f5fd;
   --gina-bg-overlay: #25272822;
   --gina-text-primary: #252728;
   --gina-text-secondary: #56595b;
@@ -150,15 +150,15 @@
   --gina-border-subtle: #e8e8e6;
   --gina-border-default: #dededc;
   --gina-border-strong: #d6d7d3;
-  --gina-border-focus: #a3a7a4;
-  --gina-focus-ring: #56595b;
-  --gina-action-primary-bg: #303233;
-  --gina-action-primary-bg-hover: #181a1b;
-  --gina-action-primary-fg: #fdfdfc;
-  --gina-action-secondary-bg: #eeeeec;
-  --gina-action-secondary-bg-hover: #e9eae6;
-  --gina-action-secondary-border: #e8e8e6;
-  --gina-action-secondary-fg: #252728;
+  --gina-border-focus: #176394;
+  --gina-focus-ring: #176394;
+  --gina-action-primary-bg: #aad7f3;
+  --gina-action-primary-bg-hover: #93cbee;
+  --gina-action-primary-fg: #174c6e;
+  --gina-action-secondary-bg: oklch(99.4% 0.002 260);
+  --gina-action-secondary-bg-hover: #e9f5fd;
+  --gina-action-secondary-border: #dededc;
+  --gina-action-secondary-fg: #56595b;
   --gina-action-disabled-bg: #eeeeec;
   --gina-action-disabled-fg: #858885;
   --gina-status-success-fg: #3a6b56;
@@ -175,7 +175,7 @@
   --gina-shadow-md: 0 8px 28px #25272812;
   --gina-shadow-lg: 0 12px 40px #25272814, 0 2px 6px #25272806;
   --gina-shadow-frame: 0 16px 48px #25272808;
-  --gina-shadow-focus: 0 0 0 3px #30323306;
+  --gina-shadow-focus: 0 0 0 3px #254fc414;
 }
 
 /* Dark theme (draft — not yet validated on screens) */
