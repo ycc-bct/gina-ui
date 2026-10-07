@@ -1,0 +1,497 @@
+/*
+ * Gina business theme
+ * Alternate visual direction for index-business.html. This file intentionally
+ * leaves the existing app.css and production prototype unchanged.
+ */
+
+body.business-theme {
+  --bg-app: #f2f5fa;
+  --bg-canvas: #f2f5fa;
+  --bg-shell-warm: #e4e9ef;
+  --bg-surface: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-field: #f4f6f9;
+  --bg-hover: #e9eef5;
+  --bg-selected: #e7eef9;
+  --border-subtle: #e9edf4;
+  --border-default: #e1e6ef;
+  --border-strong: #aeb9c8;
+  --border-focus: #245bb0;
+  --focus-ring: #245bb0;
+  --text-primary: #172033;
+  --text-secondary: #48566a;
+  --text-tertiary: #6f7c8e;
+  --text-placeholder: #8490a1;
+  --icon-default: #4d5b70;
+  --icon-muted: #778397;
+  --accent-blue-bg: #e7effb;
+  --accent-blue-border: #9cb8df;
+  --accent-blue-fg: #24569a;
+  --action-primary-bg: #285dd1;
+  --action-primary-bg-hover: #214fba;
+  --action-primary-fg: #ffffff;
+  --action-secondary-bg: #ffffff;
+  --action-secondary-bg-hover: #edf1f6;
+  --action-secondary-border: #e1e6ef;
+  --action-secondary-fg: #344258;
+  --shadow-focus: 0 0 0 3px rgb(36 91 176 / 12%);
+  background: #f2f5fa;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+body.business-theme::before {
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--bg-canvas);
+  box-shadow: none;
+}
+
+/* App frame */
+body.business-theme .sidebar {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 252px;
+  padding: 18px 14px;
+  border: 0;
+  border-right: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-surface);
+  box-shadow: none;
+}
+
+body.business-theme .main {
+  top: 14px;
+  right: 14px;
+  bottom: 14px;
+  left: 266px;
+  padding-top: 66px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.business-theme .header {
+  top: 27px;
+  right: 28px;
+  left: 280px;
+  padding: 0 8px;
+}
+
+body.business-theme.collapsed .main { left: 14px; }
+body.business-theme.collapsed .header { left: 28px; }
+
+/* Sidebar navigation */
+body.business-theme .sidebar-brand {
+  gap: 10px;
+  padding: 8px 10px 26px;
+}
+
+body.business-theme .sidebar-brand img {
+  width: 30px;
+  height: 30px;
+}
+
+body.business-theme .sidebar-brand > span {
+  color: #10182a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+body.business-theme .sidebar-brand > span > span {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+body.business-theme .side-top { padding: 0 0 18px; }
+
+body.business-theme .btn-new {
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid #214fba;
+  border-radius: 6px;
+  background: var(--action-primary-bg);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgb(31 85 164 / 16%);
+}
+
+body.business-theme .btn-new:hover,
+body.business-theme .btn-new.active,
+body.business-theme .btn-new.active:hover {
+  border-color: #184888;
+  background: var(--action-primary-bg-hover);
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgb(31 85 164 / 20%);
+}
+
+body.business-theme .history-toolbar {
+  margin: 12px 4px 9px;
+}
+
+body.business-theme .history-heading {
+  color: #647187;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+body.business-theme .hist {
+  position: relative;
+  height: 40px;
+  padding: 0 11px 0 14px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+body.business-theme .hist + .hist { margin-top: 3px; }
+
+body.business-theme .hist:hover {
+  border-color: var(--border-subtle);
+  background: var(--bg-field);
+}
+
+body.business-theme .hist.active {
+  border-color: transparent;
+  background: var(--accent-blue-bg);
+  color: var(--accent-blue-fg);
+  box-shadow: none;
+}
+
+body.business-theme .hist.active::before {
+  content: '';
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: -1px;
+  width: 3px;
+  background: var(--action-primary-bg);
+}
+
+body.business-theme .history-search {
+  border-radius: 5px;
+  background: #ffffff;
+}
+
+body.business-theme .collapse-btn {
+  top: 26px;
+  left: 238px;
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgb(28 42 61 / 8%);
+}
+
+body.business-theme.collapsed .collapse-btn {
+  top: 26px;
+  left: 18px;
+}
+
+/* Header controls */
+body.business-theme .agents-menu-btn,
+body.business-theme .outlook-tag,
+body.business-theme .pilot {
+  height: 30px;
+  border-color: var(--border-default);
+  border-radius: 5px;
+  background: #ffffff;
+  color: var(--text-secondary);
+}
+
+body.business-theme .agents-menu-btn:hover,
+body.business-theme .agents-menu-btn.active,
+body.business-theme .outlook-tag:hover,
+body.business-theme .outlook-tag.active {
+  border-color: var(--accent-blue-border);
+  background: var(--accent-blue-bg);
+  color: var(--accent-blue-fg);
+}
+
+body.business-theme .user-btn { border-radius: 5px; }
+body.business-theme .avatar-d { border-radius: 4px; background: #e8ecf2; }
+
+/* Home */
+body.business-theme .hero { padding-top: clamp(38px, 8vh, 86px); }
+
+body.business-theme .hero-avatar {
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-field);
+}
+
+body.business-theme .hero h1 {
+  color: #10182a;
+  font-weight: 600;
+  letter-spacing: -.025em;
+}
+
+body.business-theme .hero .desc {
+  color: var(--text-secondary);
+  white-space: normal;
+  overflow: visible;
+}
+
+body.business-theme .chip,
+body.business-theme .reply-option {
+  min-height: 36px;
+  padding-right: 14px;
+  padding-left: 14px;
+  border-color: var(--border-default);
+  border-radius: 5px;
+  background: #ffffff;
+  color: var(--text-secondary);
+  box-shadow: 0 1px 2px rgb(28 42 61 / 4%);
+}
+
+body.business-theme .chip:hover,
+body.business-theme .reply-option:hover {
+  border-color: var(--accent-blue-border);
+  background: var(--accent-blue-bg);
+  color: var(--accent-blue-fg);
+}
+
+/* Composer and chat */
+body.business-theme .bottom { padding-bottom: 16px; }
+
+body.business-theme .composer {
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgb(28 42 61 / 6%);
+}
+
+body.business-theme .composer:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 2px 8px rgb(28 42 61 / 8%);
+}
+
+body.business-theme .composer:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+body.business-theme .composer-tool-toggle {
+  border-radius: 5px;
+  background: var(--bg-field);
+}
+
+body.business-theme .cbtn,
+body.business-theme .cbtn.send,
+body.business-theme .cbtn.send.ready {
+  border-radius: 5px;
+}
+
+body.business-theme .cbtn.send.ready {
+  border-color: #214fba;
+  background: var(--action-primary-bg);
+  color: #ffffff;
+}
+
+body.business-theme .cbtn.send.ready:hover {
+  border-color: #184888;
+  background: var(--action-primary-bg-hover);
+  color: #ffffff;
+}
+
+body.business-theme .thread { padding-top: 28px; }
+
+body.business-theme .ai-avatar {
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+
+body.business-theme .bubble-ai,
+body.business-theme .bubble-user {
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: 0 1px 3px rgb(28 42 61 / 4%);
+}
+
+body.business-theme .bubble-user { background: var(--bg-surface); }
+
+/* Loading stays text-only on the workspace canvas. */
+body.business-theme .msg-ai.loading-message .bubble-ai {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.business-theme .execution-agent-tag,
+body.business-theme .execution-resource-type,
+body.business-theme .total-badge,
+body.business-theme .tool-count {
+  border-radius: 4px;
+  background: #edf1f6;
+  color: var(--text-secondary);
+}
+
+body.business-theme .clarification-options,
+body.business-theme .document-outline,
+body.business-theme .review-card,
+body.business-theme .action-card,
+body.business-theme .response-qa > div {
+  border-color: var(--border-default);
+  border-radius: 6px;
+  background: #f4f6f9;
+}
+
+body.business-theme .response-table th {
+  color: #35435a;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+body.business-theme .review-card-actions button,
+body.business-theme .review-panel-actions button {
+  border-radius: 4px;
+}
+
+/* Menus, panels and forms */
+body.business-theme .popover,
+body.business-theme #pop-user,
+body.business-theme #pop-agents,
+body.business-theme .skill-add-menu {
+  border-color: var(--border-default);
+  border-radius: 7px;
+  box-shadow: 0 12px 30px rgb(28 42 61 / 14%);
+}
+
+body.business-theme .menu-item,
+body.business-theme .skill-add-option,
+body.business-theme .icon-tile,
+body.business-theme .ok-dot,
+body.business-theme .dropzone,
+body.business-theme .skill-card,
+body.business-theme .skill-form input,
+body.business-theme .skill-form textarea,
+body.business-theme .skill-editor-close,
+body.business-theme .skill-version-control,
+body.business-theme .skill-editor-delete,
+body.business-theme .action-card textarea {
+  border-radius: 5px;
+}
+
+body.business-theme .drawer,
+body.business-theme .review-panel {
+  border-color: var(--border-default);
+  border-radius: 9px;
+  box-shadow: 0 14px 36px rgb(28 42 61 / 14%);
+}
+
+body.business-theme .skill-editor-dialog { background: #f2f5fa; }
+
+body.business-theme .skill-editor-form {
+  border-color: var(--border-default);
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgb(28 42 61 / 5%);
+}
+
+body.business-theme .btn-primary,
+body.business-theme .btn-confirm {
+  border-color: #214fba;
+  border-radius: 5px;
+  background: var(--action-primary-bg);
+  color: #ffffff;
+}
+
+body.business-theme .btn-primary:hover,
+body.business-theme .btn-confirm:hover {
+  border-color: #184888;
+  background: var(--action-primary-bg-hover);
+  color: #ffffff;
+}
+
+body.business-theme .btn-outline,
+body.business-theme .btn-cancel,
+body.business-theme .skill-add-button,
+body.business-theme .btn-danger-outline {
+  border-radius: 5px;
+}
+
+body.business-theme .loading-dots i,
+body.business-theme .hist-loading-dot { background: var(--action-primary-bg); }
+
+@media (max-width: 900px) {
+  body.business-theme .sidebar { width: 220px; }
+  body.business-theme .main { left: 234px; }
+  body.business-theme .header { left: 248px; }
+  body.business-theme .collapse-btn { left: 206px; }
+}
+
+@media (max-width: 640px) {
+  body.business-theme .sidebar {
+    top: 58px;
+    right: auto;
+    bottom: 10px;
+    left: 10px;
+    width: min(280px, calc(100vw - 20px));
+    padding: 14px;
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    background: var(--bg-surface);
+  }
+
+  body.business-theme .main,
+  body.business-theme.collapsed .main {
+    top: 68px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 0;
+    padding-top: 0;
+  }
+
+  body.business-theme .header,
+  body.business-theme.collapsed .header {
+    top: 14px;
+    right: 12px;
+    left: 54px;
+  }
+
+  body.business-theme .collapse-btn,
+  body.business-theme.collapsed .collapse-btn {
+    top: 18px;
+    left: 14px;
+  }
+
+  body.business-theme .drawer,
+  body.business-theme .review-panel,
+  body.business-theme .skill-editor-form { border-radius: 7px; }
+}
+
+/* Preserve the shared push-panel layout with the themed frame selectors. */
+@media (min-width: 641px) {
+  body.business-theme.drawer-panel-open .main,
+  body.business-theme.drawer-panel-open .header {
+    right: calc(var(--layout-drawer-width) + 42px);
+  }
+  body.business-theme.review-panel-open:not(.review-panel-expanded) .main,
+  body.business-theme.review-panel-open:not(.review-panel-expanded) .header {
+    right: calc(clamp(360px, 40vw, 560px) + 42px);
+  }
+}
+
+/* Raster eye layers preserve the supplied 3D portrait. */
+.business-eyes .gina-eyelids { transform: none; opacity: 0; }
+.business-eyes.is-blinking .gina-eyelids { animation: business-blink 220ms ease-in-out; }
+.business-eyes.is-blinking .business-eye-open { animation: business-open 220ms ease-in-out; }
+@keyframes business-blink { 0%,100% { opacity: 0; } 35%,70% { opacity: 1; } }
+@keyframes business-open { 0%,100% { opacity: 1; } 35%,70% { opacity: 0; } }
