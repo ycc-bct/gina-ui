@@ -1,7 +1,7 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.1 · 2026-10-06 · 決策紀錄見 `decisions.md`
+> 版本：v1.2 · 2026-10-07 · 決策紀錄見 `decisions.md`
 
 ### 2026-10-07 視覺更新
 
@@ -32,7 +32,7 @@
 
 ## 1. 設計原則
 
-1. **專業工具感**：低彩度、暖灰底、白色面板、細框線。顏色只用來表達狀態，不用來裝飾。
+1. **專業工具感**：以低彩度的淺藍、淺灰、極淡橘漸層建立工作區辨識度；閱讀表面維持白色與清楚框線。
 2. **中文可讀性優先**：內文行高 1.8；對話寬度限制在 800px 內。
 3. **Gina 提供溫度，控制項保持清楚**：角色插畫可以活潑，按鈕、選單、表單維持一致和克制。
 4. **任務語言優先於技術語言**：介面用「協作專員」「待處理操作」，不用「subagent」「tool call」（執行過程詳情除外）。
@@ -82,7 +82,7 @@
 
 | 類別 | Token | Tailwind |
 |---|---|---|
-| 背景 | `bg.canvas` / `surface` / `raised` / `field` / `hover` / `selected` / `app` / `overlay` | `bg-canvas`、`bg-surface`、`bg-raised`、`bg-field`、`bg-hover`、`bg-selected`、`bg-app`、`bg-overlay` |
+| 背景 | `bg.canvas` / `shellWarm` / `surface` / `raised` / `field` / `hover` / `selected` / `app` / `overlay` | `bg-canvas`、`bg-shell-warm`、`bg-surface`、`bg-raised`、`bg-field`、`bg-hover`、`bg-selected`、`bg-app`、`bg-overlay` |
 | 文字 | `text.primary` / `secondary` / `tertiary` / `placeholder` / `disabled` / `inverse` | `text-fg`、`text-fg-secondary`、`text-fg-tertiary`、`placeholder:text-fg-placeholder`、`text-fg-disabled`、`text-fg-inverse` |
 | 圖示 | `icon.default` / `muted` | `text-icon`、`text-icon-muted` |
 | 框線 | `border.subtle` / `default` / `strong` / `focus` | `border-line-subtle`、`border-line`、`border-line-strong`、`border-line-focus` |
@@ -124,13 +124,14 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 
 | Token | 值 | 用途 |
 |---|---|---|
-| `--bg-app` | #eeeeec | App 外框後方 |
-| `--bg-canvas` | #f7f7f6 | 工作區畫布 |
-| `--bg-surface` | #fcfcfb | 側欄、彈出層、抽屜、AI 泡泡 |
+| `--bg-app` | #ffffff | 頁面底色 |
+| `--bg-canvas` | #f5f6f8 | 全螢幕漸層的淺灰段 |
+| `--bg-shell-warm` | #fff3e9 | 全螢幕漸層的極淡橘段 |
+| `--bg-surface` | #ffffff | Chat Section、彈出層、抽屜、訊息泡泡 |
 | `--bg-raised` | #fdfdfc | 輸入框、卡片 |
-| `--bg-field` | #f4f4f2 | 搜尋欄、協作專員按鈕 |
-| `--bg-hover` | #eeeeec | hover |
-| `--bg-selected` | #e9eae6 | 選取、按下、使用者泡泡 |
+| `--bg-field` | #f7f8fa | 搜尋欄、內容卡片、輔助標籤 |
+| `--bg-hover` | #eceef2 | hover |
+| `--bg-selected` | #e9f5fd | 選取與按下狀態 |
 | `--bg-overlay` | #25272822 | 抽屜遮罩 |
 | `--text-primary` | #252728 | 標題、內文 |
 | `--text-secondary` | #56595b | 次要文字、側欄項目 |
@@ -141,10 +142,10 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 | `--border-subtle` | #e8e8e6 | 卡片、側欄、分隔線 |
 | `--border-default` | #dededc | 按鈕、欄位 |
 | `--border-strong` | #d6d7d3 | hover 框線 |
-| `--border-focus` | #a3a7a4 | 輸入框 focus 框線 |
-| `--focus-ring` | #56595b | 鍵盤 focus outline |
-| `--action-primary-bg` / `-hover` / `-fg` | #303233 / #181a1b / #fdfdfc | 主要動作 |
-| `--action-secondary-bg` / `-hover` / `-border` / `-fg` | #eeeeec / #e9eae6 / #e8e8e6 / #252728 | 次要動作（發起新對話） |
+| `--border-focus` | #176394 | 輸入框 focus 框線 |
+| `--focus-ring` | #176394 | 鍵盤 focus outline |
+| `--action-primary-bg` / `-hover` / `-fg` | #aad7f3 / #93cbee / #174c6e | 主要動作 |
+| `--action-secondary-bg` / `-hover` / `-border` / `-fg` | #ffffff / #e9f5fd / #dededc / #56595b | 次要動作 |
 | `--action-disabled-bg` / `-fg` | #eeeeec / #858885 | 停用的動作 |
 | `--status-success-fg` / `-icon` / `-bg` | #3a6b56 / #488269 / #eef4f0 | 文字用 fg；圓點、勾勾用 icon |
 | `--status-danger-*` | #c2412d / #fbefec | 登出、中斷、錯誤 |
@@ -154,22 +155,22 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 
 ### 3.2 對比度（WCAG 2.1）
 
-| 組合 | 淺色 | 深色 | 結果 |
-|---|---|---|---|
-| text-primary / bg-canvas | 14.0 | 14.9 | ✅ AAA |
-| text-secondary / bg-canvas | 6.6 | 8.7 | ✅ AA |
-| text-secondary / bg-hover | 6.1 | 6.9 | ✅ AA |
-| text-tertiary / bg-surface | 5.0 | 4.9 | ✅ AA |
-| text-tertiary / bg-canvas | 4.79 | 5.3 | ✅ AA |
-| text-placeholder / bg-raised | 3.5 | 3.7 | placeholder 可接受，不可用於正式內容 |
-| action-primary-fg / -bg | 12.7 | 14.9 | ✅ AAA |
-| status-success-fg / bg-surface | 6.0 | 6.4 | ✅ AA |
-| status-success-icon / bg-surface | 4.4 | 6.4 | 圖示 ≥ 3:1 ✅（不可用於文字） |
-| status-danger-fg / bg-surface | 5.0 | 5.6 | ✅ AA |
-| status-warning-fg / bg-surface | 5.2 | 7.3 | ✅ AA |
-| status-info-fg / bg-surface | 5.4 | 6.7 | ✅ AA |
+| 組合 | 淺色主題 | 結果 |
+|---|---:|---|
+| text-primary / bg-canvas | 13.88 | ✅ AAA |
+| text-secondary / bg-canvas | 6.53 | ✅ AA |
+| text-secondary / bg-hover | 6.08 | ✅ AA |
+| text-tertiary / bg-surface | 5.14 | ✅ AA |
+| text-tertiary / bg-canvas | 4.75 | ✅ AA |
+| text-placeholder / bg-raised | 3.52 | placeholder 可接受，不可用於正式內容 |
+| action-primary-fg / -bg | 5.98 | ✅ AA |
+| status-success-fg / bg-surface | 6.15 | ✅ AA |
+| status-success-icon / bg-surface | 4.49 | 圖示 ≥ 3:1 ✅（不可用於文字） |
+| status-danger-fg / bg-surface | 5.14 | ✅ AA |
+| status-warning-fg / bg-surface | 5.33 | ✅ AA |
+| status-info-fg / bg-surface | 5.49 | ✅ AA |
 
-**規則**：狀態不能只靠顏色表達，必須同時有圖示或文字（例如「● 已連線」）。
+**規則**：狀態不能只靠顏色表達，必須同時有圖示或文字（例如「● 已連線」）。深色主題仍是草案，完成逐頁驗證後再補正式對比數據。
 
 ---
 
@@ -212,8 +213,8 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 | `--radius-md` | 8px | 按鈕、欄位、chip、列表項目、icon 方塊、頭像（對話中） |
 | `--radius-lg` | 12px | 選單、小卡片 |
 | `--radius-xl` | 16px | 彈出層、對話泡泡 |
-| `--radius-2xl` | 18px | 側欄、抽屜、輸入框外框 |
-| `--radius-3xl` | 24px | App 外框 |
+| `--radius-2xl` | 18px | 抽屜、輸入框外框 |
+| `--radius-3xl` | 24px | Chat Section、Review Panel、Drawer |
 | `--radius-full` | 999px | 圓形 |
 
 **規則**：內層圓角 ≤ 外層圓角。
@@ -222,13 +223,13 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 
 | Token | 用途 |
 |---|---|
-| `--shadow-xs` | 按鈕 |
-| `--shadow-sm` | 輸入框 |
-| `--shadow-md` | 下拉選單（工具選單、協作專員） |
+| `--shadow-xs` | Sidebar active 項目、內容卡片操作按鈕 |
+| `--shadow-sm` | Review Panel、Drawer |
+| `--shadow-md` | Header 下拉選單、下載格式選單 |
 | `--shadow-lg` | 彈出層、抽屜 |
-| `--shadow-frame` | App 外框 |
+| `--shadow-frame` | 保留；目前主畫面不使用 |
 
-卡片、泡泡、側欄**不用陰影**，用 `--border-subtle` 區隔。
+訊息泡泡與輸入框不用一般陰影，以 `--border-default` 區隔；輸入框 hover / focus 只使用 `--shadow-focus` 淡藍外圈。
 
 ---
 
@@ -239,7 +240,7 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 | `--size-control-xs` | 24px | 小 icon 按鈕（狀態圓點容器） |
 | `--size-control-sm` | 32px | 頭像、手機 icon 按鈕 |
 | `--size-control-md` | 36px | **預設**：按鈕、欄位、列表項目、chip、選單項目 |
-| `--size-control-lg` | 40px | 主要按鈕（發起新對話） |
+| `--size-control-lg` | 40px | 主要按鈕、表單欄位 |
 | `--size-control-touch` | 44px | 手機最小點擊區域 |
 | `--size-icon-sm / md / lg` | 14 / 16 / 18px | 小標示 / 預設 / 輸入框工具列 |
 | `--size-avatar-md` | 34px | 對話中的 Gina（手機 28px） |
@@ -254,21 +255,19 @@ Icon 使用 Lucide 風格線條圖示，線寬 2px，顏色繼承文字色。
 ### 桌機結構
 
 ```
-┌ 視窗 ───────────────────────────────────────────────┐
-│ ┌ App 外框（inset 14px，radius-3xl）────────────────┐ │
-│ │ ┌ 側欄 238px ┐   ┌ 主區域 ──────────────────────┐  │ │
-│ │ │            │   │  頂部列 42px（頭像）          │  │ │
-│ │ │            │   │  ┌ 內容 max 800px（置中）┐    │  │ │
-│ │ │            │   │  │ 對話串 / 首頁           │    │  │ │
-│ │ │            │   │  │ 輸入框                  │    │  │ │
-│ │ └────────────┘   └──┴─────────────────────────┴──┘  │ │
-│ └────────────────────────────────────────────────────┘ │
+┌ 全螢幕漸層 Shell：淺藍 → 淺灰 → 極淡橘 ────────────┐
+│ ┌ Sidebar 238px（透明，含 Chats）┐ ┌ Chat Section ┐ │
+│ │ Giant / ＋新對話 / 對話記錄    │ │ Header 42px  │ │
+│ │ active：白底、細框、shadow-xs  │ │              │ │
+│ │                                 │ │ 內容 max 800 │ │
+│ │                                 │ │ 對話 / Input │ │
+│ └─────────────────────────────────┘ └──────────────┘ │
 └──────────────────────────────────────────────────────┘
 ```
 
 | Token | 值 |
 |---|---|
-| `--layout-frame-inset` | 14px（手機 0） |
+| `--layout-frame-inset` | Token 保留；目前背景實作使用 0 |
 | `--layout-app-gutter` | 24px |
 | `--layout-sidebar-width` | 238px |
 | `--layout-header-height` | 42px |
@@ -287,7 +286,7 @@ Icon 使用 Lucide 風格線條圖示，線寬 2px，顏色繼承文字色。
 | `xl` | 1440px | **預留** |
 | `lg` | 1200px | **預留**（例：大螢幕時抽屜改為並排，不蓋住對話） |
 | `md` | 900px | 側欄縮為 210px |
-| `sm` | 640px | 側欄改為浮層（漢堡按鈕開啟）；App 外框取消；輸入框字級 16px；chip 改直排；點擊區域 ≥ 44px |
+| `sm` | 640px | Sidebar 改為同色漸層浮層；Chat Section 滿寬；輸入框字級 16px；點擊區域 ≥ 44px |
 
 Tailwind 專案直接用 `max-md:`、`max-sm:`（`gina-theme.css` 已定義斷點）。純 CSS 不能把變數用在 media query 裡，請直接寫數值。
 
@@ -351,9 +350,9 @@ Tailwind 專案直接用 `max-md:`、`max-sm:`（`gina-theme.css` 已定義斷�
 | 變體 | 預設 | hover | 按下 | 停用 | 載入（新增） |
 |---|---|---|---|---|---|
 | **Primary**（確認寄出、建立 Skill、登入） | bg `action-primary-bg`、字 `action-primary-fg` | bg `action-primary-bg-hover` | 同 hover | bg `action-disabled-bg`、字 `action-disabled-fg` | 文字前加 spinner，保留寬度，不可再點 |
-| **Secondary**（發起新對話） | bg `action-secondary-bg`、框 `action-secondary-border`、`shadow-xs` | bg `action-secondary-bg-hover` | bg `bg-selected` | 同 primary 停用 | 同上 |
-| **Outline**（取消、ZIP 匯入、下載、Microsoft 登入） | bg `bg-raised`、框 `border-default` | bg `bg-hover`、框 `border-strong` | bg `bg-selected` | 字 `text-disabled`、框 `border-subtle` | 同上 |
-| **Ghost**（清除所有對話） | 透明、字 `text-tertiary` | bg `bg-hover`、字 `text-primary` | bg `bg-selected` | 字 `text-disabled` | — |
+| **Secondary** | bg `action-secondary-bg`、框 `action-secondary-border` | bg `action-secondary-bg-hover` | bg `bg-selected` | 同 primary 停用 | 同上 |
+| **Outline**（取消、ZIP / Git 匯入、Microsoft 登入） | bg `bg-raised`、框 `border-default` | bg `bg-hover`、框 `border-strong` | bg `bg-selected` | 字 `text-disabled`、框 `border-subtle` | 同上 |
+| **Ghost**（新對話、icon 操作） | 透明、字 `text-primary` | bg `bg-hover` | bg `bg-selected` | 字 `text-disabled` | — |
 | **Danger**（中斷 Outlook 連線、登出） | 透明、框 `border-default`、字 `status-danger-fg` | bg `status-danger-bg` | 同 hover | 同 outline 停用 | 同上 |
 
 - 一個區塊最多一個 Primary。
@@ -380,24 +379,25 @@ Tailwind 專案直接用 `max-md:`、`max-sm:`（`gina-theme.css` 已定義斷�
 
 Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）不送出。
 
-### 12.4 側欄項目 Nav item（MCP Tool、Agents、Skills、個人知識、對話記錄）
+### 12.4 Sidebar 與對話記錄
 
-高 36px（D8） · 圓角 `--radius-md` · 左右 10px · icon 16px 與文字間距 10px · 字級 14px · 色 `text-secondary`
+Sidebar 透明融入全螢幕漸層，不使用獨立背景、灰框或陰影。MCP Tool、Skills、個人知識位於頭像選單；Agents 位於 Header 的下拉選單；Outlook 是獨立 Tag。Sidebar 內容為品牌、新對話與 Chats。
+
+「＋ 新對話」高 48px、無框；對話列高 44px、圓角 `--radius-lg`、左右 12px、字級 14px。
 
 | 預設 | hover | 選取 / 開啟中 | 停用（新增） |
 |---|---|---|---|
-| 透明 | bg `bg-hover`、字 `text-primary` | bg `bg-selected`、字 `text-primary`、字重 500 | 字 `text-disabled`，不可點 |
+| 透明、字 `text-tertiary` | bg `bg-hover`、字 `text-primary` | bg `bg-surface`、框 `border-subtle`、`shadow-xs`、字 `text-primary`、字重 500 | 字 `text-disabled`，不可點 |
 
-- 計數（MCP Tool 4、個人知識 0）：12px、`text-tertiary`、靠右（D11）。
-- 分類標籤（對話記錄）：12px / 500、`text-tertiary`（D11）；搜尋 icon 放在標題右側。
+- 新對話首頁選取「新對話」；開啟歷史對話後改為選取該筆 Chats，並設定 `aria-current="page"`。
+- 「對話記錄」標題為 12px / 500、`text-tertiary`；搜尋 icon 放在標題右側。
 - 點擊對話記錄右側的搜尋 icon 後，標題列在原位置切換成 Search bar，不新增第二列。關閉或按 Esc 時清除關鍵字並還原標題列。
-- 「選取」也用於對應彈出層開啟中（例：MCP Tool 彈出層打開時）。
 - 對話記錄標題單行，超出用「…」；hover 顯示完整標題（tooltip）。
-- Agents 可展開：箭頭旋轉 180°（150ms），子項目左縮排 18px。
+- 對話正在 Loading 時，列尾顯示 7px 藍色脈衝圓點。
 
 ### 12.5 建議按鈕 Chip（整理需求、審閱合約…）
 
-最小高 36px · 圓角 `--radius-md` · 內距 8 × 16px · 字級 13px · bg `bg-surface` · 框 `border-subtle`
+最小高 36px · 膠囊圓角 `--radius-full` · 內距 8 × 20px · 字級 13px · bg `bg-surface` · 框 `border-default`
 
 | 預設 | hover | 按下 | 停用 |
 |---|---|---|---|
@@ -417,23 +417,20 @@ Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）�
 
 ### 12.7 輸入框 Composer
 
-最大寬 800px · 圓角 `--radius-2xl` · 內距 14px（`--component-composer-padding`） · bg `bg-raised` · 框 `border-subtle` · `shadow-sm`
-上層：文字區（行高 24px，最多 144px 後捲動）；下層工具列：+、協作專員、（彈性空間）、麥克風、送出。
+最大寬 800px · 圓角 `--radius-xl` · 內距 20px · bg `bg-surface` · 框 `border-default` · 預設無陰影。
+上層：文字區（14px、行高 24px，最多 144px 後捲動）；下層工具列：新增檔案、可切換的工具按鈕、彈性空間、麥克風、送出。Input Field 不顯示協作人員項目。
 
-| 預設 | focus（focus-within） | 停用（新增） | 拖放檔案中（新增） |
+| 預設 | hover | focus（focus-within） | 停用（新增） |
 |---|---|---|---|
-| 如上 | 框 `border-focus` + 外圈 3px 淡陰影 | bg `bg-canvas`、文字區唯讀，例如 token 用完 | 框改虛線 `border-focus`、bg `bg-hover`，顯示「放開以上傳」 |
+| 如上 | 框 `accent-blue-border` + `shadow-focus` 淡藍光暈 | 框 `border-focus` + `shadow-focus`，背景維持白色 | bg `bg-canvas`、文字區唯讀 |
 
-### 12.8 協作專員按鈕與選單
+### 12.8 Header：Agents、Outlook、使用者選單
 
-按鈕：高 36px · 圓角 `--radius-md` · bg `bg-field` · 框 `border-subtle` · 字 13px `text-secondary`
-| 預設 | hover / 開啟中 | 已選專員（新增） |
-|---|---|---|
-| 「協作專員 ⌄」 | bg `bg-selected` | 顯示專員名稱，例如「業務助理 ×」，× 可移除 |
+- 順序為「Agents → Outlook 已連線 → 使用者頭像」。Agents 的選單標題是「可用協作 Agents」。
+- Outlook 是獨立功能，不屬於 MCP；以 30px 高 Tag 顯示綠色連線點與狀態。
+- 使用者頭像選單包含 MCP Tool、Skills、個人知識與管理後台；前三者開啟右側 Drawer。
 
-選單：見 12.9。
-
-### 12.9 選單 Menu（工具選單、協作專員、使用者選單）
+### 12.9 選單 Menu（Agents、Outlook、使用者、下載格式）
 
 寬 230px（工具選單 252px、使用者選單 250px）· 內距 6px · 圓角 `--radius-lg` · bg `bg-surface` · 框 `border-subtle` · `shadow-md` · 項目高 40–44px、圓角 `--radius-md`
 
@@ -447,12 +444,13 @@ Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）�
 
 群組之間用 1px `border-subtle` 分隔；群組標題 12px `text-tertiary`。上下鍵移動、Enter 選取、Esc 關閉。
 
-### 12.10 彈出層 Popover（MCP Tool、個人知識）
+### 12.10 Popover 與右側 Drawer
 
 寬 385px（最大 100vw − 24px）· 圓角 `--radius-xl` · bg `bg-surface` · `shadow-lg` · 標題區內距 18px、標題 15px / 600、說明 13px `text-tertiary`
 
-- MCP Tool 內：先「整合」（Outlook，可展開），再「MCP servers」列表。
-- 每列：icon 方塊 38px（bg `bg-hover`）、名稱 14px、網址 12px `text-tertiary` 單行省略、右側灰色勾勾（`icon-muted`，代表已設定）。
+- Header 的 Agents、Outlook 與使用者選單使用 Popover。
+- MCP Tool、Skills、個人知識使用 400px 右側 Drawer；桌機將 Chat Section 往中間推，手機覆蓋內容。
+- Drawer 內容左右縮排 20px；MCP 與個人知識內容和標題對齊。
 
 ### 12.11 連線狀態 Connection status（Outlook、MCP server）
 
@@ -466,39 +464,34 @@ Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）�
 
 頁尾註明「狀態代表設定 / 授權狀態，不是即時連線檢查」。
 
-### 12.12 抽屜 Drawer（個人 Skills、執行過程）
+### 12.12 Drawer 與內容 Review Panel
 
-寬 400px（最大 100vw − 48px）· 距視窗 24px · 圓角 `--radius-2xl` · bg `bg-surface` · `shadow-lg` · 遮罩 `bg-overlay`
-標題 16px / 600 + 說明 12px `text-tertiary`；右上 × 關閉。從右側滑入 200ms。點遮罩、Esc、× 都可關閉。
+Drawer 寬 400px（最大 100vw − 48px）；Review Panel 寬 `clamp(360px, 40vw, 560px)`。距視窗 24px · 圓角 `--radius-3xl` · bg `bg-surface` · `shadow-sm`。從右側滑入 200ms。
+
+長篇內容展開時使用 Review Panel，不開新 Dialog。Panel 會將 Chat Section 往中間擠；右上提供置中的 Expand / Minimize、Copy 與 Close icon。Expand 可切換為幾乎整頁檢閱。
 
 ### 12.13 對話訊息 Message
 
 | 類型 | 樣式 |
 |---|---|
-| 使用者 | 靠右；bg `bg-selected`；圓角 16 / 16 / 4 / 16（右下尖角）；內距 12×18；最寬 min(80%, 560px)；14px / 1.8 |
-| Gina | 靠左，頭像 34px；bg `bg-surface`；框 `border-subtle`；圓角 4 / 16 / 16 / 16（左上尖角）；內距 18×20；最寬 680px；14px / 1.8 |
+| 使用者 | 靠右且不顯示使用者頭像；bg `bg-surface`；框 `border-default`；圓角 16px；內距 12×18；最寬 min(80%, 560px)；14px / 1.8 |
+| Gina | 靠左，頭像 34px；bg `bg-surface`；框 `border-default`；圓角 16px；內距 18×20；最寬 680px；14px / 1.8 |
 | 時間 | 12px `text-tertiary`，泡泡下方 |
 
 Gina 回覆的狀態：
 
 | 狀態 | 樣式 |
 |---|---|
-| 等待中 | 泡泡頂端 spinner + 「Gina 正在等待處理結果…」13px `text-tertiary` |
-| 串流中 | 文字逐段出現；底部 spinner + 「Gina 正在處理…」 |
-| 完成 | 移除狀態列；下方顯示時間、「下載」Outline 按鈕、執行過程列 |
+| 等待中 | 無泡泡；三個灰色跳動圓點 +「Gina 正在處理」，下方以 12px 弱化文字顯示「N 個執行步驟」；至少顯示 2 秒 |
+| 完成 | Loading 文字移除；泡泡下方顯示時間，以及 Copy、Download icon |
 | 已停止（新增） | 保留已產生內容；底部 12px「已停止回覆」 |
 | 錯誤（新增） | 泡泡內 `status-danger-bg` 區塊 + 錯誤說明 + 「重試」Outline 按鈕 |
 
 Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16px 下 8px；分隔線 1px `border-subtle`。
 
-### 12.14 執行過程列 Execution bar
+### 12.14 執行步驟 Execution details
 
-高 40px · 圓角 `--radius-md` · 框 `border-default` · 透明背景 · 12px `text-secondary`
-| 狀態 | 樣式 |
-|---|---|
-| 進行中（新增） | spinner +「執行中 · 3 個步驟」 |
-| 完成 | ✓（`icon-default`）+「執行過程已完成 · 5 個步驟」+ 右側「查看詳情」（`text-primary`） |
-| 失敗（新增） | ✕（`status-danger-fg`）+「執行失敗 · 第 3 步」+「查看詳情」 |
+位於 Gina Chat Bubble 上方，使用 12px `text-tertiary` 的純文字摘要與 icon-only 展開按鈕，不使用卡片或額外 Panel。摘要包含 AI Agent Tag，例如「業務助理」，以及「N 個執行步驟」。展開後以條列顯示使用到的 Agent、Skill、MCP 與個人知識，每一項前方都有對應 icon。
 
 ### 12.15 待處理操作卡片 Action card（確認寄出 Outlook 郵件）
 
@@ -555,6 +548,24 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 - 發布只在已建立草稿後提供。發布後狀態改為「已發布／使用中」，版本選單與發布按鈕隱藏；再次修改時需先儲存為新草稿。
 - 已建立的 Skill（草稿或已發布）在 Dialog 內容底部顯示「刪除 Skill」Outline 按鈕。刪除後關閉 Dialog、回到 Skills Panel 並更新清單。
 
+### 12.20 回覆內容格式
+
+所有回覆沿用 Chat 14px / 1.8 的閱讀規格。只有區段 Title 使用 15px / 600；一般內文中的 `strong`、`b` 不額外加粗。Title 可搭配一個與內容相關的 emoji，避免連續使用裝飾性 icon。
+
+| 格式 | 使用時機 | 視覺規格 |
+|---|---|---|
+| 表格 | 比較項目、欄位化資訊 | 無彩色表頭與底色；使用 `border-subtle` 水平分隔、14px 內文；窄螢幕允許水平捲動 |
+| 條列清單 | 步驟、摘要、工作清單 | 項目間距 8px；依語意使用 bullet 或編號 |
+| Q&A | FAQ、釐清需求 | Q / A 保持一般字重，以縮排和 `text-secondary` 建立層級 |
+| 結構化文件 | 背景、目標、範圍、驗收條件 | `bg-field` 淺灰底、`border-subtle`、`radius-md`；標題與內容換行 |
+| 引用 | 結論、提醒、來源 | 透明背景；左側 2px `border-strong` 直線；cite 使用 12px `text-tertiary` |
+| 長篇內容 / 程式碼 | 大量純文字、程式碼、可完整檢閱內容 | 固定高 240px、`bg-field` 淺灰底、12px mono、單色文字、內容區可捲動；不放巢狀卡片 |
+| 互動式選項 | 資訊不足、需要使用者選擇後才能繼續 | 最多三個直接選項；點選後停用同組選項並直接執行 |
+
+長篇內容卡片 hover / focus-within 時，右上顯示 Copy 與 Expand icon；手機固定顯示。Copy 複製卡片全文，Expand 開啟 12.12 的 Review Panel。
+
+完整的文字間距、Markdown 規則與使用範例另見 `RESPONSE-TYPOGRAPHY.md`。
+
 ---
 
 ## 13. 不要做
@@ -562,12 +573,12 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 - ❌ 寫死色碼、圓角、陰影、z-index。
 - ❌ 元件直接用 `--color-gray-*`（深色模式會失效）。
 - ❌ 用品牌藍 #06038d 當按鈕或連結色；它只屬於 Giant G 標誌。
-- ❌ 加入新的彩色強調色。強調用深灰 `action-primary`，狀態才用彩色。
+- ❌ 在閱讀內容中大量使用彩色底。裝飾色只留在全螢幕 Shell、primary 狀態與必要狀態提示。
 - ❌ 只用顏色表達狀態。
-- ❌ 在卡片、泡泡、側欄加陰影。
+- ❌ 在訊息泡泡、輸入框或 Sidebar 表面加一般陰影；只有 active 項目、hover 操作與浮動 Panel 可用對應 shadow token。
 - ❌ 對話內容超過 800px 寬。
 - ❌ 在一個區塊放多個 Primary 按鈕。
-- ❌ 動畫使用 `width`、`left`、`top`。
+- ❌ 為裝飾新增會造成 layout shift 的動畫；狀態動畫優先使用 `transform` 與 `opacity`。
 - ❌ 在介面上顯示 ISO 時間、內部工具名稱（執行過程詳情除外）。
 
 ---
