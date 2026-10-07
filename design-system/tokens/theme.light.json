@@ -4,17 +4,22 @@
     "bg": {
       "app": {
         "$type": "color",
-        "$value": "oklch(95.5% 0.014 260)",
+        "$value": "#ffffff",
         "$description": "App 外框後方的背景"
       },
       "canvas": {
         "$type": "color",
-        "$value": "oklch(98% 0.006 260)",
+        "$value": "#f5f6f8",
         "$description": "工作區畫布"
+      },
+      "shellWarm": {
+        "$type": "color",
+        "$value": "#fff3e9",
+        "$description": "全螢幕漸層背景的極淡橘色"
       },
       "surface": {
         "$type": "color",
-        "$value": "oklch(99.4% 0.002 260)",
+        "$value": "#ffffff",
         "$description": "側欄、彈出層、抽屜、AI 泡泡"
       },
       "raised": {
@@ -24,18 +29,18 @@
       },
       "field": {
         "$type": "color",
-        "$value": "oklch(97% 0.008 260)",
+        "$value": "#f7f8fa",
         "$description": "搜尋欄、協作專員按鈕"
       },
       "hover": {
         "$type": "color",
-        "$value": "{theme.accent.blue.bg}",
+        "$value": "#eceef2",
         "$description": "列表、按鈕 hover"
       },
       "selected": {
         "$type": "color",
         "$value": "{theme.accent.blue.bg}",
-        "$description": "選取、按下、使用者泡泡"
+        "$description": "選取與按下狀態"
       },
       "overlay": {
         "$type": "color",

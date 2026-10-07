@@ -133,7 +133,7 @@
       },
       "fontSize": {
         "$type": "dimension",
-        "$value": "{font.size.15}"
+        "$value": "{font.size.14}"
       }
     },
     "menu": {

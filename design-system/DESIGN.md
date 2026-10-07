@@ -3,6 +3,16 @@
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
 > 版本：v1.1 · 2026-10-06 · 決策紀錄見 `decisions.md`
 
+### 2026-10-07 視覺更新
+
+目前原型使用全螢幕淺藍 → 淺灰 → 極淡橘漸層作為共同底層，Sidebar 透明融入背景，白色 Chat Section 嵌在右側。Sidebar 與 Chat Section 外圍皆無灰色框線，也沒有額外的灰色背景層。漸層使用 `accent.blue.bg`、`bg.canvas` 與 `bg.shellWarm` tokens。以下舊版色值表以 `tokens/theme.light.json` 的現行值為準。
+
+- 桌機 Sidebar 無獨立背景與邊框，直接顯示全螢幕漸層；手機展開側欄使用同色漸層確保文字可讀。新對話或目前對話的 active 狀態使用白底、細框與輕陰影。
+- 新對話採「＋ 新對話」無框文字入口，高 48px；hover 與側欄其他項目一致，使用淺灰底與主要文字色。對話紀錄列高 44px，列間距 4px。
+- Chat Section 使用 24px 圓角與不透明白底；輸入框採白底與灰色框線，hover 與 focus 顯示淡藍光暈。AI 回覆與使用者訊息維持白底與灰色框線，內容卡片使用淡灰底，確保閱讀清楚。
+- 輔助導覽使用灰色，選取狀態保留 Gina 淺藍色；Chat 內文沿用目前 14px 設定。
+- Loading 維持無框文字與三點動畫，並顯示執行步驟數。
+
 | 檔案 | 內容 |
 |---|---|
 | `tokens/base.json` | 基礎值：色階、字級、間距、圓角、尺寸、陰影、動態、z-index、版面、斷點 |
@@ -172,8 +182,8 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 | `--font-size-28` | 28px | 1.3 | 600 | 首頁標題「嗨，我是 Gina」（手機 26px） |
 | `--font-size-18` | 18px | 1.3 | 600 | 保留（目前未使用） |
 | `--font-size-16` | 16px | 1.5 | 400 | 副標；**手機上所有輸入框**（避免 iOS 自動放大） |
-| `--font-size-15` | 15px | 1.8 | 400 | 對話內容、待處理操作卡片 |
-| `--font-size-14` | 14px | 1.5 | 400 / 500 / 700 | 介面預設：側欄項目、選單、欄位、按鈕（lg）；品牌名稱「Gina」14px / 700 |
+| `--font-size-15` | 15px | 1.8 | 400 / 600 | 回覆區段標題、待處理操作卡片 |
+| `--font-size-14` | 14px | 1.5 / 1.8 | 400 / 500 / 700 | 對話內容、側欄項目、選單、欄位、按鈕（lg）；品牌名稱「Gina」14px / 700 |
 | `--font-size-13` | 13px | 1.5 | 400 / 500 | 說明文字、chip、按鈕 |
 | `--font-size-12` | 12px | 1.5 | 400 / 500 | 側欄分類標籤、品牌副標、時間、計數、caption |
 
@@ -465,8 +475,8 @@ Enter 送出、Shift+Enter 換行；中文輸入法組字中（`isComposing`）�
 
 | 類型 | 樣式 |
 |---|---|
-| 使用者 | 靠右；bg `bg-selected`；圓角 16 / 16 / 4 / 16（右下尖角）；內距 12×18；最寬 min(80%, 560px)；15px / 1.8 |
-| Gina | 靠左，頭像 34px；bg `bg-surface`；框 `border-subtle`；圓角 4 / 16 / 16 / 16（左上尖角）；內距 18×20；最寬 680px；15px / 1.8 |
+| 使用者 | 靠右；bg `bg-selected`；圓角 16 / 16 / 4 / 16（右下尖角）；內距 12×18；最寬 min(80%, 560px)；14px / 1.8 |
+| Gina | 靠左，頭像 34px；bg `bg-surface`；框 `border-subtle`；圓角 4 / 16 / 16 / 16（左上尖角）；內距 18×20；最寬 680px；14px / 1.8 |
 | 時間 | 12px `text-tertiary`，泡泡下方 |
 
 Gina 回覆的狀態：
@@ -492,7 +502,7 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 
 ### 12.15 待處理操作卡片 Action card（確認寄出 Outlook 郵件）
 
-圓角 `--radius-xl` · 內距 18px · bg `bg-field` · 框 `border-default` · 標題 16px / 600 · 內文 15px / 1.8 · 按鈕高 40px（lg） · 欄位標籤 13px / 600 `text-tertiary` · 內文可編輯（Field 樣式，多行）
+圓角 `--radius-xl` · 內距 18px · bg `bg-field` · 框 `border-default` · 標題 16px / 600 · 內文 14px / 1.8 · 按鈕高 40px（lg） · 欄位標籤 13px / 600 `text-tertiary` · 內文可編輯（Field 樣式，多行）
 
 | 狀態 | 樣式 |
 |---|---|

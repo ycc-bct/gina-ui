@@ -93,7 +93,7 @@
 <aside class="sidebar" aria-label="工作空間導覽">
   <a class="sidebar-brand" href="index.html" aria-label="Giant Gina 首頁"><img src="assets/giant-g.svg" alt="Giant" /><span>Gina<span>Giant 內部 AI 助理</span></span></a>
   <div class="side-top">
-    <button class="btn-new" data-action="new-chat"><svg class="i" data-i="pencil"></svg><span id="new-label">發起新對話</span></button>
+    <button class="btn-new" data-action="new-chat"><svg class="i" data-i="plus"></svg><span id="new-label">新對話</span></button>
   </div>
   <div class="side-scroll">
     <div class="main-only">
@@ -372,18 +372,29 @@ const HISTORY = [
   "給我需要處理的 5–10 封信，依優先順序排列"
 ];
 let activeHist = -1;
+const historyLoadingCounts=new Map();
+function setHistoryLoading(index,loading){
+  if(index<0)return;
+  const count=historyLoadingCounts.get(index)||0;
+  if(loading){historyLoadingCounts.set(index,count+1)}else if(count>1){historyLoadingCounts.set(index,count-1)}else{historyLoadingCounts.delete(index)}
+  renderHistory();
+}
 function renderHistory(){
   const q = document.getElementById('hist-search').value.trim();
+  const newChatButton=document.querySelector('[data-action="new-chat"]');
+  const newChatActive=activeHist===-1;
+  newChatButton.classList.toggle('active',newChatActive);
+  if(newChatActive){newChatButton.setAttribute('aria-current','page')}else{newChatButton.removeAttribute('aria-current')}
   document.getElementById('hist-list').innerHTML = HISTORY.map((t,i)=>
-    (!q || t.includes(q)) ? `<button class="hist ${i===activeHist?'active':''}" data-hist="${i}"><span>${t}</span></button>` : ''
+    (!q || t.includes(q)) ? `<button class="hist ${i===activeHist?'active':''}" data-hist="${i}" ${i===activeHist?'aria-current="page"':''}><span class="hist-title">${t}</span>${historyLoadingCounts.has(i)?'<span class="hist-loading-dot" aria-label="正在處理" title="正在處理"></span>':''}</button>` : ''
   ).join('');
 }
 renderHistory();
 document.getElementById('hist-search').addEventListener('input', renderHistory);
-function setHistorySearch(open){
+function setHistorySearch(open,restoreFocus=true){
   const heading=$('#history-toolbar .history-heading'),search=$('#history-search'),button=$('[data-action="open-history-search"]'),input=$('#hist-search');
   heading.hidden=open;search.hidden=!open;button.setAttribute('aria-expanded',String(open));
-  if(open){input.focus()}else{input.value='';renderHistory();button.focus()}
+  if(open){input.focus()}else{input.value='';renderHistory();if(restoreFocus)button.focus()}
 }
 
 const EXEC_RESOURCES = [
@@ -561,16 +572,16 @@ function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
 function goHome(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
-  $('#new-label').textContent='發起新對話';
+  $('#new-label').textContent='新對話';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
   thread.innerHTML='';activeHist=-1;renderHistory();
 }
 function goSpecialist(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
-  $('#new-label').textContent='開始新對話';
+  $('#new-label').textContent='新對話';
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
-  thread.innerHTML='';
+  thread.innerHTML='';activeHist=-1;renderHistory();
 }
 function startChat(){body.classList.add('chatting');body.classList.remove('mobile-nav-open');}
 
@@ -660,7 +671,10 @@ function richResponseHTML(){
       <h3>💻 長篇內容與程式碼</h3>
       <p>內容較長時會顯示在固定高度的卡片中，可直接捲動或展開成完整檢閱畫面。</p>
       <div class="review-card">
-        <button class="review-expand" data-action="open-review-panel" aria-label="在側邊 Panel 檢閱完整內容">${svg('maximize')}</button>
+        <div class="review-card-actions">
+          <button data-action="copy-review-card" aria-label="複製長篇內容">${svg('copy')}</button>
+          <button class="review-expand" data-action="open-review-panel" aria-label="在側邊 Panel 檢閱完整內容">${svg('maximize')}</button>
+        </div>
         <div class="review-card-content" tabindex="0" aria-label="可捲動的長篇內容">
           <div class="review-copy">
             <pre class="review-plain-text">郵件摘要處理範例
@@ -706,15 +720,32 @@ async function summarizeInbox(messages) {
   </div>`;
 }
 
+function loadingReplyHTML(name='Gina',steps=5){
+  return `<div class="loading-state" role="status" aria-live="polite">
+    <div class="loading-title"><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>${name} 正在處理</span></div>
+    <div class="loading-dispatches"><span class="loading-dispatch-item">${steps} 個執行步驟</span></div>
+  </div><div class="stream"></div>`;
+}
+
 function loadConversation(i){
   closeTools();
-  body.classList.remove('specialist');$('#new-label').textContent='發起新對話';
+  body.classList.remove('specialist');$('#new-label').textContent='新對話';
   activeHist=i;renderHistory();
   thread.innerHTML='';startChat();
   userMsg(HISTORY[i],'13:35');
   if(i===0){
-    const el=aiMsg(richResponseHTML());
-    finishAi(el,'09:42',5);
+    setHistoryLoading(i,true);
+    const el=aiMsg(loadingReplyHTML('Gina',5));
+    el.classList.add('loading-message');
+    setTimeout(()=>{
+      setHistoryLoading(i,false);
+      if(!el.isConnected||activeHist!==i)return;
+      el.querySelector('.stream').innerHTML=richResponseHTML();
+      el.querySelector('.loading-state')?.remove();
+      el.classList.remove('loading-message');
+      finishAi(el,'09:42',5);
+      $('#scroll').scrollTop=0;
+    },REPLY_LOADING_DURATION);
   } else if(i===HISTORY.length-1){
     const el=aiMsg(`<p>我已讀取你的收件匣，最需要處理的是王小明的 <b>Gina UI</b> Teams 會議邀請，我已先幫你擬好回覆，請在下方確認是否寄出。</p>`);
     finishAi(el,'17:24',8);
@@ -792,7 +823,9 @@ function send(){
   if(!body.classList.contains('chatting')){thread.innerHTML='';startChat();}
   userMsg(text);
   const specialist=body.classList.contains('specialist');
-  const el=aiMsg(`<div class="status-line"><span class="spinner"></span><span>${specialist?'業務助理':'Gina'} 正在等待處理結果...</span></div><div class="stream"></div><div class="status-line small"><span class="spinner"></span><span>${specialist?'業務助理':'Gina'} 正在處理...</span></div>`);
+  const loadingHistoryIndex=activeHist;setHistoryLoading(loadingHistoryIndex,true);
+  const el=aiMsg(loadingReplyHTML(specialist?'業務助理':'Gina'));
+  el.classList.add('loading-message');
   scrollBottom();
   const recommendation = recommendationReply(text);
   const target = recommendation || (specialist
@@ -800,8 +833,10 @@ function send(){
     : `<p>今天（9/30）共收到 <b>5 封信件</b>，依優先級整理如下：</p><hr><h4>高優先（來自主管 / 需今日回覆）</h4><ul><li><b>Re: Gina UI</b> — 王小明邀請你參加 Teams 會議，需要回覆是否出席</li><li><b>Q4 預算確認</b> — 財務部請你於今日下班前確認數字</li></ul><h4>中優先</h4><ul><li><b>MCP 整合進度同步</b> — 專案週報，建議本週內閱讀</li><li><b>健保加保申請</b> — HR 通知文件已受理</li></ul><h4>低優先</h4><ul><li><b>電子報</b> — 產業新聞摘要，可稍後再看</li></ul>`);
   const stream=el.querySelector('.stream');
   setTimeout(()=>{
+    setHistoryLoading(loadingHistoryIndex,false);
     stream.innerHTML=target;
-    el.querySelectorAll('.status-line').forEach(s=>s.remove());
+    el.querySelector('.loading-state')?.remove();
+    el.classList.remove('loading-message');
     finishAi(el,nowHM());
     const options=clarificationOptions(text,specialist);
     if(options.length)el.querySelector('.bubble-wrap').insertAdjacentHTML('afterend',clarificationOptionsHTML(options));
@@ -832,6 +867,7 @@ $('#skill-version-select').addEventListener('change',e=>{
 
 /* ---------- Event delegation ---------- */
 document.addEventListener('click',e=>{
+  if(!$('#history-search').hidden&&!e.target.closest('#history-toolbar'))setHistorySearch(false,false);
   const popBtn=e.target.closest('[data-pop]');
   if(popBtn){e.stopPropagation();closeTools();openPop(popBtn.dataset.pop,popBtn);return;}
 
@@ -871,6 +907,7 @@ document.addEventListener('click',e=>{
     case 'add-file': $('#composer-file').click(); break;
     case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'copy-message': {closeDownloadMenus();copyText(readableText(a.closest('.ai-col').querySelector('.bubble-ai')),'已複製回覆');break;}
+    case 'copy-review-card': {const source=a.closest('.review-card').querySelector('.review-card-content');copyText(readableText(source),'已複製長篇內容');break;}
     case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
     case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
     case 'toggle-review-expanded': {const expanded=body.classList.toggle('review-panel-expanded');a.setAttribute('aria-expanded',String(expanded));a.setAttribute('aria-label',expanded?'縮小檢閱 Panel':'展開檢閱 Panel');break;}

@@ -131,12 +131,12 @@
 
 :root,
 [data-theme="light"] {
-  --gina-bg-app: oklch(95.5% 0.014 260);
-  --gina-bg-canvas: oklch(98% 0.006 260);
-  --gina-bg-surface: oklch(99.4% 0.002 260);
+  --gina-bg-app: #ffffff;
+  --gina-bg-canvas: #f5f6f8;
+  --gina-bg-surface: #ffffff;
   --gina-bg-raised: #fdfdfc;
-  --gina-bg-field: oklch(97% 0.008 260);
-  --gina-bg-hover: #e9f5fd;
+  --gina-bg-field: #f7f8fa;
+  --gina-bg-hover: #eceef2;
   --gina-bg-selected: #e9f5fd;
   --gina-bg-overlay: #25272822;
   --gina-text-primary: #252728;
@@ -155,7 +155,7 @@
   --gina-action-primary-bg: #aad7f3;
   --gina-action-primary-bg-hover: #93cbee;
   --gina-action-primary-fg: #174c6e;
-  --gina-action-secondary-bg: oklch(99.4% 0.002 260);
+  --gina-action-secondary-bg: #ffffff;
   --gina-action-secondary-bg-hover: #e9f5fd;
   --gina-action-secondary-border: #dededc;
   --gina-action-secondary-fg: #56595b;
@@ -283,7 +283,7 @@
   --component-bubble-tail-radius: 4px;
   --component-bubble-padding-ai: 18px 20px;
   --component-bubble-padding-user: 12px 18px;
-  --component-bubble-font-size: 15px;
+  --component-bubble-font-size: 14px;
   --component-menu-radius: 12px;
   --component-menu-padding: 6px;
   --component-menu-item-height: 36px;

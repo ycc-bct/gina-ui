@@ -131,12 +131,13 @@
 /* Light theme (default) */
 :root,
 [data-theme="light"] {
-  --bg-app: oklch(95.5% 0.014 260);
-  --bg-canvas: oklch(98% 0.006 260);
-  --bg-surface: oklch(99.4% 0.002 260);
+  --bg-app: #ffffff;
+  --bg-canvas: #f5f6f8;
+  --bg-shell-warm: #fff3e9;
+  --bg-surface: #ffffff;
   --bg-raised: var(--color-gray-0);
-  --bg-field: oklch(97% 0.008 260);
-  --bg-hover: var(--accent-blue-bg);
+  --bg-field: #f7f8fa;
+  --bg-hover: #eceef2;
   --bg-selected: var(--accent-blue-bg);
   --bg-overlay: #25272822;
   --text-primary: var(--color-gray-900);
@@ -278,7 +279,7 @@
   --component-bubble-tail-radius: var(--radius-xs);
   --component-bubble-padding-ai: 18px 20px;
   --component-bubble-padding-user: 12px 18px;
-  --component-bubble-font-size: var(--font-size-15);
+  --component-bubble-font-size: var(--font-size-14);
   --component-menu-radius: var(--radius-lg);
   --component-menu-padding: var(--space-1h);
   --component-menu-item-height: var(--size-control-md);
