@@ -280,28 +280,11 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-const GINA_IMG="assets/gina-business.png";
-let ginaAvatarId=0;
-function ginaAvatar(small=true){
-  const id=`business-eyes-${++ginaAvatarId}`;
-  const src=small?'assets/gina-business-chat-100.png':GINA_IMG;
-  const blink=small?'assets/gina-business-chat-blink-100.png':'assets/gina-business-blink.png';
-  return `<img src="${src}" alt="Gina" width="1254" height="1254" draggable="false" />
-  <svg class="gina-eyes business-eyes" viewBox="0 0 1254 1254" aria-hidden="true">
-    <defs>
-      <radialGradient id="${id}-skin"><stop stop-color="#f6bc90"/><stop offset="1" stop-color="#f9c79e"/></radialGradient>
-      <radialGradient id="${id}-fade"><stop offset=".72" stop-color="white"/><stop offset="1" stop-color="black"/></radialGradient>
-      <mask id="${id}-area"><ellipse cx="483" cy="536" rx="78" ry="70" fill="url(#${id}-fade)"/><ellipse cx="767" cy="531" rx="78" ry="70" fill="url(#${id}-fade)"/></mask>
-      <clipPath id="${id}-eyes"><ellipse cx="483" cy="536" rx="58" ry="53"/><ellipse cx="767" cy="531" rx="58" ry="53"/></clipPath>
-    </defs>
-    <g class="business-eye-open">
-      <g mask="url(#${id}-area)"><rect x="400" y="462" width="450" height="145" fill="url(#${id}-skin)"/></g>
-      <g class="gina-pupils"><image href="${src}" width="1254" height="1254" clip-path="url(#${id}-eyes)"/></g>
-    </g>
-    <g class="gina-eyelids" mask="url(#${id}-area)"><image href="${blink}" width="1254" height="1254"/></g>
-  </svg>`;
+const GINA_IMG="assets/gina-breath.gif";
+function ginaAvatar(){
+  return `<img src="${GINA_IMG}" alt="Gina" width="200" height="200" draggable="false" />`;
 }
-document.querySelector('.hero-avatar').innerHTML=ginaAvatar(false);
+document.querySelector('.hero-avatar').innerHTML=ginaAvatar();
 /* ---------- Icons (lucide-style) ---------- */
 const ICONS = {
   "pencil":'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
@@ -949,6 +932,5 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#history-search').hidden)setHistorySearch(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
-<script src="gina-business-gaze.js"></script>
 </body>
 </html>

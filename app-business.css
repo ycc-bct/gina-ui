@@ -223,9 +223,9 @@ body.business-theme .avatar-d { border-radius: 4px; background: #e8ecf2; }
 body.business-theme .hero { padding-top: clamp(38px, 8vh, 86px); }
 
 body.business-theme .hero-avatar {
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  background: var(--bg-field);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
 }
 
 body.business-theme .hero h1 {
@@ -306,8 +306,9 @@ body.business-theme .cbtn.send.ready:hover {
 body.business-theme .thread { padding-top: 28px; }
 
 body.business-theme .ai-avatar {
-  border: 1px solid var(--border-default);
-  border-radius: 6px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
 }
 
 body.business-theme .bubble-ai,
@@ -488,10 +489,3 @@ body.business-theme .hist-loading-dot { background: var(--action-primary-bg); }
     right: calc(clamp(360px, 40vw, 560px) + 42px);
   }
 }
-
-/* Raster eye layers preserve the supplied 3D portrait. */
-.business-eyes .gina-eyelids { transform: none; opacity: 0; }
-.business-eyes.is-blinking .gina-eyelids { animation: business-blink 220ms ease-in-out; }
-.business-eyes.is-blinking .business-eye-open { animation: business-open 220ms ease-in-out; }
-@keyframes business-blink { 0%,100% { opacity: 0; } 35%,70% { opacity: 1; } }
-@keyframes business-open { 0%,100% { opacity: 1; } 35%,70% { opacity: 0; } }
