@@ -10,6 +10,7 @@
 - Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 預設維持 52px 單列；啟用網路搜尋、個人知識或 Skills 後，最小高度增加至 92px，工具標籤移到獨立上層，輸入文字與操作按鈕保留在下層。
 - Agent 首頁與 Gina 首頁使用相同的標題層級、三欄工作模板、輕量 chips、Chat Bubble、執行步驟與 Composer。業務助理提供待跟進客戶、訂單進度、業務摘要、報價摘要、CRM 備註與銷售數據六個可直接執行的示範模板；進入 Agent 時輸入框文案與 aria-label 會切換為該 Agent。
 - Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)`，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
+- Business Login、Chat、Sidebar Logo 與登出形成完整導頁：登入進入 `index-business-v2.html`，Logo 回到第二版首頁，登出回到 `login-business.html`。在 `htmlpreview.github.io` 執行時，導頁會保留 GitHub branch source query，避免相對路徑離開 Preview。
 - Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「繼續對話／過去三天待注意事項」。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
 
 - 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。

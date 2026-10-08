@@ -64,14 +64,14 @@
   <div class="menu-sep"></div>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
   <div class="menu-sep"></div>
-  <button class="menu-item danger" onclick="location.href='login-business.html'"><svg class="i" data-i="logout"></svg>登出</button>
+  <button class="menu-item danger" data-action="logout"><svg class="i" data-i="logout"></svg>登出</button>
 </div>
 
 <!-- ============ Sidebar ============ -->
 <button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄" aria-expanded="true"><svg class="i" data-i="panel-left"></svg></button>
 <aside class="sidebar" aria-label="工作空間導覽">
   <div class="sidebar-resizer" id="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側欄寬度" tabindex="0" title="拖曳調整寬度，雙擊還原"></div>
-  <a class="sidebar-brand" href="index-business.html" aria-label="Gina 首頁"><img src="assets/gina-wordmark.svg" alt="Gina" width="418" height="69" /></a>
+  <a class="sidebar-brand" href="index-business-v2.html" data-action="go-home" aria-label="Gina 首頁"><img src="assets/gina-wordmark.svg" alt="Gina" width="418" height="69" /></a>
   <div class="side-search main-only">
     <svg class="i" data-i="search"></svg>
     <input id="hist-search" type="search" placeholder="搜尋" aria-label="搜尋對話" />
@@ -1400,6 +1400,9 @@ const $ = s => document.querySelector(s);
 const body = document.body;
 const thread = $('#thread');
 const input = $('#input');
+const GITHUB_PREVIEW_SOURCE='https://github.com/ycc-bct/gina-ui/blob/codex/business-version/';
+function prototypeUrl(file){return location.hostname==='htmlpreview.github.io'?`https://htmlpreview.github.io/?${GITHUB_PREVIEW_SOURCE}${file}`:file}
+function navigatePrototype(file){location.href=prototypeUrl(file)}
 renderSkillList();
 function toast(msg){
   const t=$('#toast'); t.textContent=msg; t.classList.add('show');
@@ -1912,6 +1915,7 @@ document.addEventListener('click',e=>{
     if(!e.target.closest('.skill-add-control')){$('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false')}
     return;
   }
+  if(a.tagName==='A')e.preventDefault();
   switch(a.dataset.action){
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}a.setAttribute('aria-expanded',String(!body.classList.contains('collapsed')));closePops();break;}
     case 'add-file': setComposerMenu(false);$('#composer-file').click(); break;
@@ -1946,6 +1950,7 @@ document.addEventListener('click',e=>{
     }
     case 'close-drawers': closeDrawers(); break;
     case 'go-home': goHome(); break;
+    case 'logout': navigatePrototype('login-business.html'); break;
     case 'go-specialist': goSpecialist(); break;
     case 'new-chat': {
       // Always a fresh Gina chat: leave the specialist page too, drop the draft and tools, focus the box.
