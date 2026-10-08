@@ -288,9 +288,10 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script type="module">
+<script>
 /* Gina orb: thinking-orbs "composing"（示範頁標為 Thinking…）at the 64px tuning, tinted Giant blue, shown at 96px.
    React 版本：<ThinkingOrb state="composing" size={64} color="#001488" /> */
+(()=>{
 /* thinking-orbs 0.3.2 engine (MIT, https://www.npmjs.com/package/thinking-orbs) inlined so the page
    also works where module files are served with the wrong MIME type (e.g. htmlpreview). Source copy: vendor/thinking-orbs/ */
 function lerp(a, b, f) {
@@ -1189,6 +1190,7 @@ new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilte
 paint(0.6); // always show a frame; the loop only runs while the orb is on screen
 sync();
 }
+})();
 </script>
 <script>
 /* ---------- Icons (lucide-style) ---------- */
