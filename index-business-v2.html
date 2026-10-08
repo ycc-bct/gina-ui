@@ -1400,8 +1400,11 @@ const $ = s => document.querySelector(s);
 const body = document.body;
 const thread = $('#thread');
 const input = $('#input');
-const GITHUB_PREVIEW_SOURCE='https://github.com/ycc-bct/gina-ui/blob/codex/business-version/';
-function prototypeUrl(file){return location.hostname==='htmlpreview.github.io'?`https://htmlpreview.github.io/?${GITHUB_PREVIEW_SOURCE}${file}`:file}
+function prototypeUrl(file){
+  if(location.hostname!=='htmlpreview.github.io')return file;
+  const source=location.search.slice(1),base=source.slice(0,source.lastIndexOf('/')+1);
+  return `https://htmlpreview.github.io/?${base}${file}`;
+}
 function navigatePrototype(file){location.href=prototypeUrl(file)}
 renderSkillList();
 function toast(msg){
