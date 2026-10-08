@@ -5,8 +5,8 @@
  */
 
 body.business-theme {
-  --bg-app: #f2f5fa;
-  --bg-canvas: #f2f5fa;
+  --bg-app: #f6f8fb;
+  --bg-canvas: #f6f8fb;
   --bg-shell-warm: #e4e9ef;
   --bg-surface: #ffffff;
   --bg-raised: #ffffff;
@@ -35,7 +35,7 @@ body.business-theme {
   --action-secondary-border: #e1e6ef;
   --action-secondary-fg: #344258;
   --shadow-focus: 0 0 0 3px rgb(36 91 176 / 12%);
-  background: #f2f5fa;
+  background: #f6f8fb;
   color: var(--text-primary);
   letter-spacing: 0;
 }
@@ -764,7 +764,7 @@ body.business-theme .review-panel {
   box-shadow: 0 14px 36px rgb(28 42 61 / 14%);
 }
 
-body.business-theme .skill-editor-dialog { background: #f2f5fa; }
+body.business-theme .skill-editor-dialog { background: #f6f8fb; }
 
 body.business-theme .skill-editor-form {
   border-color: var(--border-default);
