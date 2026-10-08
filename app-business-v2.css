@@ -29,6 +29,12 @@ body.business-theme {
   --accent-blue-bg: #e7effb;
   --accent-blue-border: #9cb8df;
   --accent-blue-fg: #24569a;
+  --agent-sales-bg: #eaf2fc;
+  --agent-sales-fg: #4b6f9d;
+  --agent-test-bg: #f1edfa;
+  --agent-test-fg: #766493;
+  --agent-translate-bg: #eaf5f1;
+  --agent-translate-fg: #527b70;
   --action-primary-bg: #285dd1;
   --action-primary-bg-hover: #214fba;
   --action-primary-fg: #ffffff;
@@ -168,6 +174,16 @@ body.business-theme .btn-new.active:hover {
 body.business-theme .btn-new:hover { background: var(--bg-field); color: var(--text-primary); }
 
 body.business-theme .side-agents { padding: 4px 0 0; }
+body.business-theme .side-agents .side-nav-item > .i {
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+body.business-theme .side-agents .side-nav-item:nth-child(1) > .i { background: var(--agent-sales-bg); color: var(--agent-sales-fg); }
+body.business-theme .side-agents .side-nav-item:nth-child(2) > .i { background: var(--agent-test-bg); color: var(--agent-test-fg); }
+body.business-theme .side-agents .side-nav-item:nth-child(3) > .i { background: var(--agent-translate-bg); color: var(--agent-translate-fg); }
 
 body.business-theme .side-bottom {
   margin-top: auto;
@@ -575,6 +591,15 @@ body.business-theme .agent-picker-menu button {
 }
 body.business-theme .agent-picker-menu button:hover { background: var(--bg-field); color: var(--text-primary); }
 body.business-theme .agent-picker-menu .i { width: 16px; height: 16px; }
+body.business-theme .agent-picker-menu button[data-agent] > .i:first-child {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+body.business-theme .agent-picker-menu button[data-agent="gina"] > .i:first-child { background: var(--bg-field); color: var(--icon-muted); }
+body.business-theme .agent-picker-menu button[data-agent="business"] > .i:first-child { background: var(--agent-sales-bg); color: var(--agent-sales-fg); }
 body.business-theme .agent-picker-check { visibility: hidden; color: var(--accent-blue-fg); }
 body.business-theme .agent-picker-menu button[aria-checked="true"] { color: var(--text-primary); font-weight: 600; }
 body.business-theme .agent-picker-menu button[aria-checked="true"] .agent-picker-check { visibility: visible; }
@@ -1146,10 +1171,11 @@ body.business-theme .spec-big {
   height: 56px;
   border: 1px solid var(--border-default);
   border-radius: 8px;
-  background: var(--bg-surface);
-  color: var(--accent-blue-fg);
+  background: var(--agent-sales-bg);
+  color: var(--agent-sales-fg);
 }
 body.business-theme .spec-big .i { width: 22px; height: 22px; }
+body.business-theme .spec-brand-ico { background: var(--agent-sales-bg); color: var(--agent-sales-fg); }
 body.business-theme .spec-title h1 { color: var(--text-primary); font-size: 34px; font-weight: 600; letter-spacing: -.025em; }
 body.business-theme .spec-title .s { margin-top: 3px; color: var(--text-tertiary); font-size: 13px; }
 body.business-theme .spec-hero .desc { max-width: 620px; margin-top: 14px; color: var(--text-secondary); font-size: 14px; }
