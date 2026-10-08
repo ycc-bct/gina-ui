@@ -1,0 +1,44 @@
+/* Business login: scoped to login-business.html, using the business palette. */
+body {
+  --text-primary: #172033;
+  --text-secondary: #3f4e63;
+  --text-tertiary: #627086;
+  --text-placeholder: #8490a1;
+  --bg-app: #f2f5fa;
+  --bg-surface: #ffffff;
+  --bg-raised: #ffffff;
+  --bg-field: #f4f6f9;
+  --bg-hover: #e9eef5;
+  --bg-selected: #e7eef9;
+  --border-subtle: #e9edf4;
+  --border-default: #e1e6ef;
+  --border-strong: #aeb9c8;
+  --border-focus: #245bb0;
+  --focus-ring: #245bb0;
+  --action-primary-bg: #285dd1;
+  --action-primary-bg-hover: #214fba;
+  --action-primary-fg: #ffffff;
+  min-height: 100svh;
+}
+.card {
+  width: 440px;
+  padding: 36px;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgb(28 42 61 / 6%);
+}
+.avatar { width: 88px; height: 88px; border-radius: 50%; }
+h1 { margin-top: 20px; letter-spacing: -.4px; }
+.login-wordmark { display: block; width: 220px; max-width: 100%; height: auto; margin: 0 auto; }
+.sub { color: var(--text-secondary); }
+.divider { margin: 28px 0 24px; }
+.btn-ms, .btn-login, .field input { height: 46px; border-radius: 5px; }
+.field input { border-color: var(--border-default); }
+.field input:focus { box-shadow: 0 0 0 3px rgb(36 91 176 / 12%); }
+.btn-ms, .btn-login { transition: background .15s, border-color .15s; }
+.copy { margin-top: 28px; font-size: 11px; }
+@media (max-width: 640px) {
+  .card { padding: 28px 22px; border-radius: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-ms, .btn-login { transition: none; }
+}

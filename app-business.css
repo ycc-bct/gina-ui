@@ -19,8 +19,8 @@ body.business-theme {
   --border-focus: #245bb0;
   --focus-ring: #245bb0;
   --text-primary: #172033;
-  --text-secondary: #48566a;
-  --text-tertiary: #6f7c8e;
+  --text-secondary: #3f4e63;
+  --text-tertiary: #627086;
   --text-placeholder: #8490a1;
   --icon-default: #4d5b70;
   --icon-muted: #778397;
@@ -91,9 +91,11 @@ body.business-theme .sidebar-brand {
 }
 
 body.business-theme .sidebar-brand img {
-  width: 30px;
-  height: 30px;
+  width: 180px;
+  height: auto;
 }
+
+body.business-theme .header-right [hidden] { display: none; }
 
 body.business-theme .sidebar-brand > span {
   color: #10182a;
@@ -226,6 +228,12 @@ body.business-theme .hero-avatar {
   border: 0;
   border-radius: var(--radius-full);
   background: transparent;
+  box-shadow: 0 0 0 0 rgb(96 177 239 / 0%);
+  transition: box-shadow 650ms ease-out;
+}
+
+body.business-theme .hero-avatar.is-typing {
+  box-shadow: 0 0 18px 5px rgb(96 177 239 / 18%), 0 0 38px 12px rgb(96 177 239 / 9%);
 }
 
 body.business-theme .hero h1 {
@@ -305,22 +313,30 @@ body.business-theme .cbtn.send.ready:hover {
 
 body.business-theme .thread { padding-top: 28px; }
 
-body.business-theme .ai-avatar {
-  border: 0;
-  border-radius: var(--radius-full);
-  background: transparent;
-}
+body.business-theme .msg-ai { gap: 0; }
 
 body.business-theme .bubble-ai,
 body.business-theme .bubble-user {
   border: 1px solid var(--border-default);
   border-radius: 8px;
   background: #ffffff;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   box-shadow: 0 1px 3px rgb(28 42 61 / 4%);
 }
 
 body.business-theme .bubble-user { background: var(--bg-surface); }
+
+body.business-theme .bubble-ai h3,
+body.business-theme .bubble-ai h4,
+body.business-theme .review-panel-content h3,
+body.business-theme .review-panel-content h4 {
+  color: var(--text-primary);
+}
+
+body.business-theme .response-section > p,
+body.business-theme .review-panel-content {
+  color: var(--text-secondary);
+}
 
 /* Loading stays text-only on the workspace canvas. */
 body.business-theme .msg-ai.loading-message .bubble-ai {

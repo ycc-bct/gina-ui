@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gina 登入 — Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="design-system/dist/tokens.css" />
+<link rel="stylesheet" href="login.css" />
+<link rel="stylesheet" href="login-business.css" />
+<link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
+</head>
+<body>
+  <main class="card">
+    <div class="avatar">
+      <img src="assets/gina-breath.gif" alt="Gina" width="200" height="200" draggable="false" />
+    </div>
+    <h1><img class="login-wordmark" src="assets/gina-wordmark.png" alt="GINA" width="800" height="244" /></h1>
+    <div class="sub">Giant 內部 AI 智慧工作助手</div>
+    <div class="divider"></div>
+
+    <button class="btn-ms" type="button" id="ms-login">
+      <span class="ms-logo" aria-hidden="true"><i style="background:#f25022"></i><i style="background:#7fba00"></i><i style="background:#00a4ef"></i><i style="background:#ffb900"></i></span>
+      使用 Microsoft 帳號登入
+    </button>
+
+    <div class="or">OR</div>
+
+    <form id="login-form" novalidate>
+      <label for="account">帳號</label>
+      <div class="field" id="account-field">
+        <svg class="i lead" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+        <input id="account" name="account" autocomplete="username" placeholder="請輸入帳號" />
+      </div>
+      <label for="password">密碼</label>
+      <div class="field" id="password-field">
+        <svg class="i lead" viewBox="0 0 24 24" aria-hidden="true"><rect width="16" height="11" x="4" y="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="請輸入密碼" />
+        <button class="eye" type="button" id="toggle-pw" aria-label="顯示密碼">
+          <svg class="i" viewBox="0 0 24 24" id="eye-ico"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="err" id="err" role="alert">請輸入帳號與密碼</div>
+      <button class="btn-login" type="submit">登入</button>
+    </form>
+
+    <div class="copy">© 2026 Giant Group · Gina AI Platform</div>
+  </main>
+
+<script>
+const pw = document.getElementById('password');
+const account = document.getElementById('account');
+const EYE = '<path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/>';
+const EYE_OFF = '<path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c4.8 0 8.4 3.1 9.94 6.65a1 1 0 0 1 0 .7 10.8 10.8 0 0 1-1.44 2.49"/><path d="M14.08 14.16a3 3 0 0 1-4.24-4.24"/><path d="M17.48 17.5A10.75 10.75 0 0 1 2.06 12.35a1 1 0 0 1 0-.7 10.8 10.8 0 0 1 4.45-5.14"/><path d="m2 2 20 20"/>';
+document.getElementById('toggle-pw').addEventListener('click', () => {
+  const show = pw.type === 'password';
+  pw.type = show ? 'text' : 'password';
+  document.getElementById('eye-ico').innerHTML = show ? EYE_OFF : EYE;
+  document.getElementById('toggle-pw').setAttribute('aria-label', show ? '隱藏密碼' : '顯示密碼');
+});
+
+// 示意：未串接後端，驗證欄位後導向主畫面
+const goApp = () => { location.href = 'index-business.html'; };
+document.getElementById('ms-login').addEventListener('click', goApp);
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const missingAccount = !account.value.trim(), missingPw = !pw.value;
+  document.getElementById('account-field').classList.toggle('is-error', missingAccount);
+  document.getElementById('password-field').classList.toggle('is-error', missingPw);
+  document.getElementById('err').classList.toggle('show', missingAccount || missingPw);
+  if (!missingAccount && !missingPw) goApp();
+});
+</script>
+
+</body>
+</html>

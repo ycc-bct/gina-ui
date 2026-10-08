@@ -25,10 +25,10 @@
       <span class="outlook-tag-dot" aria-hidden="true"></span>
       <span>Outlook 已連線</span>
     </button>
-    <button class="agents-menu-btn" data-pop="pop-agents" aria-haspopup="menu" aria-expanded="false">
+    <button class="agents-menu-btn" data-pop="pop-agents" aria-haspopup="menu" aria-expanded="false" hidden>
       <svg class="i" data-i="users"></svg><span>Agents</span><svg class="i chev" data-i="chevron-down"></svg>
     </button>
-    <button class="user-btn" data-pop="pop-user"><span class="avatar-d">D</span><svg class="i chev" data-i="chevron-down"></svg></button>
+    <button class="user-btn" data-pop="pop-user" hidden><span class="avatar-d">D</span><svg class="i chev" data-i="chevron-down"></svg></button>
   </div>
 </header>
 
@@ -86,13 +86,13 @@
   <div class="menu-sep"></div>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
   <div class="menu-sep"></div>
-  <button class="menu-item danger" onclick="location.href='login.html'"><svg class="i" data-i="logout"></svg>登出</button>
+  <button class="menu-item danger" onclick="location.href='login-business.html'"><svg class="i" data-i="logout"></svg>登出</button>
 </div>
 
 <!-- ============ Sidebar ============ -->
 <button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄"><svg class="i" data-i="chevron-left"></svg></button>
 <aside class="sidebar" aria-label="工作空間導覽">
-  <a class="sidebar-brand" href="index-business.html" aria-label="Giant Gina 首頁"><img src="assets/giant-g.svg" alt="Giant" /><span>Gina<span>Giant 內部 AI 助理</span></span></a>
+  <a class="sidebar-brand" href="index-business.html" aria-label="Gina 首頁"><img src="assets/gina-wordmark.png" alt="GINA" /></a>
   <div class="side-top">
     <button class="btn-new" data-action="new-chat"><svg class="i" data-i="plus"></svg><span id="new-label">新對話</span></button>
   </div>
@@ -123,7 +123,6 @@
   <div class="scroll" id="scroll">
     <section class="hero" id="hero">
       <div class="hero-avatar"><img class="gina-img" alt="Gina" /></div>
-      <h1>嗨，我是 Gina</h1>
       <div class="desc">助你釐清問題、拆解任務，並在需要時請合適的專員一起處理。</div>
       <div class="chips">
         <button class="chip" data-prompt="幫我把這個想法整理成需求">整理需求</button>
@@ -581,7 +580,7 @@ function userMsg(text,time=nowHM()){
 }
 function aiMsg(html){
   const el=document.createElement('div');el.className='msg-ai';
-  el.innerHTML=`<div class="ai-avatar">${ginaAvatar()}</div><div class="ai-col">
+  el.innerHTML=`<div class="ai-col">
     <div class="bubble-wrap">
       <div class="bubble-ai">${html}</div>
     </div>
@@ -932,5 +931,6 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#history-search').hidden)setHistorySearch(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
+<script src="gina-breath.js"></script>
 </body>
 </html>

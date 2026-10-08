@@ -1,7 +1,21 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.2 · 2026-10-07 · 決策紀錄見 `decisions.md`
+> 版本：v1.3-business · 2026-10-08 · 決策紀錄見 `decisions.md`
+
+### 2026-10-08 商業版覆寫
+
+本節只適用於第二版 `index-business.html` 與 `app-business.css`；若與下方共用規範衝突，以本節為準。
+
+- 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。
+
+- 品牌使用提供的 `assets/gina-wordmark.png`：Sidebar 寬 180px，登入頁寬 220px，保持原圖比例。Sidebar 移除原本的 Gina 與「Giant 內部 AI 助理」文字。右上角暫時隱藏 Account 和 Agents 入口，保留 Outlook 狀態。
+
+- 首頁 Gina 使用 `assets/gina-breath.gif`，以 112px 圓形完整顯示 GIF 動態。Chat Screen 不顯示 Gina 頭像，回覆內容直接與對話欄左緣對齊。
+- 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文與 Chat 回覆使用 `--text-secondary` `#3f4e63`；時間、狀態與補充說明使用 `--text-tertiary` `#627086`。內文比舊版深，但仍與 Title 保持清楚區別。
+- AI 與使用者訊息使用相同的 14px / 1.8 閱讀規格。只有區段 Title 使用 `--text-primary` 與 600 字重；一般段落不以粗體製造層級。
+- 其餘第二版規則維持白色 Sidebar、淺藍灰工作區、低圓角與冷色商業工具風格。
+- 第二版登入頁為 `login-business.html`，使用 `login-business.css`：淺藍灰底、440px 白色卡片、10px 圓角、88px 漸層 GIF 頭像，欄位與按鈕高 46px、圓角 5px。Microsoft 登入直接進入 `index-business.html`，帳密登入檢查必填欄位後進入同頁；目前是原型導頁，未串接 Microsoft OAuth 或後端驗證。第二版登出返回此登入頁。
 
 ### 2026-10-07 視覺更新
 
@@ -24,7 +38,8 @@
 | `dist/tokens.flat.json` | 已解析的扁平值，給其他工具（Figma、App）轉換用 |
 | `decisions.md` | 設計決策紀錄（D1–D12 與後續修改） |
 | `preview.html` | token 視覺預覽（可切換深淺色） |
-| `../app.css`、`../login.css` | 原型頁面的樣式，只引用 token，可當作實作範例 |
+| `../app.css`、`../login.css` | 第一版原型頁面的樣式，只引用 token，可當作實作範例 |
+| `../index-business.html`、`../app-business.css` | 第二版商業化視覺與其頁面覆寫 |
 
 修改 token 後執行 `node build-tokens.mjs` 重新產生 `dist/`。**不要手改 `dist/`。**
 
@@ -475,7 +490,7 @@ Drawer 寬 400px（最大 100vw − 48px）；Review Panel 寬 `clamp(360px, 40v
 | 類型 | 樣式 |
 |---|---|
 | 使用者 | 靠右且不顯示使用者頭像；bg `bg-surface`；框 `border-default`；圓角 16px；內距 12×18；最寬 min(80%, 560px)；14px / 1.8 |
-| Gina | 靠左，頭像 34px；bg `bg-surface`；框 `border-default`；圓角 16px；內距 18×20；最寬 680px；14px / 1.8 |
+| Gina | 靠左；第二版不顯示 Chat Screen 頭像，內容與對話欄左緣對齊；bg `bg-surface`；框 `border-default`；圓角 8px；內距 18×20；最寬 680px；14px / 1.8 |
 | 時間 | 12px `text-tertiary`，泡泡下方 |
 
 Gina 回覆的狀態：
@@ -522,10 +537,12 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 
 ### 12.18 Gina 頭像
 
-- 首頁 112px（手機、登入頁 100px）、對話 34px（手機 28px）；圓角 `--radius-xl`（對話中 `--radius-md`）。
-- 眼睛跟隨滑鼠：位移最多水平 16、垂直 12（SVG 單位）。
-- 眨眼：每 3.5–6.5 秒一次，200ms。
-- 減少動態效果時：關閉眼睛動畫，只顯示靜態圖。
+- 第二版首頁使用 `assets/gina-breath.gif`，桌機 112px、手機 100px，以 `--radius-full` 呈現圓形漸層動畫。
+- 第二版 Chat Screen 不顯示 Gina 頭像，避免視線被重複角色圖像打斷。
+- GIF 保留素材本身的呼吸動畫，不再疊加眼睛跟隨或額外眨眼腳本。
+- 第二版新對話首頁以 `gina-breath.js` 播放原 GIF 的影格。輸入訊息時平順加速，連續輸入最高約 3.5 倍，停止輸入後逐漸回到 1 倍；登入頁維持原 GIF 速度。
+- 首頁打字時，頭像外圍顯示低透明度淡藍色雙層光暈；停止輸入 900ms 後，以 650ms 淡出。清空輸入、離開首頁或切換分頁時清除；減少動態模式取消轉場。
+- 首頁在 `prefers-reduced-motion: reduce` 時顯示靜態首格；聊天畫面與隱藏分頁暫停播放。影格載入失敗時保留原 GIF。
 
 ### 12.19 個人 Skills 與 Skill Builder
 
