@@ -26,8 +26,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 8px 30px rgb(28 42 61 / 6%);
 }
-.avatar { width: 88px; height: 88px; border-radius: 50%; }
-h1 { margin-top: 20px; letter-spacing: -.4px; }
+h1 { margin: 0; letter-spacing: -.4px; }
 .login-wordmark { display: block; width: 220px; max-width: 100%; height: auto; margin: 0 auto; }
 .sub { color: var(--text-secondary); }
 .divider { margin: 28px 0 24px; }
