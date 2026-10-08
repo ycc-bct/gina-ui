@@ -18,7 +18,7 @@
   <div class="spec-brand">
     <button class="back" data-action="go-home" aria-label="返回"><svg class="i" data-i="arrow-left"></svg></button>
     <span class="spec-brand-ico"><svg class="i" data-i="chart"></svg></span>
-    業務助理 <span class="pilot">Pilot</span>
+    業務助理
   </div>
 </header>
 
@@ -118,12 +118,6 @@
         <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
         <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>繼續對話</b><small>過去三天待注意事項</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
       </div>
-      <div class="chips">
-        <button class="chip" data-prompt="幫我把這個想法整理成需求">整理需求</button>
-        <button class="chip" data-prompt="幫我審閱一份合約">審閱合約</button>
-        <button class="chip" data-prompt="幫我安排一場會議">安排會議</button>
-        <button class="chip" data-prompt="幫我整理這份文件">整理文件</button>
-      </div>
     </section>
 
     <section class="spec-hero" id="spec-hero">
@@ -136,11 +130,6 @@
         <button class="today-card" data-prompt="整理本週待跟進客戶"><span class="today-icon"><svg class="i" data-i="users"></svg></span><span class="today-text"><b>待跟進客戶</b><small>依優先順序整理下一步</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
         <button class="today-card" data-prompt="檢查重點訂單進度"><span class="today-icon"><svg class="i" data-i="server"></svg></span><span class="today-text"><b>重點訂單進度</b><small>列出風險與待處理項目</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
         <button class="today-card" data-prompt="產生本週業務摘要"><span class="today-icon"><svg class="i" data-i="chart"></svg></span><span class="today-text"><b>本週業務摘要</b><small>彙整數字、進展與風險</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-      </div>
-      <div class="chips agent-template-chips">
-        <button class="chip" data-prompt="建立報價摘要">建立報價摘要</button>
-        <button class="chip" data-prompt="整理 CRM 客戶備註">整理 CRM 備註</button>
-        <button class="chip" data-prompt="分析銷售數據">分析銷售數據</button>
       </div>
     </section>
 
@@ -160,6 +149,17 @@
         <button class="cbtn plus" id="composer-plus" data-action="toggle-composer-menu" aria-label="新增與工具" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-menu"><svg class="i" data-i="plus"></svg></button>
         <input id="composer-file" type="file" hidden multiple />
         <div class="active-tools" id="active-tools" aria-label="已啟用的工具"></div>
+        <div class="agent-picker-wrap">
+          <button class="agent-picker" id="composer-agent" type="button" data-action="toggle-agent-menu" aria-label="選擇對話 Agent，目前為 Gina" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-agent-menu">
+            <span class="agent-picker-leading"><svg class="i" data-i="message"></svg></span>
+            <span id="composer-agent-label">Gina</span>
+            <svg class="i agent-picker-chevron" data-i="chevron-down"></svg>
+          </button>
+          <div class="agent-picker-menu" id="composer-agent-menu" role="menu" aria-label="選擇對話 Agent" hidden>
+            <button type="button" role="menuitemradio" aria-checked="true" data-action="select-agent" data-agent="gina"><svg class="i" data-i="message"></svg><span>Gina</span><svg class="i agent-picker-check" data-i="check"></svg></button>
+            <button type="button" role="menuitemradio" aria-checked="false" data-action="select-agent" data-agent="business"><svg class="i" data-i="chart"></svg><span>業務助理</span><svg class="i agent-picker-check" data-i="check"></svg></button>
+          </div>
+        </div>
         <span class="toolbar-spacer"></span>
         <div class="usage-ring-wrap">
           <button class="usage-ring" id="usage-ring" type="button" aria-describedby="usage-tip" aria-label="對話長度與用量">
@@ -1520,7 +1520,33 @@ function setComposerMenu(open){
   $('#composer-menu').hidden=!open;
   $('#composer-plus').setAttribute('aria-expanded',String(open));
   $('#composer-plus').classList.toggle('open',open);
+  if(open)setAgentMenu(false);
 }
+function renderAgentPicker(){
+  const business=body.classList.contains('specialist');
+  const name=business?'業務助理':'Gina';
+  $('#composer-agent-label').textContent=name;
+  $('#composer-agent').setAttribute('aria-label',`選擇對話 Agent，目前為 ${name}`);
+  $('.agent-picker-leading').innerHTML=svg(business?'chart':'message');
+  document.querySelectorAll('#composer-agent-menu [data-agent]').forEach(option=>option.setAttribute('aria-checked',String(option.dataset.agent===(business?'business':'gina'))));
+}
+function setAgentMenu(open){
+  $('#composer-agent-menu').hidden=!open;
+  $('#composer-agent').setAttribute('aria-expanded',String(open));
+  if(open)setComposerMenu(false);
+}
+function selectAgent(agent){
+  const chatting=body.classList.contains('chatting');
+  const business=agent==='business';
+  body.classList.toggle('specialist',business);
+  $('#new-label').textContent='新對話';
+  input.setAttribute('aria-label',business?'傳送訊息給業務助理':'傳送訊息給 Gina');
+  input.placeholder=business?'交給業務助理，整理客戶與訂單工作…':'交給 Gina，一起完成今天的工作…';
+  $('#hero').style.display=!chatting&&!business?'':'none';
+  $('#spec-hero').style.display=!chatting&&business?'flex':'none';
+  setAgentMenu(false);renderAgentPicker();renderHistory();input.focus();
+}
+renderAgentPicker();
 
 /* ---------- Sidebar scroll: show a hairline under the fixed header once content scrolls ---------- */
 $('#side-scroll').addEventListener('scroll',e=>body.classList.toggle('side-scrolled',e.target.scrollTop>2),{passive:true});
@@ -1566,7 +1592,7 @@ function goHome(){
   input.setAttribute('aria-label','傳送訊息給 Gina');
   input.placeholder='交給 Gina，一起完成今天的工作…';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
-  thread.innerHTML='';activeHist=-1;renderHistory();
+  thread.innerHTML='';activeHist=-1;renderAgentPicker();renderHistory();
 }
 function goSpecialist(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
@@ -1575,7 +1601,7 @@ function goSpecialist(){
   input.setAttribute('aria-label','傳送訊息給業務助理');
   input.placeholder='交給業務助理，整理客戶與訂單工作…';
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
-  thread.innerHTML='';activeHist=-1;renderHistory();
+  thread.innerHTML='';activeHist=-1;renderAgentPicker();renderHistory();
 }
 function startChat(){body.classList.add('chatting');body.classList.remove('mobile-nav-open');}
 
@@ -1895,6 +1921,7 @@ document.addEventListener('click',e=>{
     renderTools();return;
   }
   if(!e.target.closest('#composer-menu, #composer-plus')&&!$('#composer-menu').hidden)setComposerMenu(false);
+  if(!e.target.closest('.agent-picker-wrap')&&!$('#composer-agent-menu').hidden)setAgentMenu(false);
   const chip=e.target.closest('.chip, .today-card[data-prompt]');
   if(chip){input.value=chip.dataset.prompt;send();return;}
   const replyOption=e.target.closest('.reply-option');
@@ -1923,6 +1950,8 @@ document.addEventListener('click',e=>{
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}a.setAttribute('aria-expanded',String(!body.classList.contains('collapsed')));closePops();break;}
     case 'add-file': setComposerMenu(false);$('#composer-file').click(); break;
     case 'toggle-composer-menu': {e.stopPropagation();closePops();setComposerMenu($('#composer-menu').hidden);break;}
+    case 'toggle-agent-menu': {e.stopPropagation();closePops();setAgentMenu($('#composer-agent-menu').hidden);break;}
+    case 'select-agent': selectAgent(a.dataset.agent); break;
     case 'remove-tool': activeTools.delete(a.dataset.tool);renderTools(); break;
     case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'copy-message': {closeDownloadMenus();copyText(readableText(a.closest('.ai-col').querySelector('.bubble-ai')),'已複製回覆');break;}
@@ -1956,8 +1985,9 @@ document.addEventListener('click',e=>{
     case 'logout': navigatePrototype('login-business.html'); break;
     case 'go-specialist': goSpecialist(); break;
     case 'new-chat': {
-      // Always a fresh Gina chat: leave the specialist page too, drop the draft and tools, focus the box.
-      goHome();activeTools.clear();renderTools();setComposerMenu(false);
+      // Start fresh with whichever Agent is currently selected.
+      body.classList.contains('specialist')?goSpecialist():goHome();
+      activeTools.clear();renderTools();setComposerMenu(false);setAgentMenu(false);
       input.value='';autosize();updateSend();input.focus();
       break;
     }
@@ -1973,7 +2003,7 @@ document.addEventListener('click',e=>{
     case 'toast': closePops();toast(a.dataset.msg); break;
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setAgentMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
 </body>
 </html>
