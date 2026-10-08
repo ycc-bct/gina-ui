@@ -1,0 +1,1111 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Giant Chatbot AI — Business v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="design-system/dist/tokens.css" />
+<link rel="stylesheet" href="app.css" />
+<link rel="stylesheet" href="app-business-v2.css" />
+<link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
+</head>
+<body class="business-theme">
+
+<!-- ============ Header ============ -->
+<header class="header">
+  <div class="spec-brand">
+    <button class="back" data-action="go-home" aria-label="返回"><svg class="i" data-i="arrow-left"></svg></button>
+    <span class="spec-brand-ico"><svg class="i" data-i="chart"></svg></span>
+    業務助理 <span class="pilot">Pilot</span>
+  </div>
+</header>
+
+<!-- MCP Tool: registered servers -->
+<aside class="drawer" id="drawer-mcp" aria-label="MCP Tool" inert>
+  <div class="dr-head"><div><div class="t">MCP Tool</div><div class="s">管理已註冊的 MCP servers</div></div><button class="dr-close" data-action="close-drawers" aria-label="關閉MCP Tool"><svg class="i" data-i="x"></svg></button></div>
+  <div class="dr-body">  <div class="mcp-list" id="mcp-list"></div>
+  <div class="pop-foot">狀態代表設定 / 授權狀態，不是即時連線檢查。</div>
+</div>
+</aside>
+
+<!-- Knowledge popover -->
+<aside class="drawer" id="drawer-kb" aria-label="個人知識" inert>
+  <div class="dr-head"><div><div class="t">個人知識</div><div class="s">管理可供 Agent 讀取的個人文件</div></div><button class="dr-close" data-action="close-drawers" aria-label="關閉個人知識"><svg class="i" data-i="x"></svg></button></div>
+  <div class="dr-body">  <label class="dropzone">
+    <input type="file" hidden accept=".pdf,.docx,.txt,.md,.xlsx" />
+    <b>拖放文件到此處，或點擊選擇檔案</b>
+    <div>PDF、DOCX、TXT、MD、XLSX；最多 50 MiB</div>
+  </label>
+  <div class="kb-empty">尚無個人知識文件。</div>
+</div>
+</aside>
+
+<!-- Conversation menu (shared by every history row) -->
+<div class="popover" id="pop-hist" role="menu" aria-label="對話選項">
+  <button class="menu-item" role="menuitem" data-action="hist-pin"><svg class="i" data-i="pin"></svg><span id="hist-pin-label">釘選</span></button>
+  <div class="menu-sep"></div>
+  <button class="menu-item danger" role="menuitem" data-action="hist-delete"><svg class="i" data-i="trash"></svg>刪除</button>
+</div>
+
+<!-- User menu -->
+<div class="popover" id="pop-user">
+  <div class="menu-label">連線</div>
+  <div class="menu-item menu-switch">
+    <svg class="i" data-i="mail"></svg>
+    <span class="menu-switch-text"><b>Outlook</b><small id="outlook-state">已連線 · 郵件與行事曆</small></span>
+    <button class="switch" id="outlook-switch" role="switch" aria-checked="true" aria-label="Outlook 連線" data-action="toggle-outlook"><span></span></button>
+  </div>
+  <div class="menu-sep"></div>
+  <button class="menu-item" data-action="open-mcp"><svg class="i" data-i="server"></svg>MCP Tool</button>
+  <button class="menu-item" data-action="open-skills"><svg class="i" data-i="wrench"></svg>Skills</button>
+  <button class="menu-item" data-action="open-kb"><svg class="i" data-i="book-open"></svg>個人知識</button>
+  <div class="menu-sep"></div>
+  <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
+  <div class="menu-sep"></div>
+  <button class="menu-item danger" onclick="location.href='login.html'"><svg class="i" data-i="logout"></svg>登出</button>
+</div>
+
+<!-- ============ Sidebar ============ -->
+<button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄" aria-expanded="true"><svg class="i" data-i="panel-left"></svg></button>
+<aside class="sidebar" aria-label="工作空間導覽">
+  <div class="sidebar-resizer" id="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側欄寬度" tabindex="0" title="拖曳調整寬度，雙擊還原"></div>
+  <a class="sidebar-brand" href="index-business.html" aria-label="Gina 首頁"><img src="assets/gina-wordmark.svg" alt="Gina" width="418" height="69" /></a>
+  <div class="side-search main-only">
+    <svg class="i" data-i="search"></svg>
+    <input id="hist-search" type="search" placeholder="搜尋" aria-label="搜尋對話" />
+  </div>
+  <div class="side-top">
+    <button class="side-nav-item btn-new" data-action="new-chat"><svg class="i" data-i="plus"></svg><span id="new-label">新對話</span></button>
+  </div>
+  <div class="side-scroll" id="side-scroll">
+    <nav class="side-agents main-only" aria-label="可用協作 Agents">
+      <button class="side-nav-item" data-action="go-specialist"><svg class="i" data-i="chart"></svg><span>業務助理</span></button>
+      <button class="side-nav-item" data-action="toast" data-msg="測試助手專員頁（示意）"><svg class="i" data-i="monitor"></svg><span>測試助手</span></button>
+      <button class="side-nav-item" data-action="translate"><svg class="i" data-i="languages"></svg><span>翻譯</span></button>
+    </nav>
+    <div class="main-only">
+      <details class="history-group" id="pinned-group" open hidden>
+        <summary class="side-label history-summary"><span>Pinned</span><svg class="i history-chevron" data-i="chevron-down"></svg></summary>
+        <div id="pinned-list"></div>
+      </details>
+      <details class="history-group" id="history-group" open>
+        <summary class="side-label history-summary"><span>Recents</span><svg class="i history-chevron" data-i="chevron-down"></svg></summary>
+        <div id="hist-list"></div>
+      </details>
+    </div>
+    <div class="spec-only">
+      <div class="side-label">業務助理 · 歷史對話</div>
+      <div class="spec-empty">尚無與這位專員的對話紀錄</div>
+    </div>
+  </div>
+  <div class="side-bottom">
+    <button class="side-nav-item user-btn" data-pop="pop-user" aria-haspopup="menu" aria-expanded="false"><span class="avatar-d">K</span><span>Kevin Cheng</span><svg class="i chev" data-i="chevron-down"></svg></button>
+  </div>
+</aside>
+
+<!-- ============ Main ============ -->
+<main class="main">
+  <div class="scroll" id="scroll">
+    <section class="hero" id="hero">
+      <div class="hero-title">
+        <div class="hero-avatar"><img class="gina-img" alt="Gina" /></div>
+        <h1 id="hero-greeting">嗨，Kevin</h1>
+      </div>
+      <div class="today" aria-label="今天的狀況">
+        <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>繼續上次的對話</b><small>過去三天有什麼我需要注意的…</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+      </div>
+      <div class="chips">
+        <button class="chip" data-prompt="幫我把這個想法整理成需求">整理需求</button>
+        <button class="chip" data-prompt="幫我審閱一份合約">審閱合約</button>
+        <button class="chip" data-prompt="幫我安排一場會議">安排會議</button>
+        <button class="chip" data-prompt="幫我整理這份文件">整理文件</button>
+      </div>
+    </section>
+
+    <section class="spec-hero" id="spec-hero">
+      <div class="spec-title">
+        <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
+        <div><h1>業務助理</h1><div class="s">業務助理</div></div>
+      </div>
+      <div class="desc">協助製作報價單、追蹤訂單進度、彙整業務數據並查詢CRM資訊的業務型助理。</div>
+    </section>
+
+    <section class="thread" id="thread"></section>
+  </div>
+
+  <div class="bottom">
+    <div class="connect-hint main-only" id="outlook-hint" hidden>
+      <span class="icon-tile"><svg class="i" data-i="mail"></svg></span>
+      <div><b>尚未連線 Outlook</b><span>連線後 Gina 才能讀取郵件與行事曆。可隨時在「我的帳號」裡管理。</span></div>
+      <button class="btn-primary" type="button" data-action="connect-outlook">連線 Outlook</button>
+      <button class="hint-close" type="button" data-action="dismiss-outlook-hint" aria-label="關閉提示"><svg class="i" data-i="x"></svg></button>
+    </div>
+    <!-- Specialist: MCP -->
+    <div class="capcard spec-only" id="spec-card">
+      <div class="cap-head" data-action="toggle-card">
+        <span class="ic"><svg class="i" data-i="server"></svg></span>
+        <b>MCP</b><span class="m">0 個已啟用</span><span class="m">·</span>
+        <span class="m m-inline"><svg class="i" data-i="wrench"></svg>0 個 Tool 可用</span>
+        <span class="tog"><svg class="i" data-i="info"></svg><svg class="i chev" data-i="chevron-up"></svg></span>
+      </div>
+      <div class="cap-body">
+        <div class="cap-empty">目前沒有啟用的 MCP server。</div>
+        <div class="cap-go"><button data-action="toast" data-msg="前往 Agent 設定（示意）"><svg class="i" data-i="settings"></svg>前往 Agent 設定</button></div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
+      <div class="composer-toolbar">
+        <button class="cbtn plus" id="composer-plus" data-action="toggle-composer-menu" aria-label="新增與工具" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-menu"><svg class="i" data-i="plus"></svg></button>
+        <input id="composer-file" type="file" hidden multiple />
+        <div class="active-tools" id="active-tools" aria-label="已啟用的工具"></div>
+        <span class="toolbar-spacer"></span>
+        <div class="usage-ring-wrap">
+          <button class="usage-ring" id="usage-ring" type="button" aria-describedby="usage-tip" aria-label="對話長度與用量">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle class="track" cx="10" cy="10" r="8"/><circle class="value" cx="10" cy="10" r="8" pathLength="100"/></svg>
+          </button>
+          <div class="usage-tip" id="usage-tip" role="tooltip"><b id="usage-line1"></b><span id="usage-line2"></span></div>
+        </div>
+        <button class="cbtn mic" id="mic" type="button" data-action="toggle-mic" aria-label="語音輸入" aria-pressed="false"><svg class="i" data-i="mic"></svg><span class="tip">語音輸入</span></button>
+        <button class="cbtn send" id="send" data-action="send" aria-label="送出"><svg class="i" data-i="arrow-up"></svg></button>
+      </div>
+      <div class="composer-menu" id="composer-menu" role="menu" hidden>
+        <div class="composer-menu-label">新增</div>
+        <button class="composer-menu-item" role="menuitem" data-action="add-file"><svg class="i" data-i="paperclip"></svg><span>檔案</span><small>上傳文件或圖片</small></button>
+        <div class="composer-menu-label">工具</div>
+        <button class="composer-menu-item" role="menuitemcheckbox" data-tool="web" aria-checked="false"><svg class="i" data-i="search"></svg><span>網路搜尋</span><small>查詢最新的網路資訊</small><svg class="i ck" data-i="check"></svg></button>
+        <button class="composer-menu-item" role="menuitemcheckbox" data-tool="kb" aria-checked="false"><svg class="i" data-i="book-open"></svg><span>個人知識</span><small>讀取你上傳的文件</small><svg class="i ck" data-i="check"></svg></button>
+        <button class="composer-menu-item" role="menuitemcheckbox" data-tool="skills" aria-checked="false"><svg class="i" data-i="wrench"></svg><span>Skills</span><small>使用個人 Skills</small><svg class="i ck" data-i="check"></svg></button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============ Drawers ============ -->
+<div class="overlay" id="overlay" data-action="close-drawers"></div>
+
+<aside class="drawer" id="drawer-skills" aria-label="個人 Skills" inert>
+  <div class="dr-head">
+    <div><div class="t">個人 Skills</div><div class="s">只有你能管理；每次聊天仍需在工具選單中啟用。</div></div>
+    <button class="dr-close" data-action="close-drawers" aria-label="關閉"><svg class="i" data-i="x"></svg></button>
+  </div>
+  <div class="dr-body">
+    <section class="skill-subview" id="skill-list-view" aria-label="所有 Skills">
+      <div class="skill-add-control">
+        <button class="skill-add-button" type="button" data-action="toggle-skill-add" aria-expanded="false" aria-controls="skill-add-menu">
+          <svg class="i" data-i="plus"></svg><span>新增 Skill</span>
+        </button>
+        <div class="skill-add-menu" id="skill-add-menu" hidden>
+          <button class="skill-add-option" type="button" data-action="skill-create">
+            <span class="skill-option-icon"><svg class="i" data-i="wrench"></svg></span>
+            <span><b>建立 Skill</b><small>從空白開始建立個人 Skill</small></span>
+          </button>
+          <button class="skill-add-option" type="button" data-action="skill-zip">
+            <span class="skill-option-icon"><svg class="i" data-i="archive"></svg></span>
+            <span><b>從 ZIP 匯入</b><small>從電腦選擇一個 .zip 檔案</small></span>
+          </button>
+          <button class="skill-add-option" type="button" data-action="skill-git">
+            <span class="skill-option-icon"><svg class="i" data-i="git-branch"></svg></span>
+            <span><b>從 Git 匯入</b><small>貼上 Git repository 連結</small></span>
+          </button>
+        </div>
+        <input id="skill-zip-input" type="file" accept=".zip,application/zip" hidden />
+      </div>
+      <div class="skill-list" id="skill-list"></div>
+    </section>
+
+    <section class="skill-subview skill-form-view" id="skill-git-view" aria-labelledby="skill-git-title" hidden>
+      <button class="skill-back" type="button" data-action="skill-list"><svg class="i" data-i="arrow-left"></svg>所有 Skills</button>
+      <h2 id="skill-git-title">從 Git 匯入 Skill</h2>
+      <p class="skill-form-copy">輸入可存取的 Git repository 連結，匯入後可再檢查內容。</p>
+      <div class="skill-form">
+        <label for="skill-git-url">Git repository 連結</label>
+        <input id="skill-git-url" type="url" inputmode="url" placeholder="https://github.com/organization/skill" required />
+      </div>
+      <div class="skill-form-actions">
+        <button class="btn-outline" type="button" data-action="skill-list">取消</button>
+        <button class="btn-primary" type="button" data-action="skill-import-git">匯入</button>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<dialog class="skill-editor-dialog" id="skill-editor-dialog" aria-labelledby="skill-editor-title">
+  <div class="skill-editor-shell">
+    <header class="skill-editor-header">
+      <div class="skill-editor-identity">
+        <button class="skill-editor-close" type="button" data-action="close-skill-editor" aria-label="關閉 Skill 編輯器"><svg class="i" data-i="x"></svg></button>
+        <div>
+          <div class="skill-editor-title-row"><h2 id="skill-editor-title">建立個人 Skill</h2><span class="skill-editor-status" id="skill-editor-status">未儲存</span></div>
+        </div>
+      </div>
+      <div class="skill-editor-actions">
+        <label class="skill-version-control" for="skill-version-select" hidden><span>草稿版本</span><select id="skill-version-select" aria-label="選擇草稿版本" disabled><option>尚未建立草稿</option></select></label>
+        <button class="btn-outline" type="button" data-action="save-skill-draft">儲存草稿</button>
+        <button class="btn-primary" type="button" data-action="publish-skill" hidden>發布</button>
+      </div>
+    </header>
+    <main class="skill-editor-content">
+      <div class="skill-editor-intro">
+        <h3>Skill 設定</h3>
+        <p>定義名稱、用途與執行指令。儲存或發布時會自動保留一筆版本紀錄。</p>
+      </div>
+      <div class="skill-form skill-editor-form">
+        <label for="skill-name">名稱</label>
+        <input id="skill-name" type="text" placeholder="my-workflow" pattern="[a-z0-9_-]+" aria-describedby="skill-name-rule" required />
+        <small class="skill-field-rule" id="skill-name-rule">只能使用小寫英文字母、數字、連字號（-）與底線（_），不可包含大寫或空白。</small>
+        <label for="skill-description">說明</label>
+        <textarea id="skill-description" rows="3" placeholder="簡短說明這個 Skill 的用途"></textarea>
+        <label for="skill-instructions">指令</label>
+        <textarea id="skill-instructions" class="skill-instructions" rows="14" placeholder="輸入 Agent 使用這個 Skill 時應遵循的指令" required></textarea>
+      </div>
+      <div class="skill-editor-footer">
+        <button class="skill-editor-delete" type="button" data-action="delete-skill" hidden><svg class="i" data-i="trash"></svg>刪除 Skill</button>
+      </div>
+    </main>
+  </div>
+</dialog>
+
+<aside class="review-panel" id="review-panel" aria-labelledby="review-panel-title" aria-hidden="true">
+  <header class="review-panel-header">
+    <div>
+      <h2 id="review-panel-title">長篇內容檢閱</h2>
+      <p>完整內容</p>
+    </div>
+    <div class="review-panel-actions">
+      <button data-action="toggle-review-expanded" aria-label="展開檢閱 Panel" aria-expanded="false"><span class="review-maximize"><svg class="i" data-i="maximize"></svg></span><span class="review-minimize"><svg class="i" data-i="minimize"></svg></span></button>
+      <button data-action="copy-review" aria-label="複製檢閱內容"><svg class="i" data-i="copy"></svg></button>
+      <button data-action="close-review-panel" aria-label="關閉檢閱 Panel"><svg class="i" data-i="x"></svg></button>
+    </div>
+  </header>
+  <div class="review-panel-content" id="review-panel-content"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+/* Gina orb: thinking-orbs "composing"（示範頁標為 Thinking…）at the 64px tuning, tinted Giant blue, shown at 96px.
+   React 版本：<ThinkingOrb state="composing" size={64} color="#001488" /> */
+import { resolvePreset, MODE_FRAMES, paintFrame } from './vendor/thinking-orbs/engine.es.js';
+const ORB={state:'composing',size:64,display:56,dotScale:1.1,color:{r:0x00,g:0x14,b:0x88}};
+const host=document.querySelector('.hero-avatar');
+const canvas=document.createElement('canvas');
+canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Gina');
+canvas.style.cssText=`width:100%;height:100%;display:block;position:relative`;
+host.replaceChildren(canvas);
+const dpr=Math.min(2,window.devicePixelRatio||1)*(ORB.display/ORB.size);
+canvas.width=Math.round(ORB.size*dpr);canvas.height=Math.round(ORB.size*dpr);
+const ctx=canvas.getContext('2d');
+const {mode,speed,opts}=resolvePreset(ORB.state,ORB.size);
+const frameFn=MODE_FRAMES[mode];
+const paint=t=>{
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,ORB.size,ORB.size);
+  const f=frameFn(ORB.size,t,opts);
+  paintFrame(ctx,{lines:f.lines,dots:f.dots.map(d=>({...d,r:d.r*ORB.dotScale}))},false,ORB.color);
+};
+// Lean a few px toward the pointer when it is near — a lighter take on the library's cursor gravity.
+if(matchMedia('(pointer: fine)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  let lean=0;
+  document.addEventListener('pointermove',e=>{
+    const r=canvas.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const dx=e.clientX-cx,dy=e.clientY-cy,dist=Math.hypot(dx,dy);
+    const k=Math.max(0,1-dist/320)*8;
+    if(!k&&!lean)return;lean=k;
+    host.style.transform=k?`translate(${(dx/dist*k).toFixed(1)}px,${(dy/dist*k).toFixed(1)}px)`:'';
+  },{passive:true});
+}
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let raf=0,running=false;
+const loop=()=>{paint(performance.now()/1e3*speed);if(running)raf=requestAnimationFrame(loop)};
+const start=()=>{if(running||reduced.matches)return;running=true;raf=requestAnimationFrame(loop)};
+const stop=()=>{running=false;cancelAnimationFrame(raf)};
+const visible=()=>host.offsetParent!==null&&document.visibilityState!=='hidden';
+const sync=()=>{if(reduced.matches){stop();paint(0.6)}else if(visible())start();else stop()};
+new IntersectionObserver(([e])=>{e.isIntersecting?sync():stop()}).observe(canvas);
+document.addEventListener('visibilitychange',sync);
+reduced.addEventListener('change',sync);
+new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
+paint(0.6); // always show a frame; the loop only runs while the orb is on screen
+sync();
+</script>
+<script>
+/* ---------- Icons (lucide-style) ---------- */
+const ICONS = {
+  "pencil":'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+  "circle-check":'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  "server":'<rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>',
+  "book-open":'<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  "book":'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>',
+  "wrench":'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  "chevron-down":'<path d="m6 9 6 6 6-6"/>',
+  "chevron-up":'<path d="m18 15-6-6-6 6"/>',
+  "chevron-left":'<path d="m15 18-6-6 6-6"/>',
+  "panel-left":'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>',
+  "chevron-right":'<path d="m9 18 6-6-6-6"/>',
+  "arrow-left":'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  "search":'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  "message":'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  "languages":'<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+  "download":'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+  "copy":'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  "maximize":'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  "minimize":'<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M16 3v3a2 2 0 0 0 2 2h3"/><path d="M8 21v-3a2 2 0 0 0-2-2H3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>',
+  "more":'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+  "pin":'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',
+  "pin-off":'<path d="M12 17v5"/><path d="M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89"/><path d="m2 2 20 20"/><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11"/>',
+  "trash":'<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+  "users":'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  "plus":'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  "arrow-up":'<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
+  "mic":'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+  "send":'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  "paperclip":'<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
+  "check":'<path d="M20 6 9 17l-5-5"/>',
+  "x":'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  "monitor":'<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+  "chart":'<path d="M4 20h16"/><path d="M8 16v-4"/><path d="M12 16V7"/><path d="M16 16v-6"/>',
+  "mail":'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  "calendar":'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/>',
+  "unplug":'<path d="m19 5 3-3"/><path d="m2 22 3-3"/><path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/><path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/><path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/>',
+  "list-box":'<rect width="18" height="16" x="3" y="4" rx="2"/><path d="M7 9h.01"/><path d="M7 15h.01"/><path d="M11 9h6"/><path d="M11 15h6"/>',
+  "grid":'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  "logout":'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>',
+  "archive":'<rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/>',
+  "git-branch":'<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+  "settings":'<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+  "info":'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'
+};
+const svg = n => `<svg class="i" viewBox="0 0 24 24">${ICONS[n]||''}</svg>`;
+function hydrateIcons(root=document){
+  root.querySelectorAll('svg[data-i]').forEach(el=>{
+    el.setAttribute('viewBox','0 0 24 24');
+    el.innerHTML = ICONS[el.dataset.i]||'';
+    el.removeAttribute('data-i');
+  });
+}
+hydrateIcons();
+
+/* ---------- Data ---------- */
+const MCPS = [
+  ["Atlassian","https://mcp.atlassian.com/v1/mcp/authv2"],
+  ["Context7","https://mcp.context7.com/mcp"],
+  ["GitHub","https://api.githubcopilot.com/mcp/"],
+  ["nova mcp","https://mcp.example.com/nova"]
+];
+document.getElementById('mcp-list').innerHTML = MCPS.map(([n,u])=>`
+  <div class="mcp-row"><div class="icon-tile">${svg('server')}</div>
+  <div class="mcp-meta"><div class="mcp-name">${n}</div><div class="mcp-url">${u}</div></div>
+  <span class="ok-dot">${svg('circle-check')}</span></div>`).join('');
+
+const HISTORY = [
+  "Gina 可以用哪些格式回覆？",
+  "請幫我確認今天有幾封未讀信件",
+  "過去三天有什麼我需要注意的信件？",
+  "幫我看這一個禮拜, 有哪些信是需要我回覆的",
+  "你可以幫忙建立個人 skill 嗎?",
+  "我想知道目前申請健保加保的狀態",
+  "你可以看到 HR-Docs 這個 folder 嗎?",
+  "在我的 inbox 有幾封未讀的信",
+  "給我需要處理的 5–10 封信，依優先順序排列",
+  "幫我整理 Q4 預算確認的信件重點",
+  "下週有哪些會議需要我先準備資料？",
+  "幫我草擬回覆財務部的信",
+  "MCP 整合進度週報的摘要",
+  "健保加保需要補哪些文件？",
+  "幫我比較兩份供應商報價",
+  "把這份會議記錄整理成待辦事項",
+  "翻譯這段產品說明成英文",
+  "上個月的客訴信件有哪些共同問題？",
+  "幫我把需求整理成 PRD 大綱",
+  "有哪些信件已經超過三天沒回？",
+  "幫我安排和設計團隊的評審會議",
+  "整理 Gina UI 專案的相關信件"
+];
+let activeHist = -1;
+const pinnedHist = new Set([2, 8, 17]);   // indices into HISTORY; 示意預設釘選
+const deletedHist = new Set();
+let menuHist = -1;              // row the ⋯ menu is open for
+const historyLoadingCounts=new Map();
+const unreadHist=new Set();     // replies finished while the user was elsewhere
+function setHistoryLoading(index,loading){
+  if(index<0)return;
+  const count=historyLoadingCounts.get(index)||0;
+  if(loading){historyLoadingCounts.set(index,count+1)}else if(count>1){historyLoadingCounts.set(index,count-1)}else{historyLoadingCounts.delete(index)}
+  if(!loading&&!historyLoadingCounts.has(index)&&index!==activeHist)unreadHist.add(index);
+  renderHistory();
+}
+function renderHistory(){
+  const q = document.getElementById('hist-search').value.trim();
+  const newChatButton=document.querySelector('[data-action="new-chat"]');
+  const newChatActive=activeHist===-1;
+  newChatButton.classList.toggle('active',newChatActive);
+  if(newChatActive){newChatButton.setAttribute('aria-current','page')}else{newChatButton.removeAttribute('aria-current')}
+  const row=(t,i)=>`<div class="hist-row ${i===activeHist?'active':''} ${i===menuHist?'menu-open':''}">
+      <button class="hist ${i===activeHist?'active':''}" data-hist="${i}" ${i===activeHist?'aria-current="page"':''}><span class="hist-dot ${historyLoadingCounts.has(i)?'is-loading':unreadHist.has(i)?'is-unread':''}" ${historyLoadingCounts.has(i)?'role="img" aria-label="正在處理"':unreadHist.has(i)?'role="img" aria-label="有新回覆"':'aria-hidden="true"'}></span><span class="hist-title">${t}</span></button>
+      <button class="hist-more" type="button" data-pop="pop-hist" data-index="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="更多選項：${t}">${svg('more')}</button>
+    </div>`;
+  const visible=HISTORY.map((t,i)=>[t,i]).filter(([t,i])=>!deletedHist.has(i)&&(!q||t.includes(q)));
+  const pinned=visible.filter(([,i])=>pinnedHist.has(i)), rest=visible.filter(([,i])=>!pinnedHist.has(i));
+  document.getElementById('pinned-group').hidden=!pinned.length;
+  document.getElementById('pinned-list').innerHTML=pinned.map(([t,i])=>row(t,i)).join('');
+  document.getElementById('hist-list').innerHTML=rest.map(([t,i])=>row(t,i)).join('');
+}
+renderHistory();
+document.getElementById('hist-search').addEventListener('input', renderHistory);
+const EXEC_TOOLS = ["email-priority", "Outlook 郵件", "Outlook Calendar"];
+const EXEC_STEPS = [
+  "讀取 Outlook 收件匣",
+  "套用 email-priority 判斷優先級",
+  "查詢 Outlook Calendar 今日行程",
+  "整理需要回覆的信件",
+  "產生摘要"
+];
+
+const SKILLS = [{
+  id:'email-priority',
+  name:'email-priority',
+  description:'Outlook 郵件優先級判斷。使用 Outlook 郵件工具讀取信件並依重要性排序',
+  instructions:'讀取 Outlook 郵件後，依寄件者、截止時間與是否需要回覆判斷優先級，並整理成摘要。',
+  status:'published',
+  versions:[
+    {number:1,status:'draft',savedAt:'10/05 15:40',name:'email-priority',description:'Outlook 郵件優先級判斷',instructions:'讀取 Outlook 郵件並整理需要處理的項目。'},
+    {number:2,status:'published',savedAt:'10/06 09:20',name:'email-priority',description:'Outlook 郵件優先級判斷。使用 Outlook 郵件工具讀取信件並依重要性排序',instructions:'讀取 Outlook 郵件後，依寄件者、截止時間與是否需要回覆判斷優先級，並整理成摘要。'}
+  ]
+}];
+let activeSkillId=null;
+function escapeHTML(value){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
+function renderSkillList(){
+  $('#skill-list').innerHTML=SKILLS.map(skill=>`<div class="skill-card">
+    <button class="skill-card-open" type="button" data-action="open-skill-editor" data-skill-id="${escapeHTML(skill.id)}">
+      <span class="icon-tile">${svg('wrench')}</span>
+      <span class="meta"><span class="nm">${escapeHTML(skill.name)}</span><span class="ds">${escapeHTML(skill.description||'尚未加入說明')}</span></span>
+      <span class="use">${skill.status==='published'?'使用中':'草稿'}</span>${svg('chevron-right')}
+    </button>
+  </div>`).join('');
+}
+function skillStatusLabel(status){return status==='published'?'已發布':'草稿'}
+function setSkillEditorVersion(skill,versionNumber){
+  const version=skill.versions.find(item=>item.number===Number(versionNumber))||skill.versions.at(-1);
+  if(!version)return;
+  $('#skill-name').value=version.name;$('#skill-description').value=version.description;$('#skill-instructions').value=version.instructions;
+  $('#skill-editor-status').textContent=skillStatusLabel(version.status);
+  $('#skill-version-select').value=String(version.number);
+}
+function refreshSkillVersions(skill){
+  const select=$('#skill-version-select'),control=select.closest('.skill-version-control');
+  const drafts=skill?skill.versions.filter(version=>version.status==='draft'):[];
+  const canSwitch=!!skill&&skill.status==='draft'&&drafts.length>0;
+  control.hidden=!canSwitch;select.disabled=!canSwitch;
+  select.innerHTML=canSwitch?drafts.slice().reverse().map(version=>`<option value="${version.number}">${version.savedAt} 建立的草稿</option>`).join(''):'<option>尚未建立草稿</option>';
+  if(skill)setSkillEditorVersion(skill,(canSwitch?drafts.at(-1):skill.versions.at(-1)).number);
+}
+function openSkillEditor(skillId=null){
+  $('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false');
+  activeSkillId=skillId;
+  const skill=SKILLS.find(item=>item.id===skillId);
+  $('#skill-editor-title').textContent=skill?skill.name:'建立個人 Skill';
+  $('#skill-editor-status').textContent=skill?skillStatusLabel(skill.status):'未儲存';
+  $('[data-action="publish-skill"]').hidden=!skill||skill.status!=='draft';
+  $('[data-action="delete-skill"]').hidden=!skill;
+  if(skill){refreshSkillVersions(skill)}else{$('#skill-name').value='';$('#skill-description').value='';$('#skill-instructions').value='';refreshSkillVersions(null)}
+  const dialog=$('#skill-editor-dialog');if(!dialog.open)dialog.showModal();
+  setTimeout(()=>$('#skill-name').focus(),0);
+}
+function validateSkillEditor(){
+  const name=$('#skill-name'),instructions=$('#skill-instructions');
+  name.setCustomValidity('');name.removeAttribute('aria-invalid');instructions.setCustomValidity('');
+  if(!name.value.trim()||!/^[a-z0-9_-]+$/.test(name.value)){
+    name.setCustomValidity('名稱只能使用小寫英文字母、數字、連字號與底線，不可包含大寫或空白。');name.setAttribute('aria-invalid','true');name.reportValidity();name.focus();return false;
+  }
+  if(!instructions.value.trim()){instructions.setCustomValidity('請輸入 Skill 指令。');instructions.reportValidity();instructions.focus();return false}
+  return true;
+}
+function createSkillSnapshot(status){
+  const now=new Date(),savedAt=`${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  return {name:$('#skill-name').value.trim(),description:$('#skill-description').value.trim(),instructions:$('#skill-instructions').value.trim(),status,savedAt};
+}
+function saveSkillDraft(){
+  if(!validateSkillEditor())return;
+  const snapshot=createSkillSnapshot('draft');
+  let skill=SKILLS.find(item=>item.id===activeSkillId);
+  const isNew=!skill;
+  if(!skill){skill={id:`${snapshot.name}-${Date.now()}`,versions:[]};SKILLS.unshift(skill);activeSkillId=skill.id}
+  snapshot.number=(skill.versions.at(-1)?.number||0)+1;
+  skill.versions.push(snapshot);Object.assign(skill,snapshot);
+  $('#skill-editor-title').textContent=skill.name;$('[data-action="publish-skill"]').hidden=false;$('[data-action="delete-skill"]').hidden=false;
+  refreshSkillVersions(skill);renderSkillList();
+  toast(`${skill.name} 已儲存為 ${snapshot.savedAt} 建立的草稿`);
+  if(isNew){$('#skill-editor-dialog').close();resetSkillPanel()}
+}
+function publishSkill(){
+  const skill=SKILLS.find(item=>item.id===activeSkillId);if(!skill||skill.status!=='draft')return;
+  if(!validateSkillEditor())return;
+  const snapshot=createSkillSnapshot('published');snapshot.number=(skill.versions.at(-1)?.number||0)+1;
+  skill.versions.push(snapshot);Object.assign(skill,snapshot);
+  $('#skill-editor-status').textContent='已發布';$('[data-action="publish-skill"]').hidden=true;$('[data-action="delete-skill"]').hidden=false;
+  refreshSkillVersions(skill);renderSkillList();toast(`${skill.name} 已發布`);
+}
+function deleteSkill(skillId){
+  const index=SKILLS.findIndex(skill=>skill.id===skillId);if(index<0)return;
+  const [removed]=SKILLS.splice(index,1);$('#skill-editor-dialog').close();activeSkillId=null;renderSkillList();toast(`${removed.name} 已刪除`);
+}
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const body = document.body;
+const thread = $('#thread');
+const input = $('#input');
+renderSkillList();
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1600);
+}
+function nowHM(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function closePops(except){
+  if(except!=='pop-hist'){document.querySelectorAll('.hist-row.menu-open').forEach(r=>r.classList.remove('menu-open'));menuHist=-1;}
+  document.querySelectorAll('.popover.open').forEach(p=>{if(p.id!==except)p.classList.remove('open')});
+  document.querySelectorAll('[data-pop].active').forEach(b=>{if(b.dataset.pop!==except){b.classList.remove('active');b.setAttribute('aria-expanded','false')}});
+}
+function positionPop(pop, anchor){
+  const r=anchor.getBoundingClientRect();
+  const w=pop.offsetWidth, h=pop.offsetHeight;
+  const fromSidebar=!!anchor.closest('.sidebar');
+  const left=fromSidebar ? r.right+16 : r.right-w;
+  const top=anchor.closest('.side-bottom') ? r.bottom-h : fromSidebar ? r.top : r.bottom+10;
+  pop.style.right='auto';
+  pop.style.left=Math.max(12,Math.min(left,window.innerWidth-w-12))+'px';
+  pop.style.top=Math.max(12,Math.min(top,window.innerHeight-h-12))+'px';
+}
+function openPop(id, anchor){
+  const pop=document.getElementById(id);
+  const wasOpen=pop.classList.contains('open');
+  closePops();
+  if(wasOpen) return;
+  pop.classList.add('open');anchor.classList.add('active');anchor.setAttribute('aria-expanded','true');
+  positionPop(pop,anchor);
+}
+window.addEventListener('resize',()=>document.querySelectorAll('.popover.open').forEach(pop=>{
+  const anchor=document.querySelector(`[data-pop="${pop.id}"].active`);
+  if(anchor)positionPop(pop,anchor);
+}));
+function closeTools(){}
+function closeDownloadMenus(except){
+  document.querySelectorAll('.download-menu').forEach(menu=>{
+    if(menu!==except){menu.hidden=true;menu.previousElementSibling.setAttribute('aria-expanded','false')}
+  });
+}
+function closeReviewPanel(){
+  body.classList.remove('review-panel-open','review-panel-expanded');
+  $('#review-panel').setAttribute('aria-hidden','true');
+  const expand=$('[data-action="toggle-review-expanded"]');
+  expand.setAttribute('aria-expanded','false');expand.setAttribute('aria-label','展開檢閱 Panel');
+}
+function openReviewPanel(source){
+  $('#review-panel-content').innerHTML=source.innerHTML;
+  $('#review-panel').setAttribute('aria-hidden','false');
+  body.classList.add('review-panel-open');
+}
+async function copyText(text,successMessage){
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(error){
+    const helper=document.createElement('textarea');helper.value=text;helper.style.position='fixed';helper.style.opacity='0';document.body.appendChild(helper);helper.select();document.execCommand('copy');helper.remove();
+  }
+  toast(successMessage);
+}
+function readableText(element){return (element.innerText||element.textContent||'').trim()}
+function resetSkillPanel(){
+  document.querySelectorAll('#drawer-skills .skill-subview').forEach(view=>view.hidden=true);
+  $('#skill-list-view').hidden=false;
+  $('#skill-add-menu').hidden=true;
+  $('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false');
+}
+function showSkillView(id){
+  document.querySelectorAll('#drawer-skills .skill-subview').forEach(view=>view.hidden=true);
+  const view=document.getElementById(id);view.hidden=false;
+  const field=view.querySelector('input,textarea');if(field)field.focus();
+}
+function openDrawer(id){closePops();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');if(id==='drawer-skills')resetSkillPanel();body.classList.add('drawer-panel-open');$('#overlay').classList.add('open');const panel=document.getElementById(id);panel.inert=false;panel.classList.add('open');panel.querySelector('.dr-close').focus()}
+function closeDrawers(){body.classList.remove('drawer-panel-open');$('#overlay').classList.remove('open');document.querySelectorAll('.drawer.open').forEach(d=>{if(d.contains(document.activeElement))$('.user-btn').focus();d.classList.remove('open');d.inert=true});resetSkillPanel()}
+function scrollBottom(){const s=$('#scroll');s.scrollTop=s.scrollHeight}
+/* ---------- Sidebar width (drag the right edge; persisted per browser) ---------- */
+const SIDEBAR_W={min:200,max:420,def:252};
+function setSidebarWidth(w,save=true){
+  w=Math.round(Math.min(SIDEBAR_W.max,Math.max(SIDEBAR_W.min,w)));
+  document.documentElement.style.setProperty('--sidebar-w',w+'px');
+  $('#sidebar-resizer').setAttribute('aria-valuenow',w);
+  if(save){try{localStorage.setItem('gina-sidebar-w',w)}catch{}}
+  return w;
+}
+try{const saved=+localStorage.getItem('gina-sidebar-w');if(saved)setSidebarWidth(saved,false)}catch{}
+(()=>{
+  const bar=$('#sidebar-resizer');
+  bar.setAttribute('aria-valuemin',SIDEBAR_W.min);bar.setAttribute('aria-valuemax',SIDEBAR_W.max);
+  bar.addEventListener('pointerdown',e=>{
+    if(window.matchMedia('(max-width: 640px)').matches)return;
+    e.preventDefault();bar.setPointerCapture(e.pointerId);body.classList.add('sidebar-resizing');
+    const move=ev=>setSidebarWidth(ev.clientX,false);
+    const up=ev=>{bar.removeEventListener('pointermove',move);body.classList.remove('sidebar-resizing');setSidebarWidth(ev.clientX)};
+    bar.addEventListener('pointermove',move);bar.addEventListener('pointerup',up,{once:true});bar.addEventListener('pointercancel',up,{once:true});
+  });
+  bar.addEventListener('dblclick',()=>setSidebarWidth(SIDEBAR_W.def));
+  bar.addEventListener('keydown',e=>{
+    const cur=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sidebar-w'))||SIDEBAR_W.def;
+    if(e.key==='ArrowLeft'){e.preventDefault();setSidebarWidth(cur-16)}
+    if(e.key==='ArrowRight'){e.preventDefault();setSidebarWidth(cur+16)}
+    if(e.key==='Home'){e.preventDefault();setSidebarWidth(SIDEBAR_W.def)}
+  });
+})();
+
+/* ---------- Composer tools: "+" menu toggles; active ones show as chips ---------- */
+const TOOLS={web:{label:'網路搜尋',icon:'search'},kb:{label:'個人知識',icon:'book-open'},skills:{label:'Skills',icon:'wrench'}};
+const activeTools=new Set();
+function renderTools(){
+  $('#active-tools').innerHTML=[...activeTools].map(k=>`<span class="tool-chip" data-tool="${k}">${svg(TOOLS[k].icon)}<span>${TOOLS[k].label}</span><button type="button" data-action="remove-tool" data-tool="${k}" aria-label="移除 ${TOOLS[k].label}">${svg('x')}<span class="tip">清除</span></button></span>`).join('');
+  document.querySelectorAll('#composer-menu [data-tool]').forEach(b=>b.setAttribute('aria-checked',String(activeTools.has(b.dataset.tool))));
+}
+function setComposerMenu(open){
+  $('#composer-menu').hidden=!open;
+  $('#composer-plus').setAttribute('aria-expanded',String(open));
+  $('#composer-plus').classList.toggle('open',open);
+}
+
+/* ---------- Sidebar scroll: show a hairline under the fixed header once content scrolls ---------- */
+$('#side-scroll').addEventListener('scroll',e=>body.classList.toggle('side-scrolled',e.target.scrollTop>2),{passive:true});
+
+/* ---------- Greeting (示意：名字由登入資訊帶入) ---------- */
+const USER_NAME='Kevin';
+function greeting(){
+  const h=new Date().getHours();
+  return h<5?'還在忙嗎':h<11?'早安':h<14?'午安':h<18?'下午好':'晚上好';
+}
+$('#hero-greeting').textContent=`${greeting()}，${USER_NAME}`;
+
+/* ---------- Usage ring (示意資料；正式版由後端回傳) ---------- */
+const USAGE={context:57057,contextLimit:200000,sessionPct:32,resetMinutes:124};
+const fmtK=n=>n>=1e6?(n/1e6).toFixed(n%1e6?1:0)+'M':n>=1e3?Math.round(n/1e3)+'k':String(n);
+function renderUsage(u=USAGE){
+  const pct=Math.min(100,Math.round(u.context/u.contextLimit*100));
+  const ring=$('#usage-ring');
+  ring.style.setProperty('--pct',pct);
+  ring.dataset.level=pct>=90?'high':pct>=70?'mid':'ok';
+  ring.setAttribute('aria-label',`對話長度 ${fmtK(u.context)} / ${fmtK(u.contextLimit)}，${pct}%`);
+  $('#usage-line1').textContent=`對話長度 ${fmtK(u.context)} / ${fmtK(u.contextLimit)}（${pct}%）`;
+  const h=Math.floor(u.resetMinutes/60),m=u.resetMinutes%60;
+  $('#usage-line2').textContent=`本時段額度已用 ${u.sessionPct}% · ${h?h+' 小時 ':''}${m} 分後重置`;
+}
+renderUsage();
+
+/* ---------- Outlook connection (示意：實際會導向 Microsoft 登入) ---------- */
+function setOutlook(on){
+  const sw=$('#outlook-switch');
+  if(on&&sw.getAttribute('aria-checked')!=='true')toast('前往 Microsoft 帳號登入…（示意）');
+  else if(!on)toast('已中斷 Outlook 連線（示意）');
+  sw.setAttribute('aria-checked',String(on));
+  $('#outlook-state').textContent=on?'已連線 · 郵件與行事曆':'未連線 · 開啟以用 Microsoft 帳號登入';
+  $('#outlook-hint').hidden=on;
+}
+
+/* ---------- Views ---------- */
+function goHome(){
+  closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
+  body.classList.remove('specialist','chatting');
+  $('#new-label').textContent='新對話';
+  $('#hero').style.display='';$('#spec-hero').style.display='none';
+  thread.innerHTML='';activeHist=-1;renderHistory();
+}
+function goSpecialist(){
+  closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
+  body.classList.remove('chatting');body.classList.add('specialist');
+  $('#new-label').textContent='新對話';
+  $('#hero').style.display='none';$('#spec-hero').style.display='flex';
+  thread.innerHTML='';activeHist=-1;renderHistory();
+}
+function startChat(){body.classList.add('chatting');body.classList.remove('mobile-nav-open');}
+
+function userMsg(text,time=nowHM()){
+  const el=document.createElement('div');el.className='msg-user';
+  el.innerHTML=`<div class="col"><div class="bubble-user"></div><div class="msg-time">${time}</div></div>`;
+  el.querySelector('.bubble-user').textContent=text;
+  thread.appendChild(el);return el;
+}
+function aiMsg(html){
+  const el=document.createElement('div');el.className='msg-ai';
+  el.innerHTML=`<div class="ai-col">
+    <div class="bubble-wrap">
+      <div class="bubble-ai">${html}</div>
+    </div>
+  </div>`;
+  thread.appendChild(el);return el;
+}
+function executionDetailsHTML(steps,agentName){
+  const items=EXEC_STEPS.slice(0,steps);
+  return `<details class="execution-details">
+    <summary aria-label="展開或收合執行步驟"><span>執行了 ${steps} 個步驟，使用 ${EXEC_TOOLS.length} 個工具</span>${svg('chevron-down')}</summary>
+    <div class="execution-list">${items.map((label,i)=>`<button type="button" class="execution-step" data-action="toast" data-msg="步驟 ${i+1}：${label}（示意）"><span>${label}</span>${svg('chevron-right')}</button>`).join('')}</div>
+  </details>`;
+}
+function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?'業務助理':'Gina'){
+  const col=el.querySelector('.ai-col');
+  col.querySelector('.bubble-wrap').insertAdjacentHTML('beforebegin',executionDetailsHTML(steps,agentName));
+  col.insertAdjacentHTML('beforeend',`<div class="ai-meta"><div class="ai-time">${time}</div><div class="ai-actions"><button data-action="copy-message" aria-label="複製回覆">${svg('copy')}</button><button data-action="toggle-download" aria-label="下載回覆" aria-haspopup="menu" aria-expanded="false">${svg('download')}</button><div class="download-menu" role="menu" hidden><button class="download-option" role="menuitem" data-format="txt">純文字 (.txt)</button><button class="download-option" role="menuitem" data-format="md">Markdown (.md)</button><button class="download-option" role="menuitem" data-format="png">圖片 (.png)</button><button class="download-option" role="menuitem" data-format="pdf">PDF (.pdf)</button><button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button></div></div></div>`);
+}
+
+const REPLY_NO_MAIL = `<p>目前我沒有連接郵件相關的工具或專門的郵件助理，因此<b>無法直接存取您的信箱</b>來查詢未讀信件數量。</p>
+<p>要查詢今天的未讀信件，您可以：</p>
+<ul><li><b>直接開啟 Outlook / Gmail</b> 等郵件客戶端查看未讀數量</li><li><b>若您的環境有設定 Outlook MCP 工具，請聯繫管理員啟用郵件相關整合</b>，之後我就能協助您查詢</li></ul>
+<p>如果您有其他需要我協助的事項，歡迎告訴我！😊</p>`;
+
+function richResponseHTML(){
+  return `<div class="rich-response">
+    <p>我可以依照你的需求，用不同格式呈現回覆內容。以下是常見的七種方式：</p>
+
+    <section class="response-section">
+      <h3>📊 表格</h3>
+      <p>適合比較項目、整理需求清單或呈現欄位化資訊。</p>
+      <div class="response-table-wrap">
+        <table class="response-table">
+          <thead><tr><th>需求項目</th><th>說明</th><th>優先級</th></tr></thead>
+          <tbody>
+            <tr><td>登入流程</td><td>支援公司帳號單一登入</td><td>高</td></tr>
+            <tr><td>對話匯出</td><td>將結果整理成可分享文件</td><td>中</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="response-section">
+      <h3>📋 條列式清單</h3>
+      <p>適合步驟說明與重點摘要。</p>
+      <ol class="response-list"><li>確認目標與使用情境</li><li>整理需求與限制條件</li><li>確認優先順序與下一步</li></ol>
+    </section>
+
+    <section class="response-section">
+      <h3>💬 問答式</h3>
+      <p>適合釐清需求或整理常見問題。</p>
+      <dl class="response-qa">
+        <div><dt>這個功能給誰使用？</dt><dd>提供 Giant 內部同仁處理日常工作。</dd></div>
+        <div><dt>需要先準備什麼？</dt><dd>提供目標、背景資料與期望完成時間即可。</dd></div>
+      </dl>
+    </section>
+
+    <section class="response-section">
+      <h3>🗂️ 結構化文件</h3>
+      <p>適合完整需求書或提案，依序整理背景、目標、範圍、需求細項與限制條件。</p>
+      <div class="document-outline"><b>專案需求草稿</b><span>背景與目標</span><span>功能範圍</span><span>驗收條件</span></div>
+    </section>
+
+    <section class="response-section">
+      <h3>↗️ 互動式選項</h3>
+      <p>需要快速確認方向時，我會在輸入框上方提供最多三個可以直接點選的下一步。</p>
+    </section>
+
+    <section class="response-section">
+      <h3>💡 引用區塊</h3>
+      <p>適合特別標示結論、提醒或引用內容。</p>
+      <blockquote><p>先確認目標與使用情境，再決定最適合的回覆格式。</p><cite>Gina 的整理建議</cite></blockquote>
+    </section>
+
+    <section class="response-section">
+      <h3>💻 長篇內容與程式碼</h3>
+      <p>內容較長時會顯示在固定高度的卡片中，可直接捲動或展開成完整檢閱畫面。</p>
+      <div class="review-card">
+        <div class="review-card-actions">
+          <button data-action="copy-review-card" aria-label="複製長篇內容">${svg('copy')}</button>
+          <button class="review-expand" data-action="open-review-panel" aria-label="在側邊 Panel 檢閱完整內容">${svg('maximize')}</button>
+        </div>
+        <div class="review-card-content" tabindex="0" aria-label="可捲動的長篇內容">
+          <div class="review-copy">
+            <pre class="review-plain-text">郵件摘要處理範例
+
+這個流程會先讀取使用者有權限查看的郵件，再篩選未讀項目，依寄件者、時效與待辦需求計算優先級，最後產生適合快速檢閱的摘要。
+
+async function summarizeInbox(messages) {
+  const unread = messages.filter(message =&gt; !message.isRead);
+  const prioritized = unread.sort((a, b) =&gt; {
+    return b.priorityScore - a.priorityScore;
+  });
+
+  return prioritized.map(message =&gt; ({
+    subject: message.subject,
+    sender: message.sender,
+    receivedAt: message.receivedAt,
+    summary: message.preview,
+    priority: message.priorityScore,
+    requiresReply: message.requiresReply
+  }));
+}
+
+處理流程
+1. 讀取最近七天的郵件，保留使用者目前有權限查看的內容。
+2. 排除已封存、垃圾郵件與不需要採取行動的系統通知。
+3. 依寄件者、截止時間、關鍵字與是否需要回覆計算優先級。
+4. 將內容整理成寄件者、主旨、摘要、待辦事項與建議回覆時間。
+5. 若郵件包含會議邀請，同步檢查行事曆是否已有時間衝突。
+6. 回覆前先呈現草稿，等待使用者明確確認後才執行寄送。
+
+輸出規則
+- 每封郵件只保留完成判斷所需的資訊。
+- 相同討論串合併呈現，避免重複列出相近內容。
+- 有期限的項目優先標示日期與剩餘處理時間。
+- 無法判斷優先級時保留原始順序，並說明需要補充的資訊。
+- 任何寄送、刪除或變更行事曆的操作，都必須再次取得使用者確認。
+
+這個區塊可以容納更長的程式碼、系統紀錄、研究資料或文件內容。使用者可以直接在卡片內捲動閱讀，也可以使用右上角按鈕展開完整檢閱畫面。</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>`;
+}
+
+function loadingReplyHTML(name='Gina',steps=5){
+  return `<div class="loading-state" role="status" aria-live="polite">
+    <div class="loading-title"><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>${name} 正在處理</span></div>
+    <div class="loading-dispatches"><span class="loading-dispatch-item">${steps} 個執行步驟</span></div>
+  </div><div class="stream"></div>`;
+}
+
+function loadConversation(i){
+  closeTools();
+  body.classList.remove('specialist');$('#new-label').textContent='新對話';
+  activeHist=i;unreadHist.delete(i);renderHistory();
+  thread.innerHTML='';startChat();
+  userMsg(HISTORY[i],'13:35');
+  if(i===0){
+    setHistoryLoading(i,true);
+    const el=aiMsg(loadingReplyHTML('Gina',5));
+    el.classList.add('loading-message');
+    setTimeout(()=>{
+      setHistoryLoading(i,false);
+      if(!el.isConnected||activeHist!==i)return;
+      el.querySelector('.stream').innerHTML=richResponseHTML();
+      el.querySelector('.loading-state')?.remove();
+      el.classList.remove('loading-message');
+      finishAi(el,'09:42',5);
+      $('#scroll').scrollTop=0;
+    },REPLY_LOADING_DURATION);
+  } else if(i===HISTORY.length-1){
+    const el=aiMsg(`<p>我已讀取你的收件匣，最需要處理的是王小明的 <b>Gina UI</b> Teams 會議邀請，我已先幫你擬好回覆，請在下方確認是否寄出。</p>`);
+    finishAi(el,'17:24',8);
+    el.querySelector('.ai-col').insertAdjacentHTML('beforeend',actionCardHTML());
+  } else {
+    const el=aiMsg(REPLY_NO_MAIL);finishAi(el,'13:36');
+  }
+  $('#scroll').scrollTop=0;
+}
+
+function actionCardHTML(){
+  return `<div class="pending-label">待處理操作</div>
+  <div class="action-card">
+    <h3>確認寄出 Outlook 郵件？</h3>
+    <div class="lb">收件者</div><div class="v">王小明 &lt;xiaoming.wang@example.com&gt;</div>
+    <div class="lb">主旨</div><div class="v">Re: Gina UI</div>
+    <div class="lb">內文</div>
+    <textarea>Hi 小明,
+
+感謝您的會議邀請，我可以參加這次 Gina UI 的 Teams 會議，屆時見！
+
+Best regards</textarea>
+    <div class="lb">有效期限</div><div class="v">2026-09-30T09:28:50.607Z</div>
+    <div class="note">郵件尚未寄出；只能透過此卡片明確確認。聊天文字不會視為確認。</div>
+    <div class="action-btns"><button class="btn-confirm" data-action="confirm-send">確認寄出</button><button class="btn-cancel" data-action="cancel-send">取消</button></div>
+  </div>`;
+}
+
+/* ---------- Sending (simulated loading) ---------- */
+const REPLY_LOADING_DURATION=2000;
+function recommendationReply(text){
+  const replies={
+    '幫我把這個想法整理成需求':'<p>請貼上你的想法或背景。我會協助整理成目標、使用情境、功能需求與驗收條件。</p>',
+    '幫我審閱一份合約':'<p>請上傳合約或貼上要審閱的條款，並告訴我你關注的部分。我會協助整理重點、疑問與需要確認的事項。</p>',
+    '幫我安排一場會議':'<p>請提供會議主題、參與者、預計時長與可用時段。我會先協助整理會議安排。</p>',
+    '幫我整理這份文件':'<p>請上傳文件或貼上內容。我會協助整理摘要、重點與待辦事項。</p>',
+    '內部工作流程':'<p>了解，這是一個內部工作流程。請告訴我目前最花時間或最容易出錯的步驟。</p>',
+    '客戶服務流程':'<p>了解，這是一個客戶服務流程。請告訴我主要服務的客群，以及目前最常遇到的問題。</p>',
+    '資料整理與報表':'<p>了解，你想改善資料整理與報表。請提供資料來源，以及希望最後看到的指標。</p>',
+    '付款與費用':'<p>我會優先檢查付款條件、額外費用與逾期責任。請上傳合約或貼上相關條款。</p>',
+    '責任與賠償':'<p>我會優先檢查責任範圍、賠償上限與例外條款。請上傳合約或貼上相關條款。</p>',
+    '終止與續約':'<p>我會優先檢查終止條件、通知期限與自動續約。請上傳合約或貼上相關條款。</p>',
+    '30 分鐘':'<p>會議長度設定為 30 分鐘。請再提供參與者與可用日期。</p>',
+    '45 分鐘':'<p>會議長度設定為 45 分鐘。請再提供參與者與可用日期。</p>',
+    '60 分鐘':'<p>會議長度設定為 60 分鐘。請再提供參與者與可用日期。</p>',
+    '重點摘要':'<p>我會整理成精簡的重點摘要。請上傳文件或貼上內容。</p>',
+    '待辦清單':'<p>我會找出行動項目、負責人與期限。請上傳文件或貼上內容。</p>',
+    '完整架構':'<p>我會依主題重整完整架構與層級。請上傳文件或貼上內容。</p>',
+    '提供客戶或訂單資訊':'<p>請輸入客戶名稱、訂單編號，或直接貼上目前已有的資料。</p>',
+    '說明想整理的結果':'<p>請描述你希望得到報價、進度摘要、風險清單或其他結果。</p>',
+    '補充相關背景':'<p>請補充這項工作的背景、目前進度與需要完成的時間。</p>'
+  };
+  return replies[text] || '';
+}
+function clarificationOptions(text,specialist){
+  const options={
+    '幫我把這個想法整理成需求':['內部工作流程','客戶服務流程','資料整理與報表'],
+    '幫我審閱一份合約':['付款與費用','責任與賠償','終止與續約'],
+    '幫我安排一場會議':['30 分鐘','45 分鐘','60 分鐘'],
+    '幫我整理這份文件':['重點摘要','待辦清單','完整架構']
+  };
+  if(options[text]) return options[text];
+  if(['提供客戶或訂單資訊','說明想整理的結果','補充相關背景'].includes(text))return [];
+  return specialist?['提供客戶或訂單資訊','說明想整理的結果','補充相關背景']:[];
+}
+function clarificationOptionsHTML(options){
+  return `<div class="clarification-options" aria-label="需要補充的資訊">
+    <div class="clarification-options-label">接下來想怎麼整理？</div>
+    <div class="clarification-options-actions">${options.map(option=>`<button class="reply-option" data-prompt="${option}">${option}</button>`).join('')}</div>
+  </div>`;
+}
+function send(){
+  const text=input.value.trim(); if(!text) return;
+  input.value='';autosize();updateSend();closeTools();
+  if(!body.classList.contains('chatting')){thread.innerHTML='';startChat();}
+  userMsg(text);
+  const specialist=body.classList.contains('specialist');
+  const loadingHistoryIndex=activeHist;setHistoryLoading(loadingHistoryIndex,true);
+  const el=aiMsg(loadingReplyHTML(specialist?'業務助理':'Gina'));
+  el.classList.add('loading-message');
+  scrollBottom();
+  const recommendation = recommendationReply(text);
+  const target = recommendation || (specialist
+    ? `<p>收到！目前我尚未啟用任何 MCP server，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>`
+    : `<p>今天（9/30）共收到 <b>5 封信件</b>，依優先級整理如下：</p><hr><h4>高優先（來自主管 / 需今日回覆）</h4><ul><li><b>Re: Gina UI</b> — 王小明邀請你參加 Teams 會議，需要回覆是否出席</li><li><b>Q4 預算確認</b> — 財務部請你於今日下班前確認數字</li></ul><h4>中優先</h4><ul><li><b>MCP 整合進度同步</b> — 專案週報，建議本週內閱讀</li><li><b>健保加保申請</b> — HR 通知文件已受理</li></ul><h4>低優先</h4><ul><li><b>電子報</b> — 產業新聞摘要，可稍後再看</li></ul>`);
+  const stream=el.querySelector('.stream');
+  setTimeout(()=>{
+    setHistoryLoading(loadingHistoryIndex,false);
+    stream.innerHTML=target;
+    el.querySelector('.loading-state')?.remove();
+    el.classList.remove('loading-message');
+    finishAi(el,nowHM());
+    const options=clarificationOptions(text,specialist);
+    if(options.length)el.querySelector('.bubble-wrap').insertAdjacentHTML('afterend',clarificationOptionsHTML(options));
+    scrollBottom();
+  },REPLY_LOADING_DURATION);
+}
+
+/* ---------- Composer ---------- */
+function autosize(){input.style.height='24px';input.style.height=Math.min(input.scrollHeight,144)+'px'}
+function updateSend(){$('#send').classList.toggle('ready',!!input.value.trim())}
+input.addEventListener('input',()=>{autosize();updateSend()});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});
+$('#composer-file').addEventListener('change',e=>{
+  const count=e.target.files.length;
+  if(count)toast(count===1?`已加入 ${e.target.files[0].name}`:`已加入 ${count} 個檔案`);
+  e.target.value='';
+});
+$('#skill-zip-input').addEventListener('change',e=>{
+  const file=e.target.files[0];
+  if(file)toast(`已選擇 ${file.name}，準備匯入 Skill（示意）`);
+  e.target.value='';
+});
+$('#skill-name').addEventListener('input',e=>{e.target.setCustomValidity('');e.target.removeAttribute('aria-invalid')});
+$('#skill-instructions').addEventListener('input',e=>e.target.setCustomValidity(''));
+$('#skill-version-select').addEventListener('change',e=>{
+  const skill=SKILLS.find(item=>item.id===activeSkillId);if(skill)setSkillEditorVersion(skill,e.target.value);
+});
+
+/* ---------- Event delegation ---------- */
+document.addEventListener('click',e=>{
+  const popBtn=e.target.closest('[data-pop]');
+  if(popBtn){
+    e.stopPropagation();closeTools();
+    openPop(popBtn.dataset.pop,popBtn);
+    if(popBtn.dataset.pop==='pop-hist'&&$('#pop-hist').classList.contains('open')){
+      menuHist=+popBtn.dataset.index;
+      $('#hist-pin-label').textContent=pinnedHist.has(menuHist)?'取消釘選':'釘選';
+      $('[data-action="hist-pin"] svg').outerHTML=svg(pinnedHist.has(menuHist)?'pin-off':'pin');
+      popBtn.closest('.hist-row').classList.add('menu-open');
+    }
+    return;
+  }
+
+  const toolItem=e.target.closest('#composer-menu [data-tool]');
+  if(toolItem){
+    const k=toolItem.dataset.tool;activeTools.has(k)?activeTools.delete(k):activeTools.add(k);
+    renderTools();return;
+  }
+  if(!e.target.closest('#composer-menu, #composer-plus')&&!$('#composer-menu').hidden)setComposerMenu(false);
+  const chip=e.target.closest('.chip, .today-card[data-prompt]');
+  if(chip){input.value=chip.dataset.prompt;send();return;}
+  const replyOption=e.target.closest('.reply-option');
+  if(replyOption){
+    const group=replyOption.closest('.clarification-options');
+    if(group){group.querySelectorAll('.reply-option').forEach(option=>option.disabled=true);replyOption.classList.add('selected')}
+    input.value=replyOption.dataset.prompt;send();return;
+  }
+  const downloadOption=e.target.closest('.download-option');
+  if(downloadOption){
+    const label=downloadOption.textContent.trim();
+    closeDownloadMenus();toast(`已選擇 ${label} 下載（示意）`);return;
+  }
+  const h=e.target.closest('[data-hist]');
+  if(h){loadConversation(+h.dataset.hist);return;}
+
+  const a=e.target.closest('[data-action]');
+  if(!a){
+    if(!e.target.closest('.popover')) closePops();
+    if(!e.target.closest('.ai-actions')) closeDownloadMenus();
+    if(!e.target.closest('.skill-add-control')){$('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false')}
+    return;
+  }
+  switch(a.dataset.action){
+    case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}a.setAttribute('aria-expanded',String(!body.classList.contains('collapsed')));closePops();break;}
+    case 'add-file': setComposerMenu(false);$('#composer-file').click(); break;
+    case 'toggle-composer-menu': {e.stopPropagation();closePops();setComposerMenu($('#composer-menu').hidden);break;}
+    case 'remove-tool': activeTools.delete(a.dataset.tool);renderTools(); break;
+    case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
+    case 'copy-message': {closeDownloadMenus();copyText(readableText(a.closest('.ai-col').querySelector('.bubble-ai')),'已複製回覆');break;}
+    case 'copy-review-card': {const source=a.closest('.review-card').querySelector('.review-card-content');copyText(readableText(source),'已複製長篇內容');break;}
+    case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
+    case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
+    case 'toggle-review-expanded': {const expanded=body.classList.toggle('review-panel-expanded');a.setAttribute('aria-expanded',String(expanded));a.setAttribute('aria-label',expanded?'縮小檢閱 Panel':'展開檢閱 Panel');break;}
+    case 'close-review-panel': closeReviewPanel(); break;
+    case 'translate': {goHome();input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
+    case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
+    case 'open-mcp': openDrawer('drawer-mcp'); break;
+    case 'open-kb': openDrawer('drawer-kb'); break;
+    case 'open-skills': openDrawer('drawer-skills'); break;
+    case 'toggle-skill-add': {const menu=$('#skill-add-menu');const open=menu.hidden;menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
+    case 'skill-create': openSkillEditor(); break;
+    case 'skill-zip': {$('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false');$('#skill-zip-input').click();break;}
+    case 'skill-git': showSkillView('skill-git-view'); break;
+    case 'skill-list': resetSkillPanel(); break;
+    case 'open-skill-editor': openSkillEditor(a.dataset.skillId); break;
+    case 'close-skill-editor': $('#skill-editor-dialog').close(); break;
+    case 'save-skill-draft': saveSkillDraft(); break;
+    case 'publish-skill': publishSkill(); break;
+    case 'delete-skill': deleteSkill(activeSkillId); break;
+    case 'skill-import-git': {
+      const url=$('#skill-git-url');
+      if(!url.value.trim()||!url.checkValidity()){url.reportValidity();url.focus();break;}
+      toast('已從 Git 匯入 Skill（示意）');url.value='';resetSkillPanel();break;
+    }
+    case 'close-drawers': closeDrawers(); break;
+    case 'go-home': goHome(); break;
+    case 'go-specialist': goSpecialist(); break;
+    case 'new-chat': {
+      // Always a fresh Gina chat: leave the specialist page too, drop the draft and tools, focus the box.
+      goHome();activeTools.clear();renderTools();setComposerMenu(false);
+      input.value='';autosize();updateSend();input.focus();
+      break;
+    }
+    case 'send': send(); break;
+    case 'toggle-mic': {const on=a.getAttribute('aria-pressed')!=='true';a.setAttribute('aria-pressed',String(on));a.setAttribute('aria-label',on?'停止錄音':'語音輸入');a.querySelector('.tip').textContent=on?'停止錄音':'語音輸入';toast(on?'開始錄音…（示意）':'已停止錄音（示意）');break;}
+    case 'confirm-send': a.closest('.action-btns').outerHTML='<div class="action-done">✅ 郵件已寄出。</div>'; break;
+    case 'cancel-send': a.closest('.action-btns').outerHTML='<div class="action-done">已取消，郵件未寄出。</div>'; break;
+    case 'toggle-outlook': {e.stopPropagation();setOutlook($('#outlook-switch').getAttribute('aria-checked')!=='true');break;}
+    case 'hist-pin': {pinnedHist.has(menuHist)?pinnedHist.delete(menuHist):pinnedHist.add(menuHist);closePops();menuHist=-1;renderHistory();break;}
+    case 'hist-delete': {const i=menuHist;closePops();menuHist=-1;deletedHist.add(i);if(activeHist===i)goHome();else renderHistory();toast('已刪除對話（示意）');break;}
+    case 'connect-outlook': setOutlook(true); break;
+    case 'dismiss-outlook-hint': $('#outlook-hint').hidden=true; break;
+    case 'toast': closePops();toast(a.dataset.msg); break;
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
+</script>
+</body>
+</html>
