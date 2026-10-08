@@ -1016,3 +1016,16 @@ body.business-theme:not(.chatting) .hero,
 body.business-theme:not(.chatting) .spec-hero { padding-top: 0; padding-bottom: 0; }
 body.business-theme:not(.chatting) .today { margin-top: 24px; }
 body.business-theme:not(.chatting) .hero .chips { margin-top: 14px; }
+
+/* 新對話: the plus sits in a faint round badge (reference: Claude "+ New") */
+body.business-theme .btn-new .i {
+  width: 24px;
+  height: 24px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  box-sizing: border-box;
+}
+body.business-theme .btn-new { gap: 8px; padding-left: 6px; }
+body.business-theme .btn-new:hover .i { background: var(--bg-selected); color: var(--text-primary); }
