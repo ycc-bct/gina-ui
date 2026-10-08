@@ -1,14 +1,15 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.3-business · 2026-10-08 · 決策紀錄見 `decisions.md`
+> 版本：v1.4-business · 2026-10-08 · 決策紀錄見 `decisions.md`
 
 ### 2026-10-08 商業版覆寫
 
-本節只適用於第二版 `index-business.html` 與 `app-business.css`；若與下方共用規範衝突，以本節為準。
+本節只適用於第二版 `index-business-v2.html` 與 `app-business-v2.css`；若與下方共用規範衝突，以本節為準。
 
-- Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 預設維持 52px 單列；啟用網路搜尋、個人知識或 Skills 後，最小高度增加至 92px，工具標籤移到獨立上層，輸入文字與操作按鈕保留在下層。
-- Agent 首頁與 Gina 首頁使用相同的標題層級、三欄工作模板、輕量 chips、Chat Bubble、執行步驟與 Composer。業務助理提供待跟進客戶、訂單進度、業務摘要、報價摘要、CRM 備註與銷售數據六個可直接執行的示範模板；進入 Agent 時輸入框文案與 aria-label 會切換為該 Agent。
+- Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 使用至少 96px 的雙層結構：上層是文字輸入區，下層依序放新增／工具、啟用中的工具、Agent 選擇、用量、語音與送出。啟用工具後標籤留在下層，不改變文字區的排列。
+- Gina 首頁只顯示三張今日 Reference 卡片，不再顯示第二排「整理需求／審閱合約／安排會議／整理文件」建議按鈕。Agent 首頁使用相同的標題層級、三張 Reference 模板、Chat Bubble、執行步驟與 Composer；業務助理只保留待跟進客戶、重點訂單進度、本週業務摘要三個模板，不顯示第二排 chips 或 `Pilot` Tag。
+- 一般 Gina Chat Space 的 Composer 下排提供 Agent Dropdown，可在 Gina 與業務助理之間切換。進入業務助理的 Agent Chat Space 後隱藏此 Dropdown，避免在專屬 Agent 對話裡再次切換；輸入框文案與 `aria-label` 改為業務助理。從 Agent 頁點「新對話」時必須保留目前 Agent，清空對話與工具後回到該 Agent 的新對話首頁。
 - Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)`，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
 - Business Login、Chat、Sidebar Logo 與登出形成完整導頁：登入進入 `index-business-v2.html`，Logo 回到第二版首頁，登出回到 `login-business.html`。在 `htmlpreview.github.io` 執行時，導頁會保留 GitHub branch source query，避免相對路徑離開 Preview。
 - Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「繼續對話／過去三天待注意事項」。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
@@ -46,7 +47,7 @@
 | `preview.html` | token 視覺預覽（可切換深淺色） |
 | `../app.css`、`../login.css` | 第一版原型頁面的樣式，只引用 token，可當作實作範例 |
 | `orb.md` | 首頁 Gina 球的套件、參數與行為（thinking-orbs） |
-| `../index-business.html`、`../app-business.css` | 第二版商業化視覺與其頁面覆寫 |
+| `../index-business-v2.html`、`../app-business-v2.css` | 第二版商業化視覺與其頁面覆寫 |
 
 修改 token 後執行 `node build-tokens.mjs` 重新產生 `dist/`。**不要手改 `dist/`。**
 
@@ -417,7 +418,7 @@ Sidebar 透明融入全螢幕漸層，不使用獨立背景、灰框或陰影。
 - 對話記錄標題單行，超出用「…」；hover 顯示完整標題（tooltip）。
 - 對話正在 Loading 時，列尾顯示 7px 藍色脈衝圓點。
 
-### 12.5 建議按鈕 Chip（整理需求、審閱合約…）
+### 12.5 建議按鈕 Chip（回覆後的快速選項）
 
 最小高 36px · 膠囊圓角 `--radius-full` · 內距 8 × 20px · 字級 13px · bg `bg-surface` · 框 `border-default`
 
@@ -426,6 +427,8 @@ Sidebar 透明融入全螢幕漸層，不使用獨立背景、灰框或陰影。
 | 如上 | bg `bg-hover`、框 `border-strong` | bg `bg-selected` | 不使用 |
 
 點擊後直接送出對應的完整提示（`data-prompt`）。單行橫排，超出橫向捲動；手機高 44px。
+
+Business v2 的 Gina 與 Agent 新對話首頁不顯示第二排 Chip；首頁入口統一使用三張 Reference 卡片。Chip 只用於資訊不足時，放在回覆下方提供最多三個快速選項。
 
 ### 12.6 欄位 Field（搜尋對話）
 
@@ -440,7 +443,7 @@ Sidebar 透明融入全螢幕漸層，不使用獨立背景、灰框或陰影。
 ### 12.7 輸入框 Composer
 
 最大寬 800px · 圓角 `--radius-xl` · 內距 20px · bg `bg-surface` · 框 `border-default` · 預設無陰影。
-上層：文字區（14px、行高 24px，最多 144px 後捲動）；下層工具列：新增檔案、可切換的工具按鈕、彈性空間、麥克風、送出。Input Field 不顯示協作人員項目。
+上層：文字區（14px、行高 24px，最多 144px 後捲動）；下層工具列：新增檔案、可切換的工具按鈕、Agent 選擇、彈性空間、用量、麥克風、送出。Business v2 最小高度為 96px、內距 10px；一般 Gina Chat Space 顯示 Agent Dropdown，Agent Chat Space 隱藏 Dropdown。
 
 | 預設 | hover | focus（focus-within） | 停用（新增） |
 |---|---|---|---|
@@ -449,6 +452,7 @@ Sidebar 透明融入全螢幕漸層，不使用獨立背景、灰框或陰影。
 ### 12.8 Header：Agents、Outlook、使用者選單
 
 - 順序為「Agents → Outlook 已連線 → 使用者頭像」。Agents 的選單標題是「可用協作 Agents」。
+- Business v2 例外：Agents 入口位於 Sidebar；Agent 切換位於一般 Gina Composer 下排，不放在 Header。
 - Outlook 是獨立功能，不屬於 MCP；以 30px 高 Tag 顯示綠色連線點與狀態。
 - 使用者頭像選單包含 MCP Tool、Skills、個人知識與管理後台；前三者開啟右側 Drawer。
 
