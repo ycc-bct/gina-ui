@@ -1,8 +1,8 @@
 /* Business login: scoped to login-business.html, using the business palette. */
 body {
   --text-primary: #172033;
-  --text-secondary: #3f4e63;
-  --text-tertiary: #627086;
+  --text-secondary: #344258;
+  --text-tertiary: #56657a;
   --text-placeholder: #8490a1;
   --bg-app: #f2f5fa;
   --bg-surface: #ffffff;
@@ -21,21 +21,24 @@ body {
   min-height: 100svh;
 }
 .card {
-  width: 440px;
-  padding: 36px;
-  border-radius: 10px;
-  box-shadow: 0 8px 30px rgb(28 42 61 / 6%);
+  width: 420px;
+  padding: 40px 36px 32px;
+  border-color: var(--border-default);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgb(28 42 61 / 7%);
 }
 h1 { margin: 0; letter-spacing: -.4px; }
 .login-wordmark { display: block; width: 220px; max-width: 100%; height: auto; margin: 0 auto; }
-.btn-ms { margin-top: 36px; }
+.avatar, .sub, .divider { display: none; }
+.btn-ms { margin-top: 32px; }
 .btn-ms, .btn-login, .field input { height: 46px; border-radius: 5px; }
 .field input { border-color: var(--border-default); }
 .field input:focus { box-shadow: 0 0 0 3px rgb(36 91 176 / 12%); }
 .btn-ms, .btn-login { transition: background .15s, border-color .15s; }
 .copy { margin-top: 28px; font-size: 11px; }
 @media (max-width: 640px) {
-  .card { padding: 28px 22px; border-radius: 8px; }
+  .card { padding: 32px 22px 26px; border-radius: 6px; }
+  .login-wordmark { width: 190px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn-ms, .btn-login { transition: none; }

@@ -7,15 +7,20 @@
 
 本節只適用於第二版 `index-business.html` 與 `app-business.css`；若與下方共用規範衝突，以本節為準。
 
+- Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 預設維持 52px 單列；啟用網路搜尋、個人知識或 Skills 後，最小高度增加至 92px，工具標籤移到獨立上層，輸入文字與操作按鈕保留在下層。
+- Agent 首頁與 Gina 首頁使用相同的標題層級、三欄工作模板、輕量 chips、Chat Bubble、執行步驟與 Composer。業務助理提供待跟進客戶、訂單進度、業務摘要、報價摘要、CRM 備註與銷售數據六個可直接執行的示範模板；進入 Agent 時輸入框文案與 aria-label 會切換為該 Agent。
+- Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)`，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
+- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「繼續對話／過去三天待注意事項」。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
+
 - 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。
 
 - 品牌使用提供的 `assets/gina-wordmark.png`：Sidebar 寬 180px，登入頁寬 220px，保持原圖比例。Sidebar 移除原本的 Gina 與「Giant 內部 AI 助理」文字。右上角暫時隱藏 Account 和 Agents 入口，保留 Outlook 狀態。
 
 - 首頁 Gina 使用 `assets/gina-breath.gif`，以 112px 圓形完整顯示 GIF 動態。Chat Screen 不顯示 Gina 頭像，回覆內容直接與對話欄左緣對齊。
-- 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文與 Chat 回覆使用 `--text-secondary` `#3f4e63`；時間、狀態與補充說明使用 `--text-tertiary` `#627086`。內文比舊版深，但仍與 Title 保持清楚區別。
+- 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文與 Chat 回覆使用 `--text-secondary` `#344258`；時間、狀態與補充說明使用 `--text-tertiary` `#56657a`。內文提高對比，但仍與 Title 保持清楚區別。
 - AI 與使用者訊息使用相同的 14px / 1.8 閱讀規格。只有區段 Title 使用 `--text-primary` 與 600 字重；一般段落不以粗體製造層級。
 - 其餘第二版規則維持白色 Sidebar、淺藍灰工作區、低圓角與冷色商業工具風格。
-- 第二版登入頁為 `login-business.html`，使用 `login-business.css`：淺藍灰底、440px 白色卡片、10px 圓角，頂部只顯示去背 GINA Logo，不顯示漸層 GIF 頭像、副標題或 Logo 下方分隔線；Logo 與 Microsoft 登入按鈕相隔 36px。欄位與按鈕高 46px、圓角 5px。Microsoft 登入直接進入 `index-business.html`，帳密登入檢查必填欄位後進入同頁；目前是原型導頁，未串接 Microsoft OAuth 或後端驗證。第二版登出返回此登入頁。
+- 第二版登入頁為 `login-business.html`，使用 `login-business.css`：淺藍灰底、420px 白色卡片、8px 圓角，頂部只顯示去背 GINA Logo，不顯示 Gina 頭像、「Hi, I am Gina」、副標題或 Logo 下方分隔線；Logo 與 Microsoft 登入按鈕相隔 32px。欄位與按鈕高 46px、圓角 5px。Microsoft 登入直接進入 `index-business-v2.html`，帳密登入檢查必填欄位後進入同頁；目前是原型導頁，未串接 Microsoft OAuth 或後端驗證。第二版登出返回此登入頁。
 
 ### 2026-10-07 視覺更新
 
@@ -507,7 +512,7 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 
 ### 12.14 執行步驟 Execution details
 
-位於 Gina Chat Bubble 上方，使用 12px `text-tertiary` 的純文字摘要與 icon-only 展開按鈕，不使用卡片或額外 Panel。摘要包含 AI Agent Tag，例如「業務助理」，以及「N 個執行步驟」。展開後以條列顯示使用到的 Agent、Skill、MCP 與個人知識，每一項前方都有對應 icon。
+位於 Gina Chat Bubble 上方，使用 12px `text-tertiary` 的純文字摘要、完成狀態 icon 與 icon-only 展開控制，不使用卡片或額外 Panel。摘要顯示「N 個 subagent / tool 步驟」。展開後以分隔線條列 Subagent 與 Tool；每一項都有資源 icon、完成狀態、類型與事件時間。
 
 ### 12.15 待處理操作卡片 Action card（確認寄出 Outlook 郵件）
 
@@ -574,10 +579,10 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 |---|---|---|
 | 表格 | 比較項目、欄位化資訊 | 無彩色表頭與底色；使用 `border-subtle` 水平分隔、14px 內文；窄螢幕允許水平捲動 |
 | 條列清單 | 步驟、摘要、工作清單 | 項目間距 8px；依語意使用 bullet 或編號 |
-| Q&A | FAQ、釐清需求 | Q / A 保持一般字重，以縮排和 `text-secondary` 建立層級 |
-| 結構化文件 | 背景、目標、範圍、驗收條件 | `bg-field` 淺灰底、`border-subtle`、`radius-md`；標題與內容換行 |
+| Q&A | FAQ、釐清需求 | Q / A 保持一般字重，以縮排和 `text-secondary` 建立層級；背景使用接近白色的 `#fafbfd` |
+| 結構化文件 | 背景、目標、範圍、驗收條件 | `#fafbfd` 淺灰底、`#e8edf3` 框線、`radius-md`；標題與內容換行 |
 | 引用 | 結論、提醒、來源 | 透明背景；左側 2px `border-strong` 直線；cite 使用 12px `text-tertiary` |
-| 長篇內容 / 程式碼 | 大量純文字、程式碼、可完整檢閱內容 | 固定高 240px、`bg-field` 淺灰底、12px mono、單色文字、內容區可捲動；不放巢狀卡片 |
+| 長篇內容 / 程式碼 | 大量純文字、程式碼、可完整檢閱內容 | 固定高 240px、`#fafbfd` 淺灰底、12px mono、單色文字、內容區可捲動；不放巢狀卡片 |
 | 互動式選項 | 資訊不足、需要使用者選擇後才能繼續 | 最多三個直接選項；點選後停用同組選項並直接執行 |
 
 長篇內容卡片 hover / focus-within 時，右上顯示 Copy 與 Expand icon；手機固定顯示。Copy 複製卡片全文，Expand 開啟 12.12 的 Review Panel。

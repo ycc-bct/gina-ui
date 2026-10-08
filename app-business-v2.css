@@ -5,6 +5,8 @@
  */
 
 body.business-theme {
+  --layout-chat-max-width: 900px;
+  --review-panel-width: clamp(320px, 28vw, 440px);
   --bg-app: #f6f8fb;
   --bg-canvas: #f6f8fb;
   --bg-shell-warm: #e4e9ef;
@@ -19,8 +21,8 @@ body.business-theme {
   --border-focus: #245bb0;
   --focus-ring: #245bb0;
   --text-primary: #172033;
-  --text-secondary: #48566a;
-  --text-tertiary: #6f7c8e;
+  --text-secondary: #344258;
+  --text-tertiary: #56657a;
   --text-placeholder: #8490a1;
   --icon-default: #4d5b70;
   --icon-muted: #778397;
@@ -85,6 +87,10 @@ body.business-theme .header {
 
 body.business-theme.collapsed .main { left: 14px; }
 body.business-theme.collapsed .header { left: 28px; }
+body.business-theme.collapsed .sidebar {
+  transform: translateX(calc(-100% - 2px));
+  pointer-events: none;
+}
 
 /* Sidebar navigation */
 /* Brand row: panel toggle on the left, wordmark beside it (see Claude sidebar reference). */
@@ -442,7 +448,6 @@ body.business-theme .hero-avatar {
   border-radius: 0;
   background: transparent;
   overflow: visible;
-  transition: transform 180ms ease-out;
 }
 body.business-theme .hero h1 {
   margin: 0;
@@ -502,6 +507,21 @@ body.business-theme .composer textarea { order: 3; flex: 1; width: auto; margin:
 body.business-theme .composer .usage-ring-wrap { order: 4; height: 36px; }
 body.business-theme .composer .cbtn.mic { order: 5; }
 body.business-theme .composer .cbtn.send { order: 6; }
+
+/* Enabled tools get their own row so the writing area keeps a readable width. */
+body.business-theme .composer.has-active-tools {
+  flex-wrap: wrap;
+  min-height: 92px;
+  row-gap: 4px;
+  padding-top: 10px;
+}
+body.business-theme .composer.has-active-tools .active-tools {
+  order: 0;
+  flex: 0 0 100%;
+  min-height: 30px;
+  padding: 0 42px;
+  align-items: flex-start;
+}
 
 body.business-theme .composer:hover {
   border-color: var(--border-strong);
@@ -636,6 +656,8 @@ body.business-theme .bubble-ai {
   box-shadow: none;
 }
 
+body.business-theme .response-section > p { color: var(--text-secondary); }
+
 body.business-theme .bubble-user {
   border: 1px solid var(--border-default);
   border-radius: 8px;
@@ -661,7 +683,7 @@ body.business-theme .msg-ai.loading-message .bubble-ai {
   box-shadow: none;
 }
 
-/* Execution details: one-line summary, then a bordered list of steps (reference: tool-call card) */
+/* Execution details: compact summary, then unboxed resource details with separators. */
 body.business-theme .execution-details { margin: 0 0 10px; font-size: 13px; color: var(--text-secondary); }
 body.business-theme .execution-details summary {
   display: inline-flex;
@@ -675,33 +697,50 @@ body.business-theme .execution-details summary {
 }
 body.business-theme .execution-details summary::-webkit-details-marker { display: none; }
 body.business-theme .execution-details summary:hover { color: var(--text-primary); }
-body.business-theme .execution-details summary .i { width: 14px; height: 14px; color: var(--icon-muted); transition: transform 150ms ease-out; }
-body.business-theme .execution-details[open] summary .i { transform: rotate(180deg); }
+body.business-theme .execution-details summary .i { width: 14px; height: 14px; }
+body.business-theme .execution-summary-icon { display: inline-flex; color: var(--status-success-fg); }
+body.business-theme .execution-expand { display: inline-flex; color: var(--icon-muted); }
+body.business-theme .execution-expand .i { transition: transform 150ms ease-out; }
+body.business-theme .execution-details[open] .execution-expand .i { transform: rotate(180deg); }
 body.business-theme .execution-list {
-  margin-top: 6px;
-  border: 1px solid var(--border-default);
-  border-radius: 8px;
-  background: #ffffff;
-  overflow: hidden;
+  width: min(100%, 760px);
+  margin-top: 8px;
+  border-top: 1px solid var(--border-subtle);
 }
-body.business-theme .execution-step {
+body.business-theme .execution-resource {
   display: flex;
   align-items: center;
-  gap: 4px;
-  width: 100%;
-  min-height: 40px;
-  padding: 0 12px;
-  border: 0;
-  border-top: 1px solid var(--border-subtle);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 13px;
-  text-align: left;
-  cursor: pointer;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--border-subtle);
 }
-body.business-theme .execution-step:first-child { border-top: 0; }
-body.business-theme .execution-step:hover { background: var(--bg-field); color: var(--text-primary); }
-body.business-theme .execution-step .i { width: 14px; height: 14px; color: var(--icon-muted); }
+body.business-theme .execution-resource header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 260px;
+  min-width: 0;
+  color: var(--text-primary);
+}
+body.business-theme .execution-resource header strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.business-theme .execution-status { display: inline-flex; color: var(--status-success-fg); }
+body.business-theme .execution-resource-icon { display: inline-flex; color: var(--icon-muted); }
+body.business-theme .execution-status .i,
+body.business-theme .execution-resource-icon .i { width: 15px; height: 15px; }
+body.business-theme .execution-resource dl { display: flex; flex: 0 1 auto; flex-wrap: wrap; gap: 6px 16px; margin: 0; }
+body.business-theme .execution-resource dl div { display: flex; align-items: baseline; gap: 5px; }
+body.business-theme .execution-resource dt { color: var(--text-tertiary); font-size: 12px; }
+body.business-theme .execution-resource dt::after { content: '：'; }
+body.business-theme .execution-resource dd { margin: 0; color: var(--text-secondary); font-size: 12px; }
 
 body.business-theme .total-badge,
 body.business-theme .tool-count {
@@ -712,11 +751,16 @@ body.business-theme .tool-count {
 
 body.business-theme .document-outline,
 body.business-theme .review-card,
-body.business-theme .action-card,
 body.business-theme .response-qa > div {
+  border-color: #e8edf3;
+  border-radius: 6px;
+  background: #fafbfd;
+}
+
+body.business-theme .action-card {
   border-color: var(--border-default);
   border-radius: 6px;
-  background: #f4f6f9;
+  background: var(--bg-field);
 }
 
 body.business-theme .response-table th {
@@ -852,8 +896,24 @@ body.business-theme .loading-dots i { background: var(--action-primary-bg); }
   }
   body.business-theme.review-panel-open:not(.review-panel-expanded) .main,
   body.business-theme.review-panel-open:not(.review-panel-expanded) .header {
-    right: calc(clamp(360px, 40vw, 560px) + 42px);
+    right: var(--review-panel-width);
   }
+}
+
+/* Long-form review is a full-height side panel, not a floating card. */
+body.business-theme .review-panel {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--review-panel-width);
+  border: 0;
+  border-left: 1px solid var(--border-default);
+  border-radius: 0;
+  box-shadow: -10px 0 30px rgb(28 42 61 / 8%);
+}
+body.business-theme.review-panel-expanded .review-panel { left: 0; }
+@media (max-width: 640px) {
+  body.business-theme .review-panel { width: 100vw; border-left: 0; border-radius: 0; }
 }
 
 /* Outlook not connected: hint above the composer with the connect entry point */
@@ -1016,6 +1076,30 @@ body.business-theme:not(.chatting) .hero,
 body.business-theme:not(.chatting) .spec-hero { padding-top: 0; padding-bottom: 0; }
 body.business-theme:not(.chatting) .today { margin-top: 24px; }
 body.business-theme:not(.chatting) .hero .chips { margin-top: 14px; }
+
+/* Agent home uses the same hierarchy and template controls as the Gina home. */
+body.business-theme .spec-hero {
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+body.business-theme .spec-title { gap: 14px; text-align: left; }
+body.business-theme .spec-big {
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--accent-blue-fg);
+}
+body.business-theme .spec-big .i { width: 22px; height: 22px; }
+body.business-theme .spec-title h1 { color: var(--text-primary); font-size: 34px; font-weight: 600; letter-spacing: -.025em; }
+body.business-theme .spec-title .s { margin-top: 3px; color: var(--text-tertiary); font-size: 13px; }
+body.business-theme .spec-hero .desc { max-width: 620px; margin-top: 14px; color: var(--text-secondary); font-size: 14px; }
+body.business-theme .spec-hero .today { margin-top: 24px; }
+body.business-theme .spec-hero .chips { margin-top: 14px; }
+body.business-theme .spec-hero .chip { min-height: 32px; padding: 0 12px; font-size: 13px; box-shadow: none; }
 
 /* 新對話: the plus sits in a faint round badge (reference: Claude "+ New") */
 body.business-theme .btn-new .i {

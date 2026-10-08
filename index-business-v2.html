@@ -64,7 +64,7 @@
   <div class="menu-sep"></div>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
   <div class="menu-sep"></div>
-  <button class="menu-item danger" onclick="location.href='login.html'"><svg class="i" data-i="logout"></svg>登出</button>
+  <button class="menu-item danger" onclick="location.href='login-business.html'"><svg class="i" data-i="logout"></svg>登出</button>
 </div>
 
 <!-- ============ Sidebar ============ -->
@@ -116,7 +116,7 @@
       <div class="today" aria-label="今天的狀況">
         <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
         <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>繼續上次的對話</b><small>過去三天有什麼我需要注意的…</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>繼續對話</b><small>過去三天待注意事項</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
       </div>
       <div class="chips">
         <button class="chip" data-prompt="幫我把這個想法整理成需求">整理需求</button>
@@ -129,9 +129,19 @@
     <section class="spec-hero" id="spec-hero">
       <div class="spec-title">
         <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
-        <div><h1>業務助理</h1><div class="s">業務助理</div></div>
+        <div><h1>業務助理</h1><div class="s">客戶、訂單與業務資料</div></div>
       </div>
-      <div class="desc">協助製作報價單、追蹤訂單進度、彙整業務數據並查詢CRM資訊的業務型助理。</div>
+      <div class="desc">整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。</div>
+      <div class="today agent-templates" aria-label="業務助理對話模板">
+        <button class="today-card" data-prompt="整理本週待跟進客戶"><span class="today-icon"><svg class="i" data-i="users"></svg></span><span class="today-text"><b>待跟進客戶</b><small>依優先順序整理下一步</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-prompt="檢查重點訂單進度"><span class="today-icon"><svg class="i" data-i="server"></svg></span><span class="today-text"><b>重點訂單進度</b><small>列出風險與待處理項目</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-prompt="產生本週業務摘要"><span class="today-icon"><svg class="i" data-i="chart"></svg></span><span class="today-text"><b>本週業務摘要</b><small>彙整數字、進展與風險</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+      </div>
+      <div class="chips agent-template-chips">
+        <button class="chip" data-prompt="建立報價摘要">建立報價摘要</button>
+        <button class="chip" data-prompt="整理 CRM 客戶備註">整理 CRM 備註</button>
+        <button class="chip" data-prompt="分析銷售數據">分析銷售數據</button>
+      </div>
     </section>
 
     <section class="thread" id="thread"></section>
@@ -144,20 +154,6 @@
       <button class="btn-primary" type="button" data-action="connect-outlook">連線 Outlook</button>
       <button class="hint-close" type="button" data-action="dismiss-outlook-hint" aria-label="關閉提示"><svg class="i" data-i="x"></svg></button>
     </div>
-    <!-- Specialist: MCP -->
-    <div class="capcard spec-only" id="spec-card">
-      <div class="cap-head" data-action="toggle-card">
-        <span class="ic"><svg class="i" data-i="server"></svg></span>
-        <b>MCP</b><span class="m">0 個已啟用</span><span class="m">·</span>
-        <span class="m m-inline"><svg class="i" data-i="wrench"></svg>0 個 Tool 可用</span>
-        <span class="tog"><svg class="i" data-i="info"></svg><svg class="i chev" data-i="chevron-up"></svg></span>
-      </div>
-      <div class="cap-body">
-        <div class="cap-empty">目前沒有啟用的 MCP server。</div>
-        <div class="cap-go"><button data-action="toast" data-msg="前往 Agent 設定（示意）"><svg class="i" data-i="settings"></svg>前往 Agent 設定</button></div>
-      </div>
-    </div>
-
     <div class="composer">
       <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
       <div class="composer-toolbar">
@@ -1149,7 +1145,7 @@ function resolvePreset(state, size) {
 
 /* ---- Gina orb (own scope: the engine above also defines paint/lerp/…) ---- */
 {
-const ORB={state:'composing',size:64,display:56,dotScale:1.1,color:{r:0x00,g:0x14,b:0x88}};
+const ORB={state:'composing',size:64,display:56,dotScale:1.1,color:{r:0x2f,g:0x67,b:0xd5}};
 const host=document.querySelector('.hero-avatar');
 const canvas=document.createElement('canvas');
 canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Gina');
@@ -1165,17 +1161,6 @@ const paint=t=>{
   const f=frameFn(ORB.size,t,opts);
   paintFrame(ctx,{lines:f.lines,dots:f.dots.map(d=>({...d,r:d.r*ORB.dotScale}))},false,ORB.color);
 };
-// Lean a few px toward the pointer when it is near — a lighter take on the library's cursor gravity.
-if(matchMedia('(pointer: fine)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
-  let lean=0;
-  document.addEventListener('pointermove',e=>{
-    const r=canvas.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-    const dx=e.clientX-cx,dy=e.clientY-cy,dist=Math.hypot(dx,dy);
-    const k=Math.max(0,1-dist/320)*8;
-    if(!k&&!lean)return;lean=k;
-    host.style.transform=k?`translate(${(dx/dist*k).toFixed(1)}px,${(dy/dist*k).toFixed(1)}px)`:'';
-  },{passive:true});
-}
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let raf=0,running=false;
 const loop=()=>{paint(performance.now()/1e3*speed);if(running)raf=requestAnimationFrame(loop)};
@@ -1316,13 +1301,10 @@ function renderHistory(){
 }
 renderHistory();
 document.getElementById('hist-search').addEventListener('input', renderHistory);
-const EXEC_TOOLS = ["email-priority", "Outlook 郵件", "Outlook Calendar"];
-const EXEC_STEPS = [
-  "讀取 Outlook 收件匣",
-  "套用 email-priority 判斷優先級",
-  "查詢 Outlook Calendar 今日行程",
-  "整理需要回覆的信件",
-  "產生摘要"
+const EXEC_RESOURCES = [
+  {name:'Gina',type:'Subagent',icon:'message',time:'16.0 秒'},
+  {name:'skill_workspace_resolved 工具',type:'Tool',icon:'wrench',time:'剛剛'},
+  {name:'gina_specialists_list_available 工具',type:'Tool',icon:'wrench',time:'剛剛'}
 ];
 
 const SKILLS = [{
@@ -1525,6 +1507,7 @@ const TOOLS={web:{label:'網路搜尋',icon:'search'},kb:{label:'個人知識',i
 const activeTools=new Set();
 function renderTools(){
   $('#active-tools').innerHTML=[...activeTools].map(k=>`<span class="tool-chip" data-tool="${k}">${svg(TOOLS[k].icon)}<span>${TOOLS[k].label}</span><button type="button" data-action="remove-tool" data-tool="${k}" aria-label="移除 ${TOOLS[k].label}">${svg('x')}<span class="tip">清除</span></button></span>`).join('');
+  document.querySelector('.composer').classList.toggle('has-active-tools',activeTools.size>0);
   document.querySelectorAll('#composer-menu [data-tool]').forEach(b=>b.setAttribute('aria-checked',String(activeTools.has(b.dataset.tool))));
 }
 function setComposerMenu(open){
@@ -1574,6 +1557,8 @@ function goHome(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
   $('#new-label').textContent='新對話';
+  input.setAttribute('aria-label','傳送訊息給 Gina');
+  input.placeholder='交給 Gina，一起完成今天的工作…';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
   thread.innerHTML='';activeHist=-1;renderHistory();
 }
@@ -1581,6 +1566,8 @@ function goSpecialist(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
   $('#new-label').textContent='新對話';
+  input.setAttribute('aria-label','傳送訊息給業務助理');
+  input.placeholder='交給業務助理，整理客戶與訂單工作…';
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
   thread.innerHTML='';activeHist=-1;renderHistory();
 }
@@ -1602,10 +1589,13 @@ function aiMsg(html){
   thread.appendChild(el);return el;
 }
 function executionDetailsHTML(steps,agentName){
-  const items=EXEC_STEPS.slice(0,steps);
+  const resources=EXEC_RESOURCES.map((resource,index)=>index?resource:{...resource,name:agentName});
   return `<details class="execution-details">
-    <summary aria-label="展開或收合執行步驟"><span>執行了 ${steps} 個步驟，使用 ${EXEC_TOOLS.length} 個工具</span>${svg('chevron-down')}</summary>
-    <div class="execution-list">${items.map((label,i)=>`<button type="button" class="execution-step" data-action="toast" data-msg="步驟 ${i+1}：${label}（示意）"><span>${label}</span>${svg('chevron-right')}</button>`).join('')}</div>
+    <summary aria-label="展開或收合執行步驟"><span class="execution-summary-icon">${svg('circle-check')}</span><span>${resources.length} 個 subagent / tool 步驟</span><span class="execution-expand">${svg('chevron-down')}</span></summary>
+    <div class="execution-list">${resources.map(resource=>`<article class="execution-resource">
+      <header><span class="execution-status">${svg('check')}</span><span class="execution-resource-icon">${svg(resource.icon)}</span><strong>${resource.name}</strong></header>
+      <dl><div><dt>類型</dt><dd>${resource.type}</dd></div><div><dt>狀態</dt><dd>已完成</dd></div><div><dt>事件時間</dt><dd>${resource.time}</dd></div></dl>
+    </article>`).join('')}</div>
   </details>`;
 }
 function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?'業務助理':'Gina'){
@@ -1778,6 +1768,10 @@ Best regards</textarea>
 
 /* ---------- Sending (simulated loading) ---------- */
 const REPLY_LOADING_DURATION=2000;
+const SPECIALIST_TEMPLATE_PROMPTS=new Set([
+  '整理本週待跟進客戶','檢查重點訂單進度','產生本週業務摘要',
+  '建立報價摘要','整理 CRM 客戶備註','分析銷售數據'
+]);
 function recommendationReply(text){
   const replies={
     '幫我把這個想法整理成需求':'<p>請貼上你的想法或背景。我會協助整理成目標、使用情境、功能需求與驗收條件。</p>',
@@ -1796,6 +1790,12 @@ function recommendationReply(text){
     '重點摘要':'<p>我會整理成精簡的重點摘要。請上傳文件或貼上內容。</p>',
     '待辦清單':'<p>我會找出行動項目、負責人與期限。請上傳文件或貼上內容。</p>',
     '完整架構':'<p>我會依主題重整完整架構與層級。請上傳文件或貼上內容。</p>',
+    '整理本週待跟進客戶':'<p>已將本週待跟進客戶依時效與商機階段整理如下：</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>客戶</th><th>目前進度</th><th>建議下一步</th></tr></thead><tbody><tr><td>遠東零售</td><td>等待報價確認</td><td>今天 16:00 前追蹤採購窗口</td></tr><tr><td>北區物流</td><td>技術規格確認中</td><td>補上整合時程與測試範圍</td></tr><tr><td>永豐製造</td><td>合約內部審閱</td><td>週五前確認付款條件</td></tr></tbody></table></div>',
+    '檢查重點訂單進度':'<p>目前有 3 筆重點訂單，其中 1 筆需要優先處理。</p><div class="document-outline"><b>訂單追蹤摘要</b><span>GI-24018：等待客戶確認交期，今天需要回覆</span><span>GI-24011：備貨完成，預計明天出貨</span><span>GI-23987：已出貨，等待簽收回報</span></div>',
+    '產生本週業務摘要':'<p>本週新增 8 筆商機、完成 5 次客戶會議，預估商機金額為 NT$ 3.8M。</p><h4>本週進展</h4><ul><li>2 筆商機進入報價階段</li><li>1 筆年度合約等待法務確認</li><li>北區物流專案完成需求訪談</li></ul><h4>需要關注</h4><ul><li>遠東零售報價將於明天下午到期</li><li>永豐製造仍未確認付款條件</li></ul>',
+    '建立報價摘要':'<p>請提供客戶名稱、品項、數量、單價與有效期限。我會整理成可檢閱的報價摘要，並標示尚未確認的欄位。</p>',
+    '整理 CRM 客戶備註':'<p>請貼上 CRM 備註或上傳匯出資料。我會依客戶背景、目前需求、關係人、承諾事項與下次聯絡時間重新整理。</p>',
+    '分析銷售數據':'<p>請上傳銷售資料，並告訴我想觀察的期間。我可以整理營收趨勢、產品組合、區域差異與異常變化。</p>',
     '提供客戶或訂單資訊':'<p>請輸入客戶名稱、訂單編號，或直接貼上目前已有的資料。</p>',
     '說明想整理的結果':'<p>請描述你希望得到報價、進度摘要、風險清單或其他結果。</p>',
     '補充相關背景':'<p>請補充這項工作的背景、目前進度與需要完成的時間。</p>'
@@ -1810,6 +1810,7 @@ function clarificationOptions(text,specialist){
     '幫我整理這份文件':['重點摘要','待辦清單','完整架構']
   };
   if(options[text]) return options[text];
+  if(SPECIALIST_TEMPLATE_PROMPTS.has(text))return [];
   if(['提供客戶或訂單資訊','說明想整理的結果','補充相關背景'].includes(text))return [];
   return specialist?['提供客戶或訂單資訊','說明想整理的結果','補充相關背景']:[];
 }
