@@ -28,8 +28,7 @@ body {
 }
 h1 { margin: 0; letter-spacing: -.4px; }
 .login-wordmark { display: block; width: 220px; max-width: 100%; height: auto; margin: 0 auto; }
-.sub { color: var(--text-secondary); }
-.divider { margin: 28px 0 24px; }
+.btn-ms { margin-top: 36px; }
 .btn-ms, .btn-login, .field input { height: 46px; border-radius: 5px; }
 .field input { border-color: var(--border-default); }
 .field input:focus { box-shadow: 0 0 0 3px rgb(36 91 176 / 12%); }

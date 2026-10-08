@@ -15,7 +15,7 @@
 - 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文與 Chat 回覆使用 `--text-secondary` `#3f4e63`；時間、狀態與補充說明使用 `--text-tertiary` `#627086`。內文比舊版深，但仍與 Title 保持清楚區別。
 - AI 與使用者訊息使用相同的 14px / 1.8 閱讀規格。只有區段 Title 使用 `--text-primary` 與 600 字重；一般段落不以粗體製造層級。
 - 其餘第二版規則維持白色 Sidebar、淺藍灰工作區、低圓角與冷色商業工具風格。
-- 第二版登入頁為 `login-business.html`，使用 `login-business.css`：淺藍灰底、440px 白色卡片、10px 圓角，頂部直接顯示去背 GINA Logo，不顯示漸層 GIF 頭像；欄位與按鈕高 46px、圓角 5px。Microsoft 登入直接進入 `index-business.html`，帳密登入檢查必填欄位後進入同頁；目前是原型導頁，未串接 Microsoft OAuth 或後端驗證。第二版登出返回此登入頁。
+- 第二版登入頁為 `login-business.html`，使用 `login-business.css`：淺藍灰底、440px 白色卡片、10px 圓角，頂部只顯示去背 GINA Logo，不顯示漸層 GIF 頭像、副標題或 Logo 下方分隔線；Logo 與 Microsoft 登入按鈕相隔 36px。欄位與按鈕高 46px、圓角 5px。Microsoft 登入直接進入 `index-business.html`，帳密登入檢查必填欄位後進入同頁；目前是原型導頁，未串接 Microsoft OAuth 或後端驗證。第二版登出返回此登入頁。
 
 ### 2026-10-07 視覺更新
 
