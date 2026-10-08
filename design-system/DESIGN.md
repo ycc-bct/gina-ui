@@ -39,6 +39,7 @@
 | `decisions.md` | 設計決策紀錄（D1–D12 與後續修改） |
 | `preview.html` | token 視覺預覽（可切換深淺色） |
 | `../app.css`、`../login.css` | 第一版原型頁面的樣式，只引用 token，可當作實作範例 |
+| `orb.md` | 首頁 Gina 球的套件、參數與行為（thinking-orbs） |
 | `../index-business.html`、`../app-business.css` | 第二版商業化視覺與其頁面覆寫 |
 
 修改 token 後執行 `node build-tokens.mjs` 重新產生 `dist/`。**不要手改 `dist/`。**
