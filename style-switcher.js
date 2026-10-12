@@ -2,7 +2,11 @@
   const sphere = document.querySelector('.hero-avatar');
   if (!sphere) return;
 
-  const isStyle2 = location.pathname.endsWith('/index-studio-v3.html');
+  const previewSource = location.hostname === 'htmlpreview.github.io'
+    ? decodeURIComponent(location.search.slice(1))
+    : '';
+  const currentSource = previewSource || location.pathname;
+  const isStyle2 = currentSource.endsWith('/index-studio-v3.html');
   const targetFile = isStyle2 ? 'index-business-v2.html' : 'index-studio-v3.html';
   const targetLabel = isStyle2 ? 'Style 1' : 'Style 2';
 
