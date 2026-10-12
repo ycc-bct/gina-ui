@@ -31,8 +31,8 @@ body.business-theme {
   --accent-blue-fg: #24569a;
   --agent-sales-bg: #f1edfa;
   --agent-sales-fg: #766493;
-  --agent-test-bg: #fbf4df;
-  --agent-test-fg: #8a743f;
+  --agent-test-bg: #fdf8e9;
+  --agent-test-fg: #80682d;
   --agent-translate-bg: #eaf5f1;
   --agent-translate-fg: #527b70;
   --action-primary-bg: #285dd1;
@@ -64,9 +64,9 @@ body.business-theme.specialist {
 }
 
 body.business-theme.specialist[data-agent="test"] {
-  --bg-app: #fbf9f2;
-  --bg-canvas: #fbf9f2;
-  --bg-selected: #f7f0d9;
+  --bg-app: #fdfcf9;
+  --bg-canvas: #fdfcf9;
+  --bg-selected: #f8f2df;
   --border-focus: #9a813c;
   --focus-ring: #9a813c;
   --accent-blue-bg: var(--agent-test-bg);
@@ -160,7 +160,7 @@ body.business-theme .spec-brand .back .i {
 }
 
 body.business-theme.collapsed .main { left: 14px; }
-body.business-theme.collapsed .header { left: 28px; }
+body.business-theme.collapsed .header { left: 62px; }
 body.business-theme.collapsed .sidebar {
   transform: translateX(calc(-100% - 2px));
   pointer-events: none;
