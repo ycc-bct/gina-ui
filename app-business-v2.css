@@ -515,6 +515,35 @@ body.business-theme .hist.active {
 }
 body.business-theme .hist-row.active .hist:hover { background: var(--bg-hover); }
 
+/* Agent history selection follows each Agent's icon colour. */
+body.business-theme.specialist .spec-only .hist.active,
+body.business-theme.specialist .spec-only .hist-row.active .hist:hover {
+  background: var(--agent-sales-bg);
+  color: var(--agent-sales-fg);
+}
+body.business-theme.specialist .spec-only .hist.active .hist-dot {
+  border-color: var(--agent-sales-fg);
+  background: var(--agent-sales-fg);
+}
+body.business-theme.specialist[data-agent="test"] .spec-only .hist.active,
+body.business-theme.specialist[data-agent="test"] .spec-only .hist-row.active .hist:hover {
+  background: var(--agent-test-bg);
+  color: var(--agent-test-fg);
+}
+body.business-theme.specialist[data-agent="test"] .spec-only .hist.active .hist-dot {
+  border-color: var(--agent-test-fg);
+  background: var(--agent-test-fg);
+}
+body.business-theme.specialist[data-agent="translate"] .spec-only .hist.active,
+body.business-theme.specialist[data-agent="translate"] .spec-only .hist-row.active .hist:hover {
+  background: var(--agent-translate-bg);
+  color: var(--agent-translate-fg);
+}
+body.business-theme.specialist[data-agent="translate"] .spec-only .hist.active .hist-dot {
+  border-color: var(--agent-translate-fg);
+  background: var(--agent-translate-fg);
+}
+
 body.business-theme .collapse-btn {
   top: 22px;
   left: 20px;

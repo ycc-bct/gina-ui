@@ -117,7 +117,7 @@
       </details>
     </div>
     <div class="spec-only">
-      <div class="side-label" id="spec-history-label">業務助理 · 歷史對話</div>
+      <div class="side-label" id="spec-history-label">Recent</div>
       <div id="spec-history-list" aria-label="Agent 歷史對話"></div>
     </div>
   </div>
@@ -1755,7 +1755,7 @@ function renderAgentView(agent){
   $('#spec-title-name').textContent=agent.name;
   $('#spec-subtitle').textContent=agent.subtitle;
   $('#spec-desc').textContent=agent.description;
-  $('#spec-history-label').textContent=`${agent.name} · 歷史對話`;
+  $('#spec-history-label').textContent='Recent';
   $('.agent-templates').setAttribute('aria-label',`${agent.name}對話模板`);
   $('.agent-templates').innerHTML=agent.templates.map(([icon,title,detail,prompt])=>`<button class="today-card" data-prompt="${prompt}"><span class="today-icon">${svg(icon)}</span><span class="today-text"><b>${title}</b><small>${detail}</small></span>${svg('chevron-right').replace('class="i"','class="i today-go"')}</button>`).join('');
   renderAgentHistory();

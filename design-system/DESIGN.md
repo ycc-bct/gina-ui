@@ -11,7 +11,7 @@
 - Gina 首頁只顯示三張今日 Reference 卡片，不再顯示第二排「整理需求／審閱合約／安排會議／整理文件」建議按鈕。Agent 首頁使用相同的標題層級、三張 Reference 模板、Chat Bubble、執行步驟與 Composer；業務助理只保留待跟進客戶、重點訂單進度、本週業務摘要三個模板，不顯示第二排 chips 或 `Pilot` Tag。
 - Agent 只從 Sidebar 進入，不在 Composer 或 Header 重複提供切換入口。進入業務助理後，輸入框文案與 `aria-label` 改為業務助理；從 Agent 頁點「新對話」時必須保留目前 Agent，清空對話與工具後回到該 Agent 的新對話首頁。
 - Agent Icon 使用低飽和淡色區分類型，顏色只出現在 26px Icon Tile：業務助理為淡紫、測試助手為淡黃、翻譯為淡綠。所有 Agent 首頁與對話畫布皆使用一般 Chat 的灰藍背景 `#f6f8fb`；選取背景與主要操作仍可保留 Agent 識別色。
-- 每個 Agent 在 Sidebar 顯示三筆符合職能的示範歷史對話；點選後直接開啟完整對話內容。每個 Agent 至少提供一筆「長篇內容與程式碼」範例，沿用共用 Review Card、Copy 與側邊 Review Panel，不建立 Agent 專屬的另一套樣式。
+- 每個 Agent 在 Sidebar 的 `Recent` 區塊顯示三筆符合職能的示範歷史對話；點選後直接開啟完整對話內容。選取狀態沿用該 Agent Icon 的淡色背景與前景色。每個 Agent 至少提供一筆「長篇內容與程式碼」範例，沿用共用 Review Card、Copy 與側邊 Review Panel，不建立 Agent 專屬的另一套樣式。
 - Account Popover 提供可搜尋、可捲動的語言選擇，至少包含繁體中文、English、日本語、한국어與越南語；首次使用預設繁體中文，選擇結果寫入本機偏好並更新頁面 `lang`。選取勾勾固定置於語言列左側。語言屬個人偏好，放在管理後台正上方，不放入 Composer 或 Sidebar 導覽。Popover 頂端不顯示「連線」分組標題。
 - Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)` 作為預設寬度，左側邊緣可拖曳，最多增加 160px，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
 - Business Login、Chat、Sidebar Logo 與登出形成完整導頁：登入進入 `index-business-v2.html`，Logo 回到第二版首頁，登出回到 `login-business.html`。在 `htmlpreview.github.io` 執行時，導頁會保留 GitHub branch source query，避免相對路徑離開 Preview。
