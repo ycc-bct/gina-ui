@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="design-system/dist/tokens.css" />
 <link rel="stylesheet" href="app.css" />
-<link rel="stylesheet" href="app-business-v2.css" />
+<link rel="stylesheet" href="app-business-v2.css?v=20261012-rename" />
 <link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
 </head>
 <body class="business-theme">
@@ -38,6 +38,7 @@
 
 <!-- Conversation menu (shared by every history row) -->
 <div class="popover" id="pop-hist" role="menu" aria-label="對話選項">
+  <button class="menu-item" role="menuitem" data-action="hist-rename"><svg class="i" data-i="pencil"></svg>重新命名</button>
   <button class="menu-item" role="menuitem" data-action="hist-pin"><svg class="i" data-i="pin"></svg><span id="hist-pin-label">釘選</span></button>
   <div class="menu-sep"></div>
   <button class="menu-item danger" role="menuitem" data-action="hist-delete"><svg class="i" data-i="trash"></svg>刪除</button>
@@ -92,8 +93,8 @@
 <button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄" aria-expanded="true"><svg class="i" data-i="panel-left"></svg></button>
 <aside class="sidebar" aria-label="工作空間導覽">
   <div class="sidebar-resizer" id="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側欄寬度" tabindex="0" title="拖曳調整寬度，雙擊還原"></div>
-  <a class="sidebar-brand" href="index-business-v2.html" data-action="go-home" aria-label="Gina 首頁"><img src="assets/gina-wordmark.svg" alt="Gina" width="418" height="69" /></a>
-  <div class="side-search main-only">
+  <a class="sidebar-brand" href="index-business-v2.html" data-action="go-home" aria-label="Gina 首頁"><img src="assets/gina-wordmark-dark.svg" alt="Gina" width="418" height="69" /></a>
+  <div class="side-search">
     <svg class="i" data-i="search"></svg>
     <input id="hist-search" type="search" placeholder="搜尋" aria-label="搜尋對話" />
   </div>
@@ -101,12 +102,12 @@
     <button class="side-nav-item btn-new" data-action="new-chat"><svg class="i" data-i="plus"></svg><span id="new-label">新對話</span></button>
   </div>
   <div class="side-scroll" id="side-scroll">
-    <nav class="side-agents main-only" aria-label="可用協作 Agents">
+    <nav class="side-agents" aria-label="可用協作 Agents">
       <button class="side-nav-item" data-action="go-agent" data-agent="business"><svg class="i" data-i="chart"></svg><span>業務助理</span></button>
       <button class="side-nav-item" data-action="go-agent" data-agent="test"><svg class="i" data-i="monitor"></svg><span>測試助手</span></button>
       <button class="side-nav-item" data-action="go-agent" data-agent="translate"><svg class="i" data-i="languages"></svg><span>翻譯</span></button>
     </nav>
-    <div class="main-only">
+    <div>
       <details class="history-group" id="pinned-group" open hidden>
         <summary class="side-label history-summary"><span>Pinned</span><svg class="i history-chevron" data-i="chevron-down"></svg></summary>
         <div id="pinned-list"></div>
@@ -115,10 +116,6 @@
         <summary class="side-label history-summary"><span>Recents</span><svg class="i history-chevron" data-i="chevron-down"></svg></summary>
         <div id="hist-list"></div>
       </details>
-    </div>
-    <div class="spec-only">
-      <div class="side-label" id="spec-history-label">Recent</div>
-      <div id="spec-history-list" aria-label="Agent 歷史對話"></div>
     </div>
   </div>
   <div class="side-bottom">
@@ -132,26 +129,55 @@
     <section class="hero" id="hero">
       <div class="hero-title">
         <div class="hero-avatar"><img class="gina-img" alt="Gina" /></div>
-        <h1 id="hero-greeting">嗨，Kevin</h1>
+        <!-- Style 2 sphere: AI clip, white background removed with multiply. Clicking either sphere switches style. -->
+        <div class="hero-orb2">
+          <video muted loop playsinline autoplay preload="auto" poster="assets/orb/gina-orb-v2-poster.png" aria-hidden="true">
+            <source src="assets/orb/gina-orb-v2.webm" type="video/webm">
+            <source src="assets/orb/gina-orb-v2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <h1 id="hero-greeting"><span id="hero-greeting-line">嗨，Kevin</span><span class="hero-ask">今天想一起<span class="hero-ask-grad">完成什麼？</span></span></h1>
       </div>
       <div class="today" aria-label="今天的狀況">
-        <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-        <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>總結先前的對話</b><small>整理過去三天的重點</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span></button>
+        <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span></button>
+        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>總結先前的對話</b><small>整理過去三天的重點</small></span></button>
       </div>
     </section>
 
     <section class="spec-hero" id="spec-hero">
-      <div class="spec-title">
-        <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
-        <div><h1 id="spec-title-name">業務助理</h1><div class="s" id="spec-subtitle">客戶、訂單與業務資料</div></div>
-      </div>
+      <header class="agent-head">
+        <div class="spec-title">
+          <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
+          <div><h1 id="spec-title-name">業務助理</h1><div class="s" id="spec-subtitle">客戶、訂單與業務資料</div></div>
+        </div>
+        <button class="agent-new" type="button" data-action="agent-new-chat"><svg class="i" data-i="plus"></svg><span id="agent-new-label">新業務任務</span></button>
+      </header>
       <div class="desc" id="spec-desc">整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。</div>
-      <div class="today agent-templates" aria-label="業務助理對話模板">
-        <button class="today-card" data-prompt="整理本週待跟進客戶"><span class="today-icon"><svg class="i" data-i="users"></svg></span><span class="today-text"><b>待跟進客戶</b><small>依優先順序整理下一步</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-        <button class="today-card" data-prompt="檢查重點訂單進度"><span class="today-icon"><svg class="i" data-i="server"></svg></span><span class="today-text"><b>重點訂單進度</b><small>列出風險與待處理項目</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-        <button class="today-card" data-prompt="產生本週業務摘要"><span class="today-icon"><svg class="i" data-i="chart"></svg></span><span class="today-text"><b>本週業務摘要</b><small>彙整數字、進展與風險</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+      <div class="agent-empty" id="agent-empty" hidden>
+        <svg class="agent-empty-art" viewBox="0 0 120 96" aria-hidden="true">
+          <rect x="14" y="14" width="52" height="64" rx="6" fill="#fff" stroke="#172033" stroke-width="2"/>
+          <text x="40" y="54" text-anchor="middle" font-size="26" font-weight="600" fill="#172033" font-family="'Noto Sans TC',sans-serif">文</text>
+          <rect x="54" y="22" width="52" height="64" rx="6" fill="#eaf5f1" stroke="#172033" stroke-width="2"/>
+          <text x="80" y="63" text-anchor="middle" font-size="26" font-weight="600" fill="#172033" font-family="Inter,sans-serif">A</text>
+          <path d="M44 8c10-6 22-6 30 2" fill="none" stroke="#172033" stroke-width="2" stroke-linecap="round"/>
+          <path d="M70 4l4 6-7 1" fill="none" stroke="#172033" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="agent-empty-text" id="agent-empty-text">還沒有翻譯紀錄</p>
       </div>
+      <div class="agent-examples-wrap" id="agent-examples-wrap">
+        <div class="agent-section-label">從範例開始</div>
+        <div class="agent-examples" id="agent-examples"></div>
+      </div>
+      <div class="agent-recents" id="agent-pinned" hidden>
+        <div class="agent-section-label">Pinned</div>
+        <div class="agent-recents-list" id="agent-pinned-list"></div>
+      </div>
+      <div class="agent-recents" id="agent-recents" hidden>
+        <div class="agent-section-label">Recents</div>
+        <div class="agent-recents-list" id="agent-recents-list"></div>
+      </div>
+      <input type="file" id="agent-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" hidden />
     </section>
 
     <section class="thread" id="thread"></section>
@@ -1214,6 +1240,7 @@ const ICONS = {
   "chevron-right":'<path d="m9 18 6-6-6-6"/>',
   "arrow-left":'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
   "search":'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  "upload":'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
   "message":'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
   "languages":'<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
   "globe":'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 0 20"/><path d="M12 2a15.3 15.3 0 0 0 0 20"/>',
@@ -1221,6 +1248,7 @@ const ICONS = {
   "copy":'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
   "maximize":'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
   "minimize":'<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M16 3v3a2 2 0 0 0 2 2h3"/><path d="M8 21v-3a2 2 0 0 0-2-2H3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>',
+  "more-vertical":'<circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>',
   "more":'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
   "pin":'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',
   "pin-off":'<path d="M12 17v5"/><path d="M15 9.34V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H7.89"/><path d="m2 2 20 20"/><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h11"/>',
@@ -1294,9 +1322,27 @@ const HISTORY = [
 ];
 let activeHist = -1;
 let activeAgentHist = -1;
+// Chats started in this session (Gina or an Agent). Newest first at the top of Recents.
+// Each keeps its own thread nodes while you are elsewhere, so a reply can finish in the background.
+const NEW_CHATS = [];
+let activeNew = null;
+let newChatSeq = 0;
+function stashActiveNew(){
+  if(activeNew===null)return;
+  const entry=NEW_CHATS.find(c=>c.id===activeNew);
+  if(entry){const frag=document.createDocumentFragment();while(thread.firstChild)frag.appendChild(thread.firstChild);entry.frag=frag;}
+  activeNew=null;
+}
 const pinnedHist = new Set([2, 8, 17]);   // indices into HISTORY; 示意預設釘選
 const deletedHist = new Set();
 let menuHist = -1;              // row the ⋯ menu is open for
+// Agent chats and chats started this session, keyed 'a:<agent>:<index>' or 'n:<id>'.
+const pinnedChats = new Set();
+const deletedChats = new Set();
+let menuChat = null;            // Agent / new chat the ⋯ menu is open for
+// Renamed titles, keyed 'g:<index>' (Gina), 'a:<agent>:<index>', 'n:<id>'. Display only: the original prompt stays as sent.
+const chatTitles = new Map();
+const chatTitle = (ck, fallback) => chatTitles.get(ck) || fallback;
 const historyLoadingCounts=new Map();
 const unreadHist=new Set();     // replies finished while the user was elsewhere
 function setHistoryLoading(index,loading){
@@ -1307,22 +1353,52 @@ function setHistoryLoading(index,loading){
   renderHistory();
 }
 function renderHistory(){
+  if(document.querySelector('.rename-input'))return; // don't wipe a rename in progress; it re-renders when done
   const q = document.getElementById('hist-search').value.trim();
   const newChatButton=document.querySelector('[data-action="new-chat"]');
-  const newChatActive=activeHist===-1&&activeAgentHist===-1;
+  const newChatActive=activeHist===-1&&activeAgentHist===-1&&activeNew===null&&!document.body.classList.contains('specialist');
   newChatButton.classList.toggle('active',newChatActive);
   if(newChatActive){newChatButton.setAttribute('aria-current','page')}else{newChatButton.removeAttribute('aria-current')}
   const row=(t,i)=>`<div class="hist-row ${i===activeHist?'active':''} ${i===menuHist?'menu-open':''}">
-      <button class="hist ${i===activeHist?'active':''}" data-hist="${i}" ${i===activeHist?'aria-current="page"':''}><span class="hist-dot ${historyLoadingCounts.has(i)?'is-loading':unreadHist.has(i)?'is-unread':''}" ${historyLoadingCounts.has(i)?'role="img" aria-label="正在處理"':unreadHist.has(i)?'role="img" aria-label="有新回覆"':'aria-hidden="true"'}></span><span class="hist-title">${t}</span></button>
-      <button class="hist-more" type="button" data-pop="pop-hist" data-index="${i}" aria-haspopup="menu" aria-expanded="false" aria-label="更多選項：${t}">${svg('more')}</button>
+      <button class="hist ${i===activeHist?'active':''}" data-hist="${i}" ${i===activeHist?'aria-current="page"':''}><span class="hist-ico" aria-hidden="true">${svg('message')}</span><span class="hist-title">${t}</span>${historyLoadingCounts.has(i)?'<span class="hist-status is-loading" role="img" aria-label="正在處理"></span>':unreadHist.has(i)?'<span class="hist-status is-unread" role="img" aria-label="有新回覆"></span>':''}</button>
+      <button class="hist-more" type="button" data-pop="pop-hist" data-index="${i}" data-rename-key="g:${i}" aria-haspopup="menu" aria-expanded="false" aria-label="更多選項：${t}">${svg('more')}</button>
     </div>`;
-  const visible=HISTORY.map((t,i)=>[t,i]).filter(([t,i])=>!deletedHist.has(i)&&(!q||t.includes(q)));
+  // Agent conversations live in the same Recents list, marked with the Agent's icon instead of the dot.
+  const moreBtn=(ck,title)=>`<button class="hist-more" type="button" data-pop="pop-hist" data-chat-key="${ck}" aria-haspopup="menu" aria-expanded="false" aria-label="更多選項：${escapeHTML(title)}">${svg('more')}</button>`;
+  const agentRow=(key,index,title)=>{
+    const on=document.body.dataset.agent===key&&index===activeAgentHist;const ck=`a:${key}:${index}`;
+    const icon={business:'chart',test:'monitor',translate:'languages'}[key];
+    return `<div class="hist-row agent-hist ${on?'active':''} ${menuChat===ck?'menu-open':''}" data-agent-key="${key}">
+      <button class="hist ${on?'active':''}" data-agent-history="${index}" data-agent-key="${key}" ${on?'aria-current="page"':''}><span class="hist-agent" data-agent-key="${key}" aria-hidden="true">${svg(icon)}</span><span class="hist-title">${title}</span></button>${moreBtn(ck,title)}
+    </div>`;
+  };
+  const newRow=c=>{
+    const on=c.id===activeNew;const ck=`n:${c.id}`;
+    const icon=c.agent?{business:'chart',test:'monitor',translate:'languages'}[c.agent]:'message';
+    const lead=c.agent?`<span class="hist-agent" data-agent-key="${c.agent}" aria-hidden="true">${svg(icon)}</span>`:`<span class="hist-ico" aria-hidden="true">${svg('message')}</span>`;
+    const status=c.loading?'<span class="hist-status is-loading" role="img" aria-label="正在處理"></span>':c.unread?'<span class="hist-status is-unread" role="img" aria-label="有新回覆"></span>':'';
+    return `<div class="hist-row new-hist ${c.agent?'agent-hist':''} ${on?'active':''} ${menuChat===ck?'menu-open':''}"><button class="hist ${on?'active':''}" data-new-chat="${c.id}" ${on?'aria-current="page"':''}>${lead}<span class="hist-title">${escapeHTML(chatTitle(ck,c.title))}</span>${status}</button>${moreBtn(ck,chatTitle(ck,c.title))}</div>`;
+  };
+  const liveNew=NEW_CHATS.filter(c=>!deletedChats.has(`n:${c.id}`)&&(!q||chatTitle(`n:${c.id}`,c.title).includes(q)));
+  const visible=HISTORY.map((t,i)=>[chatTitle(`g:${i}`,t),i]).filter(([t,i])=>!deletedHist.has(i)&&(!q||t.includes(q)));
   const pinned=visible.filter(([,i])=>pinnedHist.has(i)), rest=visible.filter(([,i])=>!pinnedHist.has(i));
-  document.getElementById('pinned-group').hidden=!pinned.length;
-  document.getElementById('pinned-list').innerHTML=pinned.map(([t,i])=>row(t,i)).join('');
-  document.getElementById('hist-list').innerHTML=rest.map(([t,i])=>row(t,i)).join('');
+  // Pinned holds Gina chats, Agent chats and new chats alike.
+  const pinnedExtra=[
+    ...liveNew.filter(c=>pinnedChats.has(`n:${c.id}`)).map(newRow),
+    ...Object.keys(AGENT_HISTORY).flatMap(k=>AGENT_HISTORY[k].map((item,n)=>[k,n,chatTitle(`a:${k}:${n}`,item.title)])).filter(([k,n,t])=>pinnedChats.has(`a:${k}:${n}`)&&!deletedChats.has(`a:${k}:${n}`)&&(!q||t.includes(q))).map(x=>agentRow(...x))
+  ];
+  document.getElementById('pinned-group').hidden=!pinned.length&&!pinnedExtra.length;
+  document.getElementById('pinned-list').innerHTML=pinnedExtra.join('')+pinned.map(([t,i])=>row(t,i)).join('');
+  // Interleave Agent chats into Recents (prototype ordering): one after every two Gina chats, round-robin by Agent.
+  const agentItems=[];const keys=Object.keys(AGENT_HISTORY);const max=Math.max(...keys.map(k=>AGENT_HISTORY[k].length));
+  for(let n=0;n<max;n++)keys.forEach(k=>{const item=AGENT_HISTORY[k][n];const ck=`a:${k}:${n}`;const t=item&&chatTitle(ck,item.title);if(item&&!deletedChats.has(ck)&&!pinnedChats.has(ck)&&(!q||t.includes(q)))agentItems.push([k,n,t])});
+  const html=liveNew.filter(c=>!pinnedChats.has(`n:${c.id}`)).map(newRow);let a=0;
+  rest.forEach(([t,i],n)=>{html.push(row(t,i));if(n%2===1&&a<agentItems.length)html.push(agentRow(...agentItems[a++]));});
+  while(a<agentItems.length)html.push(agentRow(...agentItems[a++]));
+  document.getElementById('hist-list').innerHTML=html.join('');
+  if(document.body.classList.contains('specialist')&&typeof renderAgentRecents==='function')renderAgentRecents();
+  document.querySelectorAll('[data-action="go-agent"]').forEach(b=>{const on=document.body.classList.contains('specialist')&&document.body.dataset.agent===b.dataset.agent&&activeAgentHist===-1&&activeNew===null;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current');});
 }
-renderHistory();
 document.getElementById('hist-search').addEventListener('input', renderHistory);
 const EXEC_RESOURCES = [
   {name:'Gina',type:'Subagent',icon:'message',time:'16.0 秒'},
@@ -1436,7 +1512,7 @@ function toast(msg){
 }
 function nowHM(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
 function closePops(except){
-  if(except!=='pop-hist'){document.querySelectorAll('.hist-row.menu-open').forEach(r=>r.classList.remove('menu-open'));menuHist=-1;}
+  if(except!=='pop-hist'){document.querySelectorAll('.hist-row.menu-open, .agent-recent-row.menu-open').forEach(r=>r.classList.remove('menu-open'));menuHist=-1;menuChat=null;}
   document.querySelectorAll('.popover.open').forEach(p=>{if(p.id!==except)p.classList.remove('open')});
   document.querySelectorAll('[data-pop].active').forEach(b=>{if(b.dataset.pop!==except){b.classList.remove('active');b.setAttribute('aria-expanded','false')}});
   if(except!=='pop-user')setLocaleMenu(false);
@@ -1577,9 +1653,10 @@ function setReviewPanelWidth(width,save=true){
 /* ---------- Composer tools: "+" menu toggles; active ones show as chips ---------- */
 const TOOLS={web:{label:'網路搜尋',icon:'search'},kb:{label:'個人知識',icon:'book-open'},skills:{label:'Skills',icon:'wrench'}};
 const activeTools=new Set();
+var attachedFile=null; // file name added from the translate drop zone
 function renderTools(){
-  $('#active-tools').innerHTML=[...activeTools].map(k=>`<span class="tool-chip" data-tool="${k}">${svg(TOOLS[k].icon)}<span>${TOOLS[k].label}</span><button type="button" data-action="remove-tool" data-tool="${k}" aria-label="移除 ${TOOLS[k].label}">${svg('x')}<span class="tip">清除</span></button></span>`).join('');
-  document.querySelector('.composer').classList.toggle('has-active-tools',activeTools.size>0);
+  $('#active-tools').innerHTML=(attachedFile?`<span class="tool-chip file-chip">${svg('file-text')}<span>${escapeHTML(attachedFile)}</span><button type="button" data-action="remove-file" aria-label="移除檔案">${svg('x')}<span class="tip">移除</span></button></span>`:'')+[...activeTools].map(k=>`<span class="tool-chip" data-tool="${k}">${svg(TOOLS[k].icon)}<span>${TOOLS[k].label}</span><button type="button" data-action="remove-tool" data-tool="${k}" aria-label="移除 ${TOOLS[k].label}">${svg('x')}<span class="tip">清除</span></button></span>`).join('');
+  document.querySelector('.composer').classList.toggle('has-active-tools',activeTools.size>0||!!attachedFile);
   document.querySelectorAll('#composer-menu [data-tool]').forEach(b=>b.setAttribute('aria-checked',String(activeTools.has(b.dataset.tool))));
 }
 function setComposerMenu(open){
@@ -1597,7 +1674,7 @@ function greeting(){
   const h=new Date().getHours();
   return h<5?'還在忙嗎':h<11?'早安':h<14?'午安':h<18?'下午好':'晚上好';
 }
-$('#hero-greeting').textContent=`${greeting()}，${USER_NAME}`;
+$('#hero-greeting-line').textContent=`${greeting()}，${USER_NAME}`;
 
 /* ---------- Usage ring (示意資料；正式版由後端回傳) ---------- */
 const USAGE={context:57057,contextLimit:200000,sessionPct:32,resetMinutes:124};
@@ -1688,7 +1765,7 @@ $('#locale-search').addEventListener('input',e=>filterLocales(e.target.value));
 /* ---------- Views ---------- */
 const AGENT_VIEWS={
   business:{
-    name:'業務助理',icon:'chart',subtitle:'客戶、訂單與業務資料',
+    name:'業務助理',icon:'chart',subtitle:'客戶、訂單與業務資料',action:'新業務任務',
     description:'整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。',
     placeholder:'交給業務助理，整理客戶與訂單工作…',
     fallback:'<p>收到！目前我尚未啟用任何業務資料來源，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>',
@@ -1696,11 +1773,12 @@ const AGENT_VIEWS={
     templates:[
       ['users','待跟進客戶','依優先順序整理下一步','整理本週待跟進客戶'],
       ['server','重點訂單進度','列出風險與待處理項目','檢查重點訂單進度'],
-      ['chart','本週業務摘要','彙整數字、進展與風險','產生本週業務摘要']
+      ['chart','本週業務摘要','彙整數字、進展與風險','產生本週業務摘要'],
+      ['mail','客戶跟進信','依最新進度擬好跟進信','幫我擬一封客戶跟進信，客戶與進度如下：\n']
     ]
   },
   test:{
-    name:'測試助手',icon:'monitor',subtitle:'測試案例、缺陷與驗證紀錄',
+    name:'測試助手',icon:'monitor',subtitle:'測試案例、缺陷與驗證紀錄',action:'新測試',
     description:'整理測試範圍、執行結果與缺陷資訊，快速產生可追蹤的驗證摘要。',
     placeholder:'交給測試助手，整理測試與缺陷工作…',
     fallback:'<p>收到！請提供需求、測試範圍或目前的缺陷資料。</p><p>我會協助整理測試案例、回歸清單與可追蹤的驗證摘要。</p>',
@@ -1708,19 +1786,23 @@ const AGENT_VIEWS={
     templates:[
       ['check','建立測試案例','依需求整理主要情境','依這份需求建立測試案例'],
       ['monitor','回歸測試清單','列出本次需要驗證的功能','整理這次版本的回歸測試清單'],
-      ['file-text','缺陷摘要','彙整嚴重度與重現步驟','產生目前缺陷的摘要']
+      ['file-text','缺陷摘要','彙整嚴重度與重現步驟','產生目前缺陷的摘要'],
+      ['list-box','測試報告','把執行結果整理給 PM','把以下測試結果整理成測試報告：\n']
     ]
   },
   translate:{
-    name:'翻譯',icon:'languages',subtitle:'多語翻譯與語氣調整',
+    name:'翻譯',icon:'languages',subtitle:'多語翻譯與語氣調整',action:'新翻譯',emptyText:'還沒有翻譯紀錄',
     description:'依內容與使用情境翻譯文字，並保留原意、專有名詞與適合的語氣。',
     placeholder:'貼上要翻譯的內容，並告訴我目標語言…',
     fallback:'<p>可以，請貼上要翻譯的內容，並告訴我目標語言。</p><p>如果有特定語氣、專有名詞或使用情境，也可以一併說明。</p>',
     clarifications:['貼上要翻譯的內容','選擇目標語言','指定語氣與使用情境'],
     templates:[
-      ['languages','翻譯成英文','自然、專業的商務語氣','請把以下內容翻譯成英文：'],
-      ['message','調整語氣','讓內容更禮貌且易讀','請調整以下文字的語氣：'],
-      ['file-text','雙語對照','保留原文並逐段翻譯','請把以下內容整理成雙語對照：']
+      ['upload','拖拉檔案翻譯','把文件拖到這裡，或點一下選擇檔案','請把這份文件翻譯成英文：','支援 PDF、Word、PowerPoint 等','drop'],
+      ['mail','翻譯信件','把英文信件翻成中文，並附上商務英文的回信建議','請把以下英文信件翻譯成中文，並提供商務英文的回信建議：\n','英文 → 繁中 · 商務英文回信'],
+      ['globe','回覆越南供應商','用禮貌、清楚的越南文回覆','請把以下回覆翻譯成越南文，語氣禮貌：\n','繁中 → 越南文'],
+      ['list-box','術語對照表','整理產品術語的多語對照','請把以下產品術語整理成繁中、英文、越南文對照表：\n','繁中 · 英文 · 越南文'],
+      ['file-text','雙語對照','保留原文並逐段翻譯','請把以下內容整理成雙語對照：\n','原文 ＋ 譯文'],
+      ['message','調整語氣','讓譯文更在地、更有禮貌','請調整以下譯文的語氣，讓它更自然：\n','任何語言']
     ]
   }
 };
@@ -1735,32 +1817,27 @@ const AGENT_HISTORY={
     {title:'阻擋上線的缺陷摘要',prompt:'列出目前會阻擋上線的缺陷與建議處理順序',kind:'test-blockers',time:'週二'},
     {title:'Playwright 登入測試範例',prompt:'產生 Playwright 登入測試範例與執行說明',kind:'test-code',time:'上週四'}
   ],
-  translate:[
-    {title:'新加坡提案英文版',prompt:'把新加坡客戶提案整理成專業英文版本',kind:'translate-proposal',time:'昨天'},
-    {title:'越南供應商信件',prompt:'把供應商確認信翻譯成越南語',kind:'translate-vietnamese',time:'週一'},
-    {title:'產品術語中英越對照',prompt:'建立產品術語的繁中、英文、越南文對照與可匯入格式',kind:'translate-code',time:'上週三'}
-  ]
+  translate:[] // empty on purpose: shows the Agent's empty state
 };
+renderHistory(); // first paint, once AGENT_HISTORY exists
 function currentAgent(){return AGENT_VIEWS[body.dataset.agent]||AGENT_VIEWS.business}
-function renderAgentHistory(){
-  const items=AGENT_HISTORY[body.dataset.agent]||AGENT_HISTORY.business;
-  $('#spec-history-list').innerHTML=items.map((item,index)=>`<div class="hist-row ${index===activeAgentHist?'active':''}">
-    <button class="hist ${index===activeAgentHist?'active':''}" data-agent-history="${index}" ${index===activeAgentHist?'aria-current="page"':''}>
-      <span class="hist-dot" aria-hidden="true"></span><span class="hist-title">${escapeHTML(item.title)}</span>
-    </button>
-  </div>`).join('');
-}
+function renderAgentHistory(){renderHistory()}
 function renderAgentView(agent){
   $('.spec-big').innerHTML=svg(agent.icon);
   $('#spec-title-name').textContent=agent.name;
   $('#spec-subtitle').textContent=agent.subtitle;
   $('#spec-desc').textContent=agent.description;
-  $('#spec-history-label').textContent='Recent';
-  $('.agent-templates').setAttribute('aria-label',`${agent.name}對話模板`);
-  $('.agent-templates').innerHTML=agent.templates.map(([icon,title,detail,prompt])=>`<button class="today-card" data-prompt="${prompt}"><span class="today-icon">${svg(icon)}</span><span class="today-text"><b>${title}</b><small>${detail}</small></span>${svg('chevron-right').replace('class="i"','class="i today-go"')}</button>`).join('');
+  $('#agent-new-label').textContent=agent.action;
+  $('#agent-empty-text').textContent=agent.emptyText||`還沒有${agent.name}的對話`;
+  $('#agent-examples').innerHTML=agent.templates.map(([icon,title,detail,prompt,meta,type])=>`<button class="ex-card ${type==='drop'?'ex-drop':''}" type="button" ${type==='drop'?'data-ex-drop':''} data-ex-prompt="${escapeHTML(prompt)}">
+      <span class="ex-ico">${svg(icon)}</span>
+      <span class="ex-text"><b>${title}</b><span class="ex-desc">${detail}</span>${meta?`<span class="ex-meta">${meta}</span>`:''}</span>
+    </button>`).join('');
   renderAgentHistory();
+  renderAgentRecents();
 }
 function goHome(){
+  stashActiveNew();
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
   delete body.dataset.agent;
@@ -1771,6 +1848,7 @@ function goHome(){
   thread.innerHTML='';activeHist=-1;activeAgentHist=-1;renderHistory();
 }
 function goAgent(key='business'){
+  stashActiveNew();
   const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
@@ -1784,6 +1862,76 @@ function goAgent(key='business'){
   thread.innerHTML='';activeHist=-1;renderHistory();
 }
 function goSpecialist(){goAgent('business')}
+// Inline rename: an input laid over the row. Enter or click away saves, Esc cancels, empty keeps the old title.
+function rowKey(row){
+  const b=row.querySelector('[data-chat-key],[data-rename-key]');
+  return b?(b.dataset.chatKey||b.dataset.renameKey):null;
+}
+function startRename(row){
+  const ck=rowKey(row);if(!ck||row.classList.contains('renaming'))return;
+  const titleEl=row.querySelector('.hist-title,.agent-recent-title');
+  const current=titleEl.textContent;
+  const field=document.createElement('input');
+  field.className='rename-input';field.value=current;field.setAttribute('aria-label','重新命名對話');
+  row.classList.add('renaming');row.appendChild(field);
+  field.focus();field.select();
+  let done=false;
+  const finish=save=>{
+    if(done)return;done=true;
+    const next=field.value.trim();
+    if(save&&next&&next!==current){chatTitles.set(ck,next);toast('已重新命名');}
+    field.remove();row.classList.remove('renaming');
+    renderHistory();if(body.classList.contains('specialist'))renderAgentRecents();
+  };
+  field.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.isComposing){e.preventDefault();finish(true);}
+    else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();finish(false);}
+  });
+  field.addEventListener('blur',()=>finish(true));
+}
+
+// Agent home: this Agent's chats, newest first (chats started this session, then the sample history).
+function renderAgentRecents(){
+  const key=body.dataset.agent;if(!key||!$('#agent-recents'))return;
+  const items=[
+    ...NEW_CHATS.filter(c=>c.agent===key).map(c=>({ck:`n:${c.id}`,attrs:`data-new-chat="${c.id}"`,title:chatTitle(`n:${c.id}`,c.title),time:c.loading?'回覆中…':c.unread?'有新回覆':'剛剛'})),
+    ...(AGENT_HISTORY[key]||[]).map((item,index)=>({ck:`a:${key}:${index}`,attrs:`data-agent-history="${index}" data-agent-key="${key}"`,title:chatTitle(`a:${key}:${index}`,item.title),time:item.time}))
+  ].filter(it=>!deletedChats.has(it.ck));
+  const rowHTML=it=>`<div class="agent-recent-row ${menuChat===it.ck?'menu-open':''}">
+      <button class="agent-recent" type="button" ${it.attrs}><span class="agent-recent-title">${escapeHTML(it.title)}</span><span class="agent-recent-time">${it.time}</span></button>
+      <button class="agent-more" type="button" data-pop="pop-hist" data-chat-key="${it.ck}" aria-haspopup="menu" aria-expanded="false" aria-label="更多選項：${escapeHTML(it.title)}">${svg('more-vertical')}</button>
+    </div>`;
+  const pinned=items.filter(it=>pinnedChats.has(it.ck)),rest=items.filter(it=>!pinnedChats.has(it.ck));
+  $('#agent-pinned').hidden=!pinned.length;$('#agent-pinned-list').innerHTML=pinned.map(rowHTML).join('');
+  $('#agent-recents').hidden=!rest.length;$('#agent-recents-list').innerHTML=rest.map(rowHTML).join('');
+  // No chats yet: illustration + note, a hairline, then the examples.
+  $('#agent-empty').hidden=!!items.length;
+  $('#agent-examples-wrap').classList.toggle('is-empty-state',!items.length);
+}
+// Start a new chat with the current Agent. Examples fill the composer but do not send (the user adds their content first).
+function startAgentChat(prefill='',fileName=null){
+  const agent=currentAgent();
+  stashActiveNew();closePops();closeReviewPanel();
+  activeHist=-1;activeAgentHist=-1;
+  startChat();
+  thread.innerHTML=`<div class="agent-blank"><span class="agent-blank-icon">${svg(agent.icon)}</span><h2>和${agent.name}開始新對話</h2><p>${agent.description}</p></div>`;
+  activeTools.clear();attachedFile=fileName;renderTools();setComposerMenu(false);
+  input.value=prefill;autosize();updateSend();
+  input.focus();input.setSelectionRange(input.value.length,input.value.length);
+  renderHistory();
+}
+function attachForTranslation(file){
+  if(!file)return;
+  startAgentChat('請把這份文件翻譯成英文：',file.name);
+}
+function openNewChat(id){
+  const entry=NEW_CHATS.find(c=>c.id===id);if(!entry||id===activeNew)return;
+  entry.agent?goAgent(entry.agent):goHome();
+  startChat();
+  if(entry.frag)thread.appendChild(entry.frag);entry.frag=null;
+  activeNew=id;entry.unread=false;renderHistory();
+  scrollBottom();
+}
 function startChat(){body.classList.add('chatting');body.classList.remove('mobile-nav-open');}
 
 function userMsg(text,time=nowHM()){
@@ -1981,8 +2129,10 @@ function loadingReplyHTML(name='Gina',steps=5){
 }
 
 function loadConversation(i){
+  stashActiveNew();
   closeTools();
-  body.classList.remove('specialist');$('#new-label').textContent='新對話';
+  body.classList.remove('specialist');delete body.dataset.agent;$('#new-label').textContent='新對話';
+  input.setAttribute('aria-label','傳送訊息給 Gina');input.placeholder='交給 Gina，一起完成今天的工作…';
   activeAgentHist=-1;activeHist=i;unreadHist.delete(i);renderHistory();
   thread.innerHTML='';startChat();
   userMsg(HISTORY[i],'13:35');
@@ -2009,8 +2159,9 @@ function loadConversation(i){
   $('#scroll').scrollTop=0;
 }
 
-function loadAgentConversation(index){
-  const key=body.dataset.agent||'business';
+function loadAgentConversation(index,key=body.dataset.agent||'business'){
+  stashActiveNew();
+  if(body.dataset.agent!==key||!body.classList.contains('specialist'))goAgent(key);
   const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
   const item=(AGENT_HISTORY[key]||AGENT_HISTORY.business)[index];
   if(!item)return;
@@ -2101,9 +2252,16 @@ function clarificationOptionsHTML(options){
 function send(){
   const text=input.value.trim(); if(!text) return;
   input.value='';autosize();updateSend();closeTools();
-  if(!body.classList.contains('chatting')){thread.innerHTML='';startChat();}
-  userMsg(text);
   const specialist=body.classList.contains('specialist');
+  if(!body.classList.contains('chatting')||thread.querySelector('.agent-blank')){
+    thread.innerHTML='';startChat();
+    const entry={id:++newChatSeq,agent:specialist?(body.dataset.agent||'business'):null,title:text,loading:false,unread:false,frag:null};
+    NEW_CHATS.unshift(entry);activeNew=entry.id;activeHist=-1;activeAgentHist=-1;
+  }
+  const newEntry=NEW_CHATS.find(c=>c.id===activeNew);
+  if(newEntry){newEntry.loading=true;renderHistory();}
+  const sentMsg=userMsg(text);
+  if(attachedFile){sentMsg.querySelector('.col').insertAdjacentHTML('afterbegin',`<div class="msg-file">${svg('file-text')}<span>${escapeHTML(attachedFile)}</span></div>`);attachedFile=null;renderTools();}
   const loadingHistoryIndex=activeHist;setHistoryLoading(loadingHistoryIndex,true);
   const el=aiMsg(loadingReplyHTML(specialist?currentAgent().name:'Gina'));
   el.classList.add('loading-message');
@@ -2115,6 +2273,7 @@ function send(){
   const stream=el.querySelector('.stream');
   setTimeout(()=>{
     setHistoryLoading(loadingHistoryIndex,false);
+    if(newEntry){newEntry.loading=false;if(activeNew!==newEntry.id)newEntry.unread=true;renderHistory();}
     stream.innerHTML=target;
     el.querySelector('.loading-state')?.remove();
     el.classList.remove('loading-message');
@@ -2153,10 +2312,12 @@ document.addEventListener('click',e=>{
     e.stopPropagation();closeTools();
     openPop(popBtn.dataset.pop,popBtn);
     if(popBtn.dataset.pop==='pop-hist'&&$('#pop-hist').classList.contains('open')){
-      menuHist=+popBtn.dataset.index;
-      $('#hist-pin-label').textContent=pinnedHist.has(menuHist)?'取消釘選':'釘選';
-      $('[data-action="hist-pin"] svg').outerHTML=svg(pinnedHist.has(menuHist)?'pin-off':'pin');
-      popBtn.closest('.hist-row').classList.add('menu-open');
+      const ck=popBtn.dataset.chatKey||null;
+      menuChat=ck;menuHist=ck?-1:+popBtn.dataset.index;
+      const isPinned=ck?pinnedChats.has(ck):pinnedHist.has(menuHist);
+      $('#hist-pin-label').textContent=isPinned?'取消釘選':'釘選';
+      $('[data-action="hist-pin"] svg').outerHTML=svg(isPinned?'pin-off':'pin');
+      popBtn.closest('.hist-row, .agent-recent-row').classList.add('menu-open');
     }
     return;
   }
@@ -2167,6 +2328,8 @@ document.addEventListener('click',e=>{
     renderTools();return;
   }
   if(!e.target.closest('#composer-menu, #composer-plus')&&!$('#composer-menu').hidden)setComposerMenu(false);
+  const ex=e.target.closest('.ex-card');
+  if(ex){ex.hasAttribute('data-ex-drop')?$('#agent-file-input').click():startAgentChat(ex.dataset.exPrompt);return;}
   const chip=e.target.closest('.chip, .today-card[data-prompt]');
   if(chip){input.value=chip.dataset.prompt;send();return;}
   const replyOption=e.target.closest('.reply-option');
@@ -2181,7 +2344,14 @@ document.addEventListener('click',e=>{
     closeDownloadMenus();toast(`已選擇 ${label} 下載（示意）`);return;
   }
   const agentHistory=e.target.closest('[data-agent-history]');
-  if(agentHistory){loadAgentConversation(+agentHistory.dataset.agentHistory);return;}
+  if(agentHistory){loadAgentConversation(+agentHistory.dataset.agentHistory,agentHistory.dataset.agentKey);return;}
+  if(e.target.closest('.rename-input'))return;
+  // Double-click a sidebar chat to rename it. The first click opens the chat and re-renders the list,
+  // so the browser never fires 'dblclick'; the second click (detail 2) starts the rename instead.
+  const renameRow=e.detail===2&&e.target.closest('.sidebar .hist-row');
+  if(renameRow&&!e.target.closest('.hist-more')){startRename(renameRow);return;}
+  const nc=e.target.closest('[data-new-chat]');
+  if(nc){openNewChat(+nc.dataset.newChat);return;}
   const h=e.target.closest('[data-hist]');
   if(h){loadConversation(+h.dataset.hist);return;}
 
@@ -2200,13 +2370,14 @@ document.addEventListener('click',e=>{
     case 'toggle-locale-menu': {e.stopPropagation();setLocaleMenu($('#locale-menu').hidden);break;}
     case 'select-locale': selectLocale(a.dataset.locale); break;
     case 'remove-tool': activeTools.delete(a.dataset.tool);renderTools(); break;
+    case 'remove-file': attachedFile=null;renderTools(); break;
     case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'copy-message': {closeDownloadMenus();copyText(readableText(a.closest('.ai-col').querySelector('.bubble-ai')),'已複製回覆');break;}
     case 'copy-review-card': {const source=a.closest('.review-card').querySelector('.review-card-content');copyText(readableText(source),'已複製長篇內容');break;}
     case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
     case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
     case 'close-review-panel': closeReviewPanel(); break;
-    case 'translate': {goAgent('translate');input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
+    case 'translate': {goAgent('translate');startAgentChat('請幫我翻譯以下內容：\n');break;}
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
     case 'open-mcp': openDrawer('drawer-mcp'); break;
     case 'open-kb': openDrawer('drawer-kb'); break;
@@ -2231,9 +2402,10 @@ document.addEventListener('click',e=>{
     case 'logout': navigatePrototype('login-business.html'); break;
     case 'go-specialist': goSpecialist(); break;
     case 'go-agent': goAgent(a.dataset.agent); break;
+    case 'agent-new-chat': startAgentChat(); break;
     case 'new-chat': {
-      // Start fresh with whichever Agent is currently selected.
-      body.classList.contains('specialist')?goAgent(body.dataset.agent||'business'):goHome();
+      // 新對話 always means a new Gina chat; to start fresh with an Agent, click the Agent in the sidebar.
+      goHome();
       activeTools.clear();renderTools();setComposerMenu(false);
       input.value='';autosize();updateSend();input.focus();
       break;
@@ -2243,15 +2415,49 @@ document.addEventListener('click',e=>{
     case 'confirm-send': a.closest('.action-btns').outerHTML='<div class="action-done">✅ 郵件已寄出。</div>'; break;
     case 'cancel-send': a.closest('.action-btns').outerHTML='<div class="action-done">已取消，郵件未寄出。</div>'; break;
     case 'toggle-outlook': {e.stopPropagation();setOutlook($('#outlook-switch').getAttribute('aria-checked')!=='true');break;}
-    case 'hist-pin': {pinnedHist.has(menuHist)?pinnedHist.delete(menuHist):pinnedHist.add(menuHist);closePops();menuHist=-1;renderHistory();break;}
-    case 'hist-delete': {const i=menuHist;closePops();menuHist=-1;deletedHist.add(i);if(activeHist===i)goHome();else renderHistory();toast('已刪除對話（示意）');break;}
+    case 'hist-rename': {
+      const row=document.querySelector('.hist-row.menu-open, .agent-recent-row.menu-open');
+      closePops();if(row)startRename(row);break;
+    }
+    case 'hist-pin': {
+      const ck=menuChat,i=menuHist;closePops();
+      if(ck){pinnedChats.has(ck)?pinnedChats.delete(ck):pinnedChats.add(ck);}else{pinnedHist.has(i)?pinnedHist.delete(i):pinnedHist.add(i);}
+      renderHistory();break;
+    }
+    case 'hist-delete': {
+      const ck=menuChat,i=menuHist;closePops();
+      if(ck){
+        deletedChats.add(ck);pinnedChats.delete(ck);
+        const [kind,x,y]=ck.split(':');
+        const open=kind==='n'?activeNew===+x:(body.classList.contains('chatting')&&body.dataset.agent===x&&activeAgentHist===+y);
+        if(open){const owner=kind==='n'?NEW_CHATS.find(c=>c.id===+x)?.agent:x;if(kind==='n')activeNew=null;owner?goAgent(owner):goHome();}else renderHistory();
+      }else{deletedHist.add(i);if(activeHist===i)goHome();else renderHistory();}
+      toast('已刪除對話（示意）');break;
+    }
     case 'connect-outlook': setOutlook(true); break;
     case 'dismiss-outlook-hint': $('#outlook-hint').hidden=true; break;
     case 'toast': closePops();toast(a.dataset.msg); break;
   }
 });
+// Translate drop zone. Files dropped anywhere else are ignored instead of opening in the browser.
+$('#agent-file-input').addEventListener('change',e=>{attachForTranslation(e.target.files[0]);e.target.value='';});
+['dragenter','dragover'].forEach(type=>document.addEventListener(type,e=>{
+  if(!e.dataTransfer||![...e.dataTransfer.types].includes('Files'))return;
+  e.preventDefault();
+  const zone=e.target.closest&&e.target.closest('[data-ex-drop]');
+  document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.toggle('is-dragover',z===zone));
+  e.dataTransfer.dropEffect=zone?'copy':'none';
+}));
+document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.remove('is-dragover'));});
+document.addEventListener('drop',e=>{
+  if(!e.dataTransfer||!e.dataTransfer.files.length)return;
+  e.preventDefault();
+  const zone=e.target.closest&&e.target.closest('[data-ex-drop]');
+  document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.remove('is-dragover'));
+  if(zone)attachForTranslation(e.dataTransfer.files[0]);
+});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
-<script src="style-switcher.js"></script>
+<script src="style-switcher.js?v=20261012-hero-style2b"></script>
 </body>
 </html>

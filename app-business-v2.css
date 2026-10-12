@@ -31,8 +31,8 @@ body.business-theme {
   --accent-blue-fg: #24569a;
   --agent-sales-bg: #f1edfa;
   --agent-sales-fg: #766493;
-  --agent-test-bg: #fdf8e9;
-  --agent-test-fg: #80682d;
+  --agent-test-bg: #f9e9e2; /* L: clay, tuned from #D97757 */
+  --agent-test-fg: #b35f43;
   --agent-translate-bg: #eaf5f1;
   --agent-translate-fg: #527b70;
   --action-primary-bg: #285dd1;
@@ -64,15 +64,15 @@ body.business-theme.specialist {
 }
 
 body.business-theme.specialist[data-agent="test"] {
-  --bg-selected: #f8f2df;
-  --border-focus: #9a813c;
-  --focus-ring: #9a813c;
+  --bg-selected: #f8e5dc;
+  --border-focus: #c4674a;
+  --focus-ring: #c4674a;
   --accent-blue-bg: var(--agent-test-bg);
-  --accent-blue-border: #e6d69f;
+  --accent-blue-border: #efc8b8;
   --accent-blue-fg: var(--agent-test-fg);
-  --action-primary-bg: #967d36;
-  --action-primary-bg-hover: #7f692d;
-  --shadow-focus: 0 0 0 3px rgb(138 116 63 / 14%);
+  --action-primary-bg: #c4674a;
+  --action-primary-bg-hover: #a9553b;
+  --shadow-focus: 0 0 0 3px rgb(179 95 67 / 14%);
 }
 
 body.business-theme.specialist[data-agent="translate"] {
@@ -672,16 +672,18 @@ body.business-theme .composer {
   align-items: stretch;
   gap: 8px;
   min-height: 96px;
-  padding: 10px;
+  padding: 14px 10px 10px;
   border: 1px solid var(--border-default);
   border-radius: 12px;
   background: #ffffff;
   box-shadow: 0 2px 8px rgb(28 42 61 / 6%);
 }
+/* Text starts on the same line as the + glyph (36px button, 20px icon → 8px inset). */
 body.business-theme .composer textarea {
   width: 100%;
   min-height: 30px;
   margin: 0;
+  padding: 0 8px;
 }
 body.business-theme .composer-toolbar {
   display: flex;
@@ -1329,7 +1331,7 @@ body.business-theme .spec-big {
 }
 body.business-theme .spec-big .i { width: 22px; height: 22px; }
 body.business-theme.specialist .today-card:hover { box-shadow: 0 4px 14px rgb(118 100 147 / 10%); }
-body.business-theme.specialist[data-agent="test"] .today-card:hover { box-shadow: 0 4px 14px rgb(138 116 63 / 10%); }
+body.business-theme.specialist[data-agent="test"] .today-card:hover { box-shadow: 0 4px 14px rgb(179 95 67 / 10%); }
 body.business-theme.specialist[data-agent="translate"] .today-card:hover { box-shadow: 0 4px 14px rgb(82 123 112 / 10%); }
 body.business-theme .spec-title h1 { color: var(--text-primary); font-size: 34px; font-weight: 600; letter-spacing: -.025em; }
 body.business-theme .spec-title .s { margin-top: 3px; color: var(--text-tertiary); font-size: 13px; }
@@ -1350,3 +1352,355 @@ body.business-theme .btn-new .i {
 }
 body.business-theme .btn-new { gap: 10px; padding-left: 6px; }
 body.business-theme .btn-new:hover .i { background: var(--bg-selected); color: var(--text-primary); }
+
+/* ---------- Option A: sidebar stays the same inside an Agent ---------- */
+/* The sidebar never switches mode; only the main area changes. */
+body.business-theme.specialist .sidebar .main-only { display: revert; }
+/* One selected colour for agent rows and chat rows, a step lighter than before (#e9eef5). Stays neutral inside an Agent. */
+body.business-theme { --bg-nav-active: #f1f4f8; }
+body.business-theme .side-agents .side-nav-item.active,
+body.business-theme .side-agents .side-nav-item.active:hover,
+body.business-theme .sidebar .hist.active,
+body.business-theme .sidebar .hist-row.active .hist:hover { background: var(--bg-nav-active); }
+
+/* Agent chats in Recents: a small icon tile in the Agent's colour replaces the status dot. */
+body.business-theme .hist-agent {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-left: -5px;
+  margin-right: -3px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--agent-sales-bg);
+  color: var(--agent-sales-fg);
+}
+body.business-theme .hist-agent .i { width: 12px; height: 12px; }
+body.business-theme .hist-agent[data-agent-key="test"] { background: var(--agent-test-bg); color: var(--agent-test-fg); }
+body.business-theme .hist-agent[data-agent-key="translate"] { background: var(--agent-translate-bg); color: var(--agent-translate-fg); }
+body.business-theme .agent-hist .hist { padding-right: 8px; }
+
+
+/* Chat rows: chat icon on the left; a blue dot on the right only when there is something new (cf. Claude). */
+body.business-theme .hist-ico {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-left: -5px;
+  margin-right: -3px;
+  display: grid;
+  place-items: center;
+  color: var(--icon-muted);
+}
+body.business-theme .hist-ico .i { width: 15px; height: 15px; }
+body.business-theme .hist.active .hist-ico,
+body.business-theme .hist:hover .hist-ico { color: var(--text-secondary); }
+body.business-theme .hist-status {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #3a6fd8; /* same blue on every page, also inside an Agent */
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+body.business-theme .hist-status.is-loading { animation: hist-breathe 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { body.business-theme .hist-status.is-loading { animation: none; } }
+/* The ⋯ button takes the same spot on hover, focus, open menu or the active row. */
+body.business-theme .hist-row:hover .hist-status,
+body.business-theme .hist-row:focus-within .hist-status,
+body.business-theme .hist-row.menu-open .hist-status,
+body.business-theme .hist-row.active .hist-status { opacity: 0; }
+
+/* Recents: every row has a tinted tile. Gina chats in Gina blue, Agent chats in the Agent's colour.
+   Fixed values (not --accent-blue-*) so the Gina tile stays blue inside Agent pages. */
+body.business-theme .hist-ico {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: #eaf1fb;
+  color: #3d6aa8;
+}
+body.business-theme .hist-ico .i { width: 12px; height: 12px; }
+body.business-theme .hist.active .hist-ico,
+body.business-theme .hist:hover .hist-ico { color: #24569a; }
+
+/* 新對話: same rounded-square tile as the Agent rows, in the Gina chat blue. */
+body.business-theme .btn-new .i {
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 6px;
+  background: #eaf1fb;
+  color: #3d6aa8;
+}
+body.business-theme .side-top .btn-new .i,
+body.business-theme .side-top .btn-new.active .i { color: #3d6aa8; }
+body.business-theme .side-top .btn-new:hover .i { background: #dde8f8; color: #24569a; }
+
+/* 新對話 and the Agents read as one list: no extra gap between them. */
+body.business-theme .side-top { padding-bottom: 0; }
+body.business-theme .side-agents { padding-top: 0; }
+
+/* Chat icons sit inside the hover/selected block with breathing room,
+   centred under the Agent tiles above, titles lined up with the Agent names. */
+body.business-theme .hist-ico,
+body.business-theme .hist-agent { margin-left: 4px; margin-right: 4px; }
+
+/* ---------- Agent home: intro, composer, templates, then this Agent's chats ---------- */
+body.business-theme.specialist:not(.chatting) .scroll { justify-content: flex-start; padding-top: clamp(40px, 12vh, 120px); padding-bottom: 48px; }
+body.business-theme.specialist:not(.chatting) .bottom { display: none; }
+
+body.business-theme .agent-recents { width: 100%; margin-top: 36px; text-align: left; }
+body.business-theme .agent-recents[hidden] { display: none; }
+body.business-theme .agent-recents-list { border-top: 1px solid var(--border-subtle); }
+body.business-theme .agent-recent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+body.business-theme .agent-recent:hover { background: var(--bg-field); }
+body.business-theme .agent-recent-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.business-theme .agent-recent-time { flex: 0 0 auto; color: var(--text-tertiary); font-size: 13px; }
+
+/* ---------- Agent home v2: header + button, examples, empty state (ref: Claude Scheduled tasks / Customize) ---------- */
+body.business-theme .spec-hero { max-width: 880px; align-items: stretch; text-align: left; }
+body.business-theme .agent-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+body.business-theme .spec-hero .desc { max-width: 620px; margin: 14px 0 0; text-align: left; }
+
+/* Primary action: near-black (text-primary navy), white text */
+body.business-theme .agent-new {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  margin-top: 10px;
+  padding: 0 14px 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #172033;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+body.business-theme .agent-new:hover { background: #0b1222; }
+body.business-theme .agent-new .i { width: 16px; height: 16px; color: #fff; }
+
+body.business-theme .agent-section-label { padding: 0 12px 10px; color: var(--text-tertiary); font-size: 13px; font-weight: 500; }
+body.business-theme .agent-examples-wrap { margin-top: 32px; }
+body.business-theme .agent-examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 20px; }
+@media (max-width: 760px) { body.business-theme .agent-examples { grid-template-columns: 1fr; } }
+
+/* Empty state: illustration + note, then examples */
+body.business-theme .agent-empty { display: grid; justify-items: center; gap: 14px; margin-top: 40px; padding-bottom: 36px; }
+body.business-theme .agent-empty[hidden] { display: none; }
+body.business-theme .agent-empty-art { width: 120px; height: 96px; }
+body.business-theme .agent-empty-text { margin: 0; color: var(--text-tertiary); font-size: 14px; }
+body.business-theme .agent-examples-wrap.is-empty-state { margin-top: 0; padding-top: 8px; } /* no divider under the empty note */
+body.business-theme .agent-examples-wrap.is-empty-state .agent-section-label { display: none; }
+
+/* Example card base (final look is set further down to match the Gina home cards) */
+body.business-theme .ex-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+body.business-theme .ex-card:hover { background: #eef2f7; }
+body.business-theme .ex-ico {
+  position: relative;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--accent-blue-bg);
+  color: var(--accent-blue-fg);
+}
+body.business-theme .ex-ico .i { width: 18px; height: 18px; }
+body.business-theme .ex-text { display: grid; gap: 3px; min-width: 0; }
+body.business-theme .ex-text b { font-size: 15px; font-weight: 600; }
+body.business-theme .ex-desc { color: var(--text-secondary); font-size: 14px; line-height: 1.5; }
+body.business-theme .ex-meta { margin-top: 2px; color: var(--text-tertiary); font-size: 13px; }
+
+/* Drop zone card: dashed outline, lights up while a file is dragged over it */
+body.business-theme .ex-card.ex-drop { border: 1.5px dashed var(--border-strong); background: rgb(255 255 255 / 60%); }
+body.business-theme .ex-card.ex-drop:hover,
+body.business-theme .ex-card.ex-drop.is-dragover { border-color: var(--accent-blue-fg); background: var(--accent-blue-bg); }
+
+/* New Agent chat before the first message */
+body.business-theme .agent-blank { display: grid; justify-items: center; gap: 10px; padding: 18vh 24px 0; text-align: center; }
+body.business-theme .agent-blank-icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; background: var(--accent-blue-bg); color: var(--accent-blue-fg); }
+body.business-theme .agent-blank-icon .i { width: 20px; height: 20px; }
+body.business-theme .agent-blank h2 { margin: 6px 0 0; font-size: 22px; font-weight: 600; color: var(--text-primary); }
+body.business-theme .agent-blank p { max-width: 460px; margin: 0; color: var(--text-tertiary); font-size: 14px; line-height: 1.6; }
+
+/* Attached file: chip in the composer, pill on the sent message */
+body.business-theme .file-chip .i { width: 14px; height: 14px; }
+body.business-theme .msg-file { display: inline-flex; align-items: center; gap: 6px; align-self: flex-end; margin-bottom: 6px; padding: 6px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; background: #fff; color: var(--text-secondary); font-size: 13px; }
+body.business-theme .msg-file .i { width: 15px; height: 15px; }
+
+/* Agent chats in the sidebar now have the ⋯ menu too. */
+body.business-theme .agent-hist .hist { padding-right: 34px; }
+
+/* Agent home Pinned / Recents rows: title + time, ⋮ menu on the right. The section label marks pinned rows. */
+body.business-theme #agent-pinned + #agent-recents { margin-top: 28px; }
+body.business-theme .agent-recent-row { position: relative; }
+body.business-theme .agent-recent-row .agent-recent { padding-right: 52px; }
+body.business-theme .agent-recent-title { flex: 1 1 auto; }
+body.business-theme .agent-more {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--icon-muted);
+  opacity: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+body.business-theme .agent-more .i { width: 18px; height: 18px; }
+body.business-theme .agent-recent-row:hover .agent-more,
+body.business-theme .agent-recent-row:focus-within .agent-more,
+body.business-theme .agent-recent-row.menu-open .agent-more { opacity: 1; }
+body.business-theme .agent-more:hover,
+body.business-theme .agent-recent-row.menu-open .agent-more { background: #e4e9f1; color: var(--text-primary); }
+body.business-theme .agent-recent-row:hover .agent-recent,
+body.business-theme .agent-recent-row.menu-open .agent-recent { background: var(--bg-field); }
+
+/* ---------- Example cards match the Gina home cards: white, hairline border, chevron ---------- */
+body.business-theme .agent-examples { gap: 12px; align-items: stretch; }
+body.business-theme .ex-card {
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 12px 12px 12px 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgb(28 42 61 / 4%);
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out;
+}
+body.business-theme .ex-card:hover {
+  background: #ffffff;
+  border-color: var(--accent-blue-border);
+  box-shadow: 0 4px 14px rgb(0 20 136 / 8%);
+  transform: translateY(-1px);
+}
+body.business-theme.specialist .ex-card:hover { box-shadow: 0 4px 14px rgb(118 100 147 / 10%); }
+body.business-theme.specialist[data-agent="test"] .ex-card:hover { box-shadow: 0 4px 14px rgb(179 95 67 / 10%); }
+body.business-theme.specialist[data-agent="translate"] .ex-card:hover { box-shadow: 0 4px 14px rgb(82 123 112 / 10%); }
+body.business-theme .ex-ico { width: 34px; height: 34px; }
+body.business-theme .ex-ico .i { width: 16px; height: 16px; }
+body.business-theme .ex-text { flex: 1; gap: 2px; }
+body.business-theme .ex-text b { font-size: 14px; }
+body.business-theme .ex-desc { color: var(--text-tertiary); font-size: 12px; line-height: 1.5; }
+body.business-theme .ex-meta { margin-top: 2px; font-size: 12px; }
+body.business-theme .ex-go { flex: 0 0 auto; width: 14px; height: 14px; color: var(--icon-muted); }
+@media (prefers-reduced-motion: reduce) { body.business-theme .ex-card, body.business-theme .ex-card:hover { transition: none; transform: none; } }
+
+/* Drop zone: same card, dashed outline = "you can drop a file here" */
+body.business-theme .ex-card.ex-drop { border: 1.5px dashed var(--border-strong); background: #ffffff; }
+body.business-theme .ex-card.ex-drop:hover { border-color: var(--accent-blue-fg); background: #ffffff; }
+body.business-theme .ex-card.ex-drop.is-dragover { border-color: var(--accent-blue-fg); background: var(--accent-blue-bg); transform: none; }
+
+/* ---------- Home Style 2 (click the sphere): video sphere above a two-line greeting ---------- */
+body.business-theme .hero-orb2,
+body.business-theme .hero-ask { display: none; }
+body.business-theme.hero-style-2 .hero-avatar { display: none; }
+body.business-theme.hero-style-2 .hero-title { flex-direction: column; gap: 18px; text-align: center; }
+body.business-theme.hero-style-2 .hero-orb2 { display: block; width: 84px; height: 84px; cursor: pointer; border-radius: 50%; transition: transform 180ms ease-out; }
+body.business-theme.hero-style-2 .hero-orb2:hover { transform: translateY(-2px) scale(1.035); }
+body.business-theme.hero-style-2 .hero-orb2:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 6px; }
+body.business-theme .hero-orb2 video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply; /* removes the clip's near-white background on the light canvas */
+  -webkit-mask-image: radial-gradient(circle, #000 62%, transparent 72%);
+  mask-image: radial-gradient(circle, #000 62%, transparent 72%);
+  pointer-events: none;
+}
+body.business-theme.hero-style-2 .hero h1 {
+  display: grid;
+  gap: 2px;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+body.business-theme.hero-style-2 .hero-ask { display: block; }
+body.business-theme .hero-ask-grad { color: inherit; } /* was a blue gradient; now the same dark as the rest of the line */
+@media (prefers-reduced-motion: reduce) {
+  body.business-theme.hero-style-2 .hero-orb2 { transition: none; }
+  body.business-theme.hero-style-2 .hero-orb2:hover { transform: none; }
+}
+
+/* ---------- Menu spacing, one rule set ----------
+   popover inset 6px · single-line row 40px · two-line row (label + note) 8px top/bottom, ~54px
+   separator 6px above and below · label 14px / note 12px · icon 17px, 12px gap */
+body.business-theme #pop-user { padding: 6px; }
+body.business-theme #pop-user .menu-sep { margin: 6px 0; }
+body.business-theme #pop-user .menu-item { min-height: 40px; gap: 12px; padding-left: 12px; padding-right: 12px; font-size: 14px; }
+body.business-theme #pop-user .menu-switch,
+body.business-theme #pop-user .locale-trigger { padding-top: 8px; padding-bottom: 8px; }
+body.business-theme #pop-user .menu-switch-text,
+body.business-theme #pop-user .locale-trigger-copy { gap: 2px; line-height: 1.35; }
+body.business-theme #pop-user .menu-switch-text b,
+body.business-theme #pop-user .locale-trigger-copy > span { font-size: 14px; font-weight: 400; }
+body.business-theme #pop-user .menu-switch-text small,
+body.business-theme #pop-user .locale-trigger-copy small { font-size: 12px; }
+
+/* Inline rename: the field sits over the row; the row's own button and ⋯ hide meanwhile. */
+body.business-theme .hist-row.renaming .hist,
+body.business-theme .hist-row.renaming .hist-more,
+body.business-theme .agent-recent-row.renaming .agent-recent,
+body.business-theme .agent-recent-row.renaming .agent-more { visibility: hidden; }
+body.business-theme .rename-input {
+  position: absolute;
+  inset: 2px 0;
+  width: 100%;
+  padding: 0 10px;
+  border: 1px solid var(--border-focus, #2f67d5);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(47 103 213 / 12%);
+}
