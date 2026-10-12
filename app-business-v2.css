@@ -142,6 +142,18 @@ body.business-theme .spec-brand {
   line-height: 1;
 }
 
+body.business-theme .spec-brand-ico,
+body.business-theme #spec-brand-name {
+  align-self: center;
+}
+
+body.business-theme #spec-brand-name {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  line-height: 1.4;
+}
+
 body.business-theme .spec-brand .back {
   display: grid;
   place-items: center;
@@ -1231,6 +1243,12 @@ body.business-theme .spec-hero {
   text-align: center;
 }
 body.business-theme .spec-title { gap: 14px; text-align: left; }
+body.business-theme .spec-title > div {
+  display: flex;
+  min-height: 56px;
+  flex-direction: column;
+  justify-content: center;
+}
 body.business-theme .spec-big {
   width: 56px;
   height: 56px;
