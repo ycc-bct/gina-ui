@@ -1,19 +1,20 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.4-business · 2026-10-08 · 決策紀錄見 `decisions.md`
+> 版本：v1.5-business · 2026-10-12 · 決策紀錄見 `decisions.md`
 
 ### 2026-10-08 商業版覆寫
 
 本節只適用於第二版 `index-business-v2.html` 與 `app-business-v2.css`；若與下方共用規範衝突，以本節為準。
 
-- Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 使用至少 96px 的雙層結構：上層是文字輸入區，下層依序放新增／工具、啟用中的工具、Agent 選擇、用量、語音與送出。啟用工具後標籤留在下層，不改變文字區的排列。
+- Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 使用至少 96px 的雙層結構：上層是文字輸入區，下層依序放新增／工具、啟用中的工具、彈性空間、用量、語音與送出。啟用工具後標籤留在下層，不改變文字區的排列；Composer 不提供 Agent 選擇。
 - Gina 首頁只顯示三張今日 Reference 卡片，不再顯示第二排「整理需求／審閱合約／安排會議／整理文件」建議按鈕。Agent 首頁使用相同的標題層級、三張 Reference 模板、Chat Bubble、執行步驟與 Composer；業務助理只保留待跟進客戶、重點訂單進度、本週業務摘要三個模板，不顯示第二排 chips 或 `Pilot` Tag。
-- 一般 Gina Chat Space 的 Composer 下排提供 Agent Dropdown，可在 Gina 與業務助理之間切換。進入業務助理的 Agent Chat Space 後隱藏此 Dropdown，避免在專屬 Agent 對話裡再次切換；輸入框文案與 `aria-label` 改為業務助理。從 Agent 頁點「新對話」時必須保留目前 Agent，清空對話與工具後回到該 Agent 的新對話首頁。
-- Agent Icon 使用低飽和淡色區分類型，顏色只出現在 26px Icon Tile：業務助理為淡藍、測試助手為淡紫、翻譯為淡綠。文字、選取背景與主要操作仍維持共用中性色及 Primary Blue；業務助理 Header、首頁與 Composer 選單沿用相同淡藍識別色。
+- Agent 只從 Sidebar 進入，不在 Composer 或 Header 重複提供切換入口。進入業務助理後，輸入框文案與 `aria-label` 改為業務助理；從 Agent 頁點「新對話」時必須保留目前 Agent，清空對話與工具後回到該 Agent 的新對話首頁。
+- Agent Icon 使用低飽和淡色區分類型，顏色只出現在 26px Icon Tile：業務助理為淡紫、測試助手為淡黃、翻譯為淡綠。文字、選取背景與主要操作仍維持共用中性色及 Primary Blue；業務助理 Header與首頁沿用相同淡紫識別色。
+- Account Popover 提供語言選擇，可選繁體中文、English、日本語與한국어；選擇結果寫入本機偏好並更新頁面 `lang`。語言屬個人偏好，放在 Outlook 連線項目下方，不放入 Composer 或 Sidebar 導覽。
 - Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)`，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
 - Business Login、Chat、Sidebar Logo 與登出形成完整導頁：登入進入 `index-business-v2.html`，Logo 回到第二版首頁，登出回到 `login-business.html`。在 `htmlpreview.github.io` 執行時，導頁會保留 GitHub branch source query，避免相對路徑離開 Preview。
-- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「繼續對話／過去三天待注意事項」。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
+- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「總結先前的對話／整理過去三天的重點」。Pinned 與 Recents 標題靠 Sidebar 內容左緣對齊。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
 
 - 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。
 
@@ -444,7 +445,7 @@ Business v2 的 Gina 與 Agent 新對話首頁不顯示第二排 Chip；首頁�
 ### 12.7 輸入框 Composer
 
 最大寬 800px · 圓角 `--radius-xl` · 內距 20px · bg `bg-surface` · 框 `border-default` · 預設無陰影。
-上層：文字區（14px、行高 24px，最多 144px 後捲動）；下層工具列：新增檔案、可切換的工具按鈕、Agent 選擇、彈性空間、用量、麥克風、送出。Business v2 最小高度為 96px、內距 10px；一般 Gina Chat Space 顯示 Agent Dropdown，Agent Chat Space 隱藏 Dropdown。
+上層：文字區（14px、行高 24px，最多 144px 後捲動）；下層工具列：新增檔案、可切換的工具按鈕、彈性空間、用量、麥克風、送出。Business v2 最小高度為 96px、內距 10px；所有 Chat Space 都不顯示 Agent Dropdown。
 
 | 預設 | hover | focus（focus-within） | 停用（新增） |
 |---|---|---|---|
@@ -455,7 +456,7 @@ Business v2 的 Gina 與 Agent 新對話首頁不顯示第二排 Chip；首頁�
 - 順序為「Agents → Outlook 已連線 → 使用者頭像」。Agents 的選單標題是「可用協作 Agents」。
 - Business v2 例外：Agents 入口位於 Sidebar；Agent 切換位於一般 Gina Composer 下排，不放在 Header。
 - Outlook 是獨立功能，不屬於 MCP；以 30px 高 Tag 顯示綠色連線點與狀態。
-- 使用者頭像選單包含 MCP Tool、Skills、個人知識與管理後台；前三者開啟右側 Drawer。
+- 使用者頭像選單包含 Outlook、語言、MCP Tool、Skills、個人知識與管理後台；MCP Tool、Skills、個人知識開啟右側 Drawer。
 
 ### 12.9 選單 Menu（Agents、Outlook、使用者、下載格式）
 

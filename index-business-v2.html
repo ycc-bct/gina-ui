@@ -18,7 +18,7 @@
   <div class="spec-brand">
     <button class="back" data-action="go-home" aria-label="返回"><svg class="i" data-i="arrow-left"></svg></button>
     <span class="spec-brand-ico"><svg class="i" data-i="chart"></svg></span>
-    業務助理
+    <span id="spec-brand-name">業務助理</span>
   </div>
 </header>
 
@@ -57,6 +57,11 @@
     <span class="menu-switch-text"><b>Outlook</b><small id="outlook-state">已連線 · 郵件與行事曆</small></span>
     <button class="switch" id="outlook-switch" role="switch" aria-checked="true" aria-label="Outlook 連線" data-action="toggle-outlook"><span></span></button>
   </div>
+  <button class="menu-item locale-trigger" type="button" data-action="toggle-locale-menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="locale-menu">
+    <svg class="i" data-i="globe"></svg>
+    <span class="locale-trigger-copy"><span>語言</span><small id="locale-current">繁體中文</small></span>
+    <svg class="i locale-chevron" data-i="chevron-right"></svg>
+  </button>
   <div class="menu-sep"></div>
   <button class="menu-item" data-action="open-mcp"><svg class="i" data-i="server"></svg>MCP Tool</button>
   <button class="menu-item" data-action="open-skills"><svg class="i" data-i="wrench"></svg>Skills</button>
@@ -65,6 +70,29 @@
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
   <div class="menu-sep"></div>
   <button class="menu-item danger" data-action="logout"><svg class="i" data-i="logout"></svg>登出</button>
+</div>
+
+<!-- Searchable language submenu -->
+<div class="locale-popover" id="locale-menu" role="dialog" aria-label="選擇語言" hidden>
+  <div class="locale-search-wrap">
+    <svg class="i" data-i="search"></svg>
+    <input id="locale-search" type="search" autocomplete="off" placeholder="搜尋語言" aria-label="搜尋語言" />
+  </div>
+  <div class="locale-options" role="menu">
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="true" data-action="select-locale" data-locale="zh-TW">繁體中文<small>Taiwan</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="zh-CN">简体中文<small>China</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="en-US">English<small>United States</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ja-JP">日本語<small>Japan</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ko-KR">한국어<small>South Korea</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="vi-VN" data-search="越南 vietnam vietnamese">Tiếng Việt<small>Việt Nam</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="th-TH">ไทย<small>Thailand</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="id-ID">Bahasa Indonesia<small>Indonesia</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ms-MY">Bahasa Melayu<small>Malaysia</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="es-ES">Español<small>España</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="fr-FR">Français<small>France</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="de-DE">Deutsch<small>Deutschland</small><svg class="i locale-check" data-i="check"></svg></button>
+  </div>
+  <div class="locale-empty" id="locale-empty" hidden>找不到符合的語言</div>
 </div>
 
 <!-- ============ Sidebar ============ -->
@@ -81,9 +109,9 @@
   </div>
   <div class="side-scroll" id="side-scroll">
     <nav class="side-agents main-only" aria-label="可用協作 Agents">
-      <button class="side-nav-item" data-action="go-specialist"><svg class="i" data-i="chart"></svg><span>業務助理</span></button>
-      <button class="side-nav-item" data-action="toast" data-msg="測試助手專員頁（示意）"><svg class="i" data-i="monitor"></svg><span>測試助手</span></button>
-      <button class="side-nav-item" data-action="translate"><svg class="i" data-i="languages"></svg><span>翻譯</span></button>
+      <button class="side-nav-item" data-action="go-agent" data-agent="business"><svg class="i" data-i="chart"></svg><span>業務助理</span></button>
+      <button class="side-nav-item" data-action="go-agent" data-agent="test"><svg class="i" data-i="monitor"></svg><span>測試助手</span></button>
+      <button class="side-nav-item" data-action="go-agent" data-agent="translate"><svg class="i" data-i="languages"></svg><span>翻譯</span></button>
     </nav>
     <div class="main-only">
       <details class="history-group" id="pinned-group" open hidden>
@@ -96,7 +124,7 @@
       </details>
     </div>
     <div class="spec-only">
-      <div class="side-label">業務助理 · 歷史對話</div>
+      <div class="side-label" id="spec-history-label">業務助理 · 歷史對話</div>
       <div class="spec-empty">尚無與這位專員的對話紀錄</div>
     </div>
   </div>
@@ -116,16 +144,16 @@
       <div class="today" aria-label="今天的狀況">
         <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
         <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
-        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>繼續對話</b><small>過去三天待注意事項</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
+        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>總結先前的對話</b><small>整理過去三天的重點</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
       </div>
     </section>
 
     <section class="spec-hero" id="spec-hero">
       <div class="spec-title">
         <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
-        <div><h1>業務助理</h1><div class="s">客戶、訂單與業務資料</div></div>
+        <div><h1 id="spec-title-name">業務助理</h1><div class="s" id="spec-subtitle">客戶、訂單與業務資料</div></div>
       </div>
-      <div class="desc">整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。</div>
+      <div class="desc" id="spec-desc">整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。</div>
       <div class="today agent-templates" aria-label="業務助理對話模板">
         <button class="today-card" data-prompt="整理本週待跟進客戶"><span class="today-icon"><svg class="i" data-i="users"></svg></span><span class="today-text"><b>待跟進客戶</b><small>依優先順序整理下一步</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
         <button class="today-card" data-prompt="檢查重點訂單進度"><span class="today-icon"><svg class="i" data-i="server"></svg></span><span class="today-text"><b>重點訂單進度</b><small>列出風險與待處理項目</small></span><svg class="i today-go" data-i="chevron-right"></svg></button>
@@ -149,17 +177,6 @@
         <button class="cbtn plus" id="composer-plus" data-action="toggle-composer-menu" aria-label="新增與工具" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-menu"><svg class="i" data-i="plus"></svg></button>
         <input id="composer-file" type="file" hidden multiple />
         <div class="active-tools" id="active-tools" aria-label="已啟用的工具"></div>
-        <div class="agent-picker-wrap">
-          <button class="agent-picker" id="composer-agent" type="button" data-action="toggle-agent-menu" aria-label="選擇對話 Agent，目前為 Gina" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-agent-menu">
-            <span class="agent-picker-leading"><svg class="i" data-i="message"></svg></span>
-            <span id="composer-agent-label">Gina</span>
-            <svg class="i agent-picker-chevron" data-i="chevron-down"></svg>
-          </button>
-          <div class="agent-picker-menu" id="composer-agent-menu" role="menu" aria-label="選擇對話 Agent" hidden>
-            <button type="button" role="menuitemradio" aria-checked="true" data-action="select-agent" data-agent="gina"><svg class="i" data-i="message"></svg><span>Gina</span><svg class="i agent-picker-check" data-i="check"></svg></button>
-            <button type="button" role="menuitemradio" aria-checked="false" data-action="select-agent" data-agent="business"><svg class="i" data-i="chart"></svg><span>業務助理</span><svg class="i agent-picker-check" data-i="check"></svg></button>
-          </div>
-        </div>
         <span class="toolbar-spacer"></span>
         <div class="usage-ring-wrap">
           <button class="usage-ring" id="usage-ring" type="button" aria-describedby="usage-tip" aria-label="對話長度與用量">
@@ -1195,6 +1212,7 @@ const ICONS = {
   "search":'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
   "message":'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
   "languages":'<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+  "globe":'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 0 20"/><path d="M12 2a15.3 15.3 0 0 0 0 20"/>',
   "download":'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
   "copy":'<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
   "maximize":'<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
@@ -1416,6 +1434,7 @@ function closePops(except){
   if(except!=='pop-hist'){document.querySelectorAll('.hist-row.menu-open').forEach(r=>r.classList.remove('menu-open'));menuHist=-1;}
   document.querySelectorAll('.popover.open').forEach(p=>{if(p.id!==except)p.classList.remove('open')});
   document.querySelectorAll('[data-pop].active').forEach(b=>{if(b.dataset.pop!==except){b.classList.remove('active');b.setAttribute('aria-expanded','false')}});
+  if(except!=='pop-user')setLocaleMenu(false);
 }
 function positionPop(pop, anchor){
   const r=anchor.getBoundingClientRect();
@@ -1439,6 +1458,7 @@ window.addEventListener('resize',()=>document.querySelectorAll('.popover.open').
   const anchor=document.querySelector(`[data-pop="${pop.id}"].active`);
   if(anchor)positionPop(pop,anchor);
 }));
+window.addEventListener('resize',()=>{if(!$('#locale-menu').hidden)positionLocaleMenu()});
 function closeTools(){}
 function closeDownloadMenus(except){
   document.querySelectorAll('.download-menu').forEach(menu=>{
@@ -1520,33 +1540,7 @@ function setComposerMenu(open){
   $('#composer-menu').hidden=!open;
   $('#composer-plus').setAttribute('aria-expanded',String(open));
   $('#composer-plus').classList.toggle('open',open);
-  if(open)setAgentMenu(false);
 }
-function renderAgentPicker(){
-  const business=body.classList.contains('specialist');
-  const name=business?'業務助理':'Gina';
-  $('#composer-agent-label').textContent=name;
-  $('#composer-agent').setAttribute('aria-label',`選擇對話 Agent，目前為 ${name}`);
-  $('.agent-picker-leading').innerHTML=svg(business?'chart':'message');
-  document.querySelectorAll('#composer-agent-menu [data-agent]').forEach(option=>option.setAttribute('aria-checked',String(option.dataset.agent===(business?'business':'gina'))));
-}
-function setAgentMenu(open){
-  $('#composer-agent-menu').hidden=!open;
-  $('#composer-agent').setAttribute('aria-expanded',String(open));
-  if(open)setComposerMenu(false);
-}
-function selectAgent(agent){
-  const chatting=body.classList.contains('chatting');
-  const business=agent==='business';
-  body.classList.toggle('specialist',business);
-  $('#new-label').textContent='新對話';
-  input.setAttribute('aria-label',business?'傳送訊息給業務助理':'傳送訊息給 Gina');
-  input.placeholder=business?'交給業務助理，整理客戶與訂單工作…':'交給 Gina，一起完成今天的工作…';
-  $('#hero').style.display=!chatting&&!business?'':'none';
-  $('#spec-hero').style.display=!chatting&&business?'flex':'none';
-  setAgentMenu(false);renderAgentPicker();renderHistory();input.focus();
-}
-renderAgentPicker();
 
 /* ---------- Sidebar scroll: show a hairline under the fixed header once content scrolls ---------- */
 $('#side-scroll').addEventListener('scroll',e=>body.classList.toggle('side-scrolled',e.target.scrollTop>2),{passive:true});
@@ -1584,25 +1578,140 @@ function setOutlook(on){
   $('#outlook-hint').hidden=on;
 }
 
+/* ---------- Language preference (prototype state, persisted locally) ---------- */
+const LOCALES={
+  'zh-TW':'繁體中文',
+  'zh-CN':'简体中文',
+  'en-US':'English',
+  'ja-JP':'日本語',
+  'ko-KR':'한국어',
+  'vi-VN':'Tiếng Việt',
+  'th-TH':'ไทย',
+  'id-ID':'Bahasa Indonesia',
+  'ms-MY':'Bahasa Melayu',
+  'es-ES':'Español',
+  'fr-FR':'Français',
+  'de-DE':'Deutsch'
+};
+let activeLocale='zh-TW';
+try{const savedLocale=localStorage.getItem('gina-locale');if(LOCALES[savedLocale])activeLocale=savedLocale}catch{}
+function renderLocale(){
+  document.documentElement.lang=activeLocale;
+  $('#locale-current').textContent=LOCALES[activeLocale];
+  document.querySelectorAll('#locale-menu [data-locale]').forEach(option=>option.setAttribute('aria-checked',String(option.dataset.locale===activeLocale)));
+}
+function filterLocales(query=''){
+  const normalized=query.trim().toLocaleLowerCase();
+  let visible=0;
+  document.querySelectorAll('#locale-menu [data-locale]').forEach(option=>{
+    const haystack=`${option.textContent} ${option.dataset.search||''}`.toLocaleLowerCase();
+    option.hidden=!!normalized&&!haystack.includes(normalized);
+    if(!option.hidden)visible++;
+  });
+  $('#locale-empty').hidden=visible!==0;
+}
+function positionLocaleMenu(){
+  const menu=$('#locale-menu'),account=$('#pop-user'),trigger=$('[data-action="toggle-locale-menu"]');
+  if(!menu||menu.hidden||!account||!trigger)return;
+  const accountRect=account.getBoundingClientRect(),triggerRect=trigger.getBoundingClientRect();
+  const width=menu.offsetWidth,height=menu.offsetHeight,gap=8,pad=12;
+  const spaceRight=window.innerWidth-accountRect.right-gap;
+  const left=spaceRight>=width ? accountRect.right+gap : accountRect.left-width-gap;
+  menu.style.left=Math.max(pad,Math.min(left,window.innerWidth-width-pad))+'px';
+  menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,window.innerHeight-height-pad))+'px';
+}
+function setLocaleMenu(open){
+  const menu=$('#locale-menu'),trigger=$('[data-action="toggle-locale-menu"]');
+  if(!menu||!trigger)return;
+  menu.hidden=!open;trigger.setAttribute('aria-expanded',String(open));
+  if(open){
+    requestAnimationFrame(()=>{positionLocaleMenu();$('#locale-search').focus()});
+  }else{
+    $('#locale-search').value='';filterLocales();
+  }
+}
+function selectLocale(locale){
+  if(!LOCALES[locale])return;
+  activeLocale=locale;
+  try{localStorage.setItem('gina-locale',locale)}catch{}
+  renderLocale();setLocaleMenu(false);closePops();toast(`介面語言已設為 ${LOCALES[locale]}（示意）`);
+}
+renderLocale();
+$('#locale-search').addEventListener('input',e=>filterLocales(e.target.value));
+
 /* ---------- Views ---------- */
+const AGENT_VIEWS={
+  business:{
+    name:'業務助理',icon:'chart',subtitle:'客戶、訂單與業務資料',
+    description:'整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。',
+    placeholder:'交給業務助理，整理客戶與訂單工作…',
+    fallback:'<p>收到！目前我尚未啟用任何業務資料來源，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>',
+    clarifications:['提供客戶或訂單資訊','說明想整理的結果','補充相關背景'],
+    templates:[
+      ['users','待跟進客戶','依優先順序整理下一步','整理本週待跟進客戶'],
+      ['server','重點訂單進度','列出風險與待處理項目','檢查重點訂單進度'],
+      ['chart','本週業務摘要','彙整數字、進展與風險','產生本週業務摘要']
+    ]
+  },
+  test:{
+    name:'測試助手',icon:'monitor',subtitle:'測試案例、缺陷與驗證紀錄',
+    description:'整理測試範圍、執行結果與缺陷資訊，快速產生可追蹤的驗證摘要。',
+    placeholder:'交給測試助手，整理測試與缺陷工作…',
+    fallback:'<p>收到！請提供需求、測試範圍或目前的缺陷資料。</p><p>我會協助整理測試案例、回歸清單與可追蹤的驗證摘要。</p>',
+    clarifications:['提供需求或規格','說明測試平台與版本','指定需要的輸出格式'],
+    templates:[
+      ['check','建立測試案例','依需求整理主要情境','依這份需求建立測試案例'],
+      ['monitor','回歸測試清單','列出本次需要驗證的功能','整理這次版本的回歸測試清單'],
+      ['file-text','缺陷摘要','彙整嚴重度與重現步驟','產生目前缺陷的摘要']
+    ]
+  },
+  translate:{
+    name:'翻譯',icon:'languages',subtitle:'多語翻譯與語氣調整',
+    description:'依內容與使用情境翻譯文字，並保留原意、專有名詞與適合的語氣。',
+    placeholder:'貼上要翻譯的內容，並告訴我目標語言…',
+    fallback:'<p>可以，請貼上要翻譯的內容，並告訴我目標語言。</p><p>如果有特定語氣、專有名詞或使用情境，也可以一併說明。</p>',
+    clarifications:['貼上要翻譯的內容','選擇目標語言','指定語氣與使用情境'],
+    templates:[
+      ['languages','翻譯成英文','自然、專業的商務語氣','請把以下內容翻譯成英文：'],
+      ['message','調整語氣','讓內容更禮貌且易讀','請調整以下文字的語氣：'],
+      ['file-text','雙語對照','保留原文並逐段翻譯','請把以下內容整理成雙語對照：']
+    ]
+  }
+};
+function currentAgent(){return AGENT_VIEWS[body.dataset.agent]||AGENT_VIEWS.business}
+function renderAgentView(agent){
+  $('.spec-brand-ico').innerHTML=svg(agent.icon);
+  $('.spec-big').innerHTML=svg(agent.icon);
+  $('#spec-brand-name').textContent=agent.name;
+  $('#spec-title-name').textContent=agent.name;
+  $('#spec-subtitle').textContent=agent.subtitle;
+  $('#spec-desc').textContent=agent.description;
+  $('#spec-history-label').textContent=`${agent.name} · 歷史對話`;
+  $('.agent-templates').innerHTML=agent.templates.map(([icon,title,detail,prompt])=>`<button class="today-card" data-prompt="${prompt}"><span class="today-icon">${svg(icon)}</span><span class="today-text"><b>${title}</b><small>${detail}</small></span>${svg('chevron-right').replace('class="i"','class="i today-go"')}</button>`).join('');
+}
 function goHome(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
+  delete body.dataset.agent;
   $('#new-label').textContent='新對話';
   input.setAttribute('aria-label','傳送訊息給 Gina');
   input.placeholder='交給 Gina，一起完成今天的工作…';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
-  thread.innerHTML='';activeHist=-1;renderAgentPicker();renderHistory();
+  thread.innerHTML='';activeHist=-1;renderHistory();
 }
-function goSpecialist(){
+function goAgent(key='business'){
+  const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
+  body.dataset.agent=key;
+  renderAgentView(agent);
   $('#new-label').textContent='新對話';
-  input.setAttribute('aria-label','傳送訊息給業務助理');
-  input.placeholder='交給業務助理，整理客戶與訂單工作…';
+  input.setAttribute('aria-label',`傳送訊息給${agent.name}`);
+  input.placeholder=agent.placeholder;
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
-  thread.innerHTML='';activeHist=-1;renderAgentPicker();renderHistory();
+  thread.innerHTML='';activeHist=-1;renderHistory();
 }
+function goSpecialist(){goAgent('business')}
 function startChat(){body.classList.add('chatting');body.classList.remove('mobile-nav-open');}
 
 function userMsg(text,time=nowHM()){
@@ -1630,7 +1739,7 @@ function executionDetailsHTML(steps,agentName){
     </article>`).join('')}</div>
   </details>`;
 }
-function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?'業務助理':'Gina'){
+function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?currentAgent().name:'Gina'){
   const col=el.querySelector('.ai-col');
   col.querySelector('.bubble-wrap').insertAdjacentHTML('beforebegin',executionDetailsHTML(steps,agentName));
   col.insertAdjacentHTML('beforeend',`<div class="ai-meta"><div class="ai-time">${time}</div><div class="ai-actions"><button data-action="copy-message" aria-label="複製回覆">${svg('copy')}</button><button data-action="toggle-download" aria-label="下載回覆" aria-haspopup="menu" aria-expanded="false">${svg('download')}</button><div class="download-menu" role="menu" hidden><button class="download-option" role="menuitem" data-format="txt">純文字 (.txt)</button><button class="download-option" role="menuitem" data-format="md">Markdown (.md)</button><button class="download-option" role="menuitem" data-format="png">圖片 (.png)</button><button class="download-option" role="menuitem" data-format="pdf">PDF (.pdf)</button><button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button></div></div></div>`);
@@ -1844,7 +1953,7 @@ function clarificationOptions(text,specialist){
   if(options[text]) return options[text];
   if(SPECIALIST_TEMPLATE_PROMPTS.has(text))return [];
   if(['提供客戶或訂單資訊','說明想整理的結果','補充相關背景'].includes(text))return [];
-  return specialist?['提供客戶或訂單資訊','說明想整理的結果','補充相關背景']:[];
+  return specialist?currentAgent().clarifications:[];
 }
 function clarificationOptionsHTML(options){
   return `<div class="clarification-options" aria-label="需要補充的資訊">
@@ -1859,12 +1968,12 @@ function send(){
   userMsg(text);
   const specialist=body.classList.contains('specialist');
   const loadingHistoryIndex=activeHist;setHistoryLoading(loadingHistoryIndex,true);
-  const el=aiMsg(loadingReplyHTML(specialist?'業務助理':'Gina'));
+  const el=aiMsg(loadingReplyHTML(specialist?currentAgent().name:'Gina'));
   el.classList.add('loading-message');
   scrollBottom();
   const recommendation = recommendationReply(text);
   const target = recommendation || (specialist
-    ? `<p>收到！目前我尚未啟用任何 MCP server，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>`
+    ? currentAgent().fallback
     : `<p>今天（9/30）共收到 <b>5 封信件</b>，依優先級整理如下：</p><hr><h4>高優先（來自主管 / 需今日回覆）</h4><ul><li><b>Re: Gina UI</b> — 王小明邀請你參加 Teams 會議，需要回覆是否出席</li><li><b>Q4 預算確認</b> — 財務部請你於今日下班前確認數字</li></ul><h4>中優先</h4><ul><li><b>MCP 整合進度同步</b> — 專案週報，建議本週內閱讀</li><li><b>健保加保申請</b> — HR 通知文件已受理</li></ul><h4>低優先</h4><ul><li><b>電子報</b> — 產業新聞摘要，可稍後再看</li></ul>`);
   const stream=el.querySelector('.stream');
   setTimeout(()=>{
@@ -1921,7 +2030,6 @@ document.addEventListener('click',e=>{
     renderTools();return;
   }
   if(!e.target.closest('#composer-menu, #composer-plus')&&!$('#composer-menu').hidden)setComposerMenu(false);
-  if(!e.target.closest('.agent-picker-wrap')&&!$('#composer-agent-menu').hidden)setAgentMenu(false);
   const chip=e.target.closest('.chip, .today-card[data-prompt]');
   if(chip){input.value=chip.dataset.prompt;send();return;}
   const replyOption=e.target.closest('.reply-option');
@@ -1940,7 +2048,7 @@ document.addEventListener('click',e=>{
 
   const a=e.target.closest('[data-action]');
   if(!a){
-    if(!e.target.closest('.popover')) closePops();
+    if(!e.target.closest('.popover, .locale-popover')) closePops();
     if(!e.target.closest('.ai-actions')) closeDownloadMenus();
     if(!e.target.closest('.skill-add-control')){$('#skill-add-menu').hidden=true;$('[data-action="toggle-skill-add"]').setAttribute('aria-expanded','false')}
     return;
@@ -1950,8 +2058,8 @@ document.addEventListener('click',e=>{
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}a.setAttribute('aria-expanded',String(!body.classList.contains('collapsed')));closePops();break;}
     case 'add-file': setComposerMenu(false);$('#composer-file').click(); break;
     case 'toggle-composer-menu': {e.stopPropagation();closePops();setComposerMenu($('#composer-menu').hidden);break;}
-    case 'toggle-agent-menu': {e.stopPropagation();closePops();setAgentMenu($('#composer-agent-menu').hidden);break;}
-    case 'select-agent': selectAgent(a.dataset.agent); break;
+    case 'toggle-locale-menu': {e.stopPropagation();setLocaleMenu($('#locale-menu').hidden);break;}
+    case 'select-locale': selectLocale(a.dataset.locale); break;
     case 'remove-tool': activeTools.delete(a.dataset.tool);renderTools(); break;
     case 'toggle-download': {e.stopPropagation();const menu=a.nextElementSibling;const open=menu.hidden;closeDownloadMenus(menu);menu.hidden=!open;a.setAttribute('aria-expanded',String(open));break;}
     case 'copy-message': {closeDownloadMenus();copyText(readableText(a.closest('.ai-col').querySelector('.bubble-ai')),'已複製回覆');break;}
@@ -1960,7 +2068,7 @@ document.addEventListener('click',e=>{
     case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
     case 'toggle-review-expanded': {const expanded=body.classList.toggle('review-panel-expanded');a.setAttribute('aria-expanded',String(expanded));a.setAttribute('aria-label',expanded?'縮小檢閱 Panel':'展開檢閱 Panel');break;}
     case 'close-review-panel': closeReviewPanel(); break;
-    case 'translate': {goHome();input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
+    case 'translate': {goAgent('translate');input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
     case 'open-mcp': openDrawer('drawer-mcp'); break;
     case 'open-kb': openDrawer('drawer-kb'); break;
@@ -1984,10 +2092,11 @@ document.addEventListener('click',e=>{
     case 'go-home': goHome(); break;
     case 'logout': navigatePrototype('login-business.html'); break;
     case 'go-specialist': goSpecialist(); break;
+    case 'go-agent': goAgent(a.dataset.agent); break;
     case 'new-chat': {
       // Start fresh with whichever Agent is currently selected.
-      body.classList.contains('specialist')?goSpecialist():goHome();
-      activeTools.clear();renderTools();setComposerMenu(false);setAgentMenu(false);
+      body.classList.contains('specialist')?goAgent(body.dataset.agent||'business'):goHome();
+      activeTools.clear();renderTools();setComposerMenu(false);
       input.value='';autosize();updateSend();input.focus();
       break;
     }
@@ -2003,7 +2112,7 @@ document.addEventListener('click',e=>{
     case 'toast': closePops();toast(a.dataset.msg); break;
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setAgentMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
 </body>
 </html>
