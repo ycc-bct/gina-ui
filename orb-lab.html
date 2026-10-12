@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gina Orb Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="design-system/dist/tokens.css" />
+<style>
+  /* Lab page: real-time glass/liquid orb in Three.js, to judge the look before wiring states. */
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;grid-template-columns:1fr 300px;background:#f6f8fb;color:var(--text-primary);font-family:var(--font-family-sans);font-size:14px}
+  main{display:grid;place-items:center;position:relative}
+  #stage{width:min(70vmin,560px);height:min(70vmin,560px);display:block}
+  .caption{position:absolute;left:50%;bottom:32px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;font-size:20px;font-weight:600;color:#10182a}
+  .caption canvas{width:40px;height:40px}
+  aside{padding:24px 22px;border-left:1px solid var(--border-subtle);background:#fff;display:grid;align-content:start;gap:18px}
+  h1{margin:0;font-size:15px;font-weight:600}
+  .lead{margin:0;font-size:12px;color:var(--text-tertiary);line-height:1.6}
+  .label{font-size:11px;font-weight:600;color:#647187;letter-spacing:.04em;margin-bottom:6px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg button{height:32px;padding:0 12px;border:1px solid var(--border-default);border-radius:6px;background:#fff;font:inherit;font-size:13px;color:var(--text-secondary);cursor:pointer}
+  .seg button[aria-pressed="true"]{background:#001488;border-color:#001488;color:#fff}
+  .row{display:grid;grid-template-columns:1fr 48px;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)}
+  .row input{width:100%}
+  .row output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-tertiary)}
+  .note{font-size:12px;color:var(--text-tertiary);line-height:1.6;border-top:1px solid var(--border-subtle);padding-top:14px}
+  code{font-family:var(--font-family-mono);font-size:11px}
+</style>
+</head>
+<body>
+<main>
+  <canvas id="stage" role="img" aria-label="Gina 球（實驗）"></canvas>
+  <div class="caption"><canvas id="mini" aria-hidden="true"></canvas><span>午安，Kevin</span></div>
+</main>
+<aside>
+  <div><h1>Gina Orb Lab</h1><p class="lead">Three.js 即時算圖：液體狀表面 + 玻璃材質。先看質感，再決定要不要接狀態。</p></div>
+  <div><div class="label">狀態</div><div class="seg" id="states">
+    <button type="button" data-state="idle" aria-pressed="true">Idle</button>
+    <button type="button" data-state="thinking" aria-pressed="false">Thinking</button>
+    <button type="button" data-state="listening" aria-pressed="false">Listening</button>
+    <button type="button" data-state="done" aria-pressed="false">Done</button>
+  </div></div>
+  <div><div class="label">質感</div>
+    <label class="row">透明度 transmission<input id="u-trans" type="range" min="0" max="1" step="0.01" value="0.35"><output>0.35</output></label>
+    <label class="row">粗糙 roughness<input id="u-rough" type="range" min="0" max="1" step="0.01" value="0.2"><output>0.2</output></label>
+    <label class="row">彩虹邊 iridescence<input id="u-irid" type="range" min="0" max="1" step="0.01" value="0.8"><output>0.8</output></label>
+    <label class="row">內部亮度 glow<input id="u-bloom" type="range" min="0" max="2" step="0.05" value="1"><output>1</output></label>
+    <label class="row">流動幅度<input id="u-amp" type="range" min="0" max="0.4" step="0.01" value="0.07"><output>0.07</output></label>
+    <label class="row">流動速度<input id="u-speed" type="range" min="0" max="3" step="0.05" value="0.45"><output>0.45</output></label>
+  </div>
+  <div class="note">
+    主色 <code>#001488</code>，高光白。狀態只改流動幅度、速度、脈動和亮度，材質不變。<br><br>
+    分頁在背景或 <code>prefers-reduced-motion</code> 時會停在靜態一格。右上角數字是目前的畫面更新率。
+  </div>
+  <div class="label" id="fps">— fps</div>
+</aside>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const BG = 0xf6f8fb;
+const BRAND = new THREE.Color('#001488');
+
+/* ---------- states: only motion/light change, the material stays ---------- */
+const STATES = {
+  idle:      { amp: 0.07, speed: 0.45, pulse: 0.00, freq: 0.9, glow: 0.55, spin: 0.08 },
+  thinking:  { amp: 0.16, speed: 1.6,  pulse: 0.04, freq: 1.3, glow: 0.95, spin: 0.30 },
+  listening: { amp: 0.10, speed: 1.0,  pulse: 0.02, freq: 1.8, glow: 0.70, spin: 0.12 },
+  done:      { amp: 0.03, speed: 0.25, pulse: 0.00, freq: 0.8, glow: 1.10, spin: 0.04 },
+};
+const target = { ...STATES.idle };
+const cur = { ...STATES.idle };
+
+/* ---------- GLSL simplex noise (Ashima / Stefan Gustavson, MIT) ---------- */
+const SIMPLEX_SRC = `
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}`;
+
+/* ---------- material: glass with a liquid surface (vertex noise) ---------- */
+function makeMaterial(uniforms) {
+  const m = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#2a40cc'), roughness: 0.2, metalness: 0,
+    transmission: 0.35, thickness: 2.2, ior: 1.42,
+    emissive: BRAND, emissiveIntensity: 0.12,
+    iridescence: 0.8, iridescenceIOR: 1.3, iridescenceThicknessRange: [140, 480],
+    clearcoat: 1, clearcoatRoughness: 0.08,
+    attenuationColor: BRAND, attenuationDistance: 0.55,
+    envMapIntensity: 1.1,
+  });
+  m.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, uniforms);
+    shader.vertexShader = `
+      uniform float uTime, uAmp, uFreq;
+      ${SIMPLEX_SRC}
+      ` + shader.vertexShader
+      .replace('#include <begin_vertex>', `
+        vec3 p = position;
+        float n = snoise(vec3(p * uFreq + vec3(0.0, uTime * 0.35, 0.0)))
+                + 0.25 * snoise(vec3(p * uFreq * 2.3 - vec3(uTime * 0.5, 0.0, 0.0)));
+        vec3 transformed = p + normal * n * uAmp;`)
+      .replace('#include <beginnormal_vertex>', `
+        // Recompute the normal from neighbouring displaced points so lighting follows the liquid surface.
+        vec3 objectNormal = normal;
+        {
+          vec3 t = normalize(cross(normal, vec3(0.0, 1.0, 0.001)));
+          vec3 b = cross(normal, t);
+          float e = 0.02;
+          vec3 p0 = position, p1 = position + t * e, p2 = position + b * e;
+          float n0 = snoise(vec3(p0 * uFreq + vec3(0.0, uTime * 0.35, 0.0))) + 0.25 * snoise(vec3(p0 * uFreq * 2.3 - vec3(uTime * 0.5, 0.0, 0.0)));
+          float n1 = snoise(vec3(p1 * uFreq + vec3(0.0, uTime * 0.35, 0.0))) + 0.25 * snoise(vec3(p1 * uFreq * 2.3 - vec3(uTime * 0.5, 0.0, 0.0)));
+          float n2 = snoise(vec3(p2 * uFreq + vec3(0.0, uTime * 0.35, 0.0))) + 0.25 * snoise(vec3(p2 * uFreq * 2.3 - vec3(uTime * 0.5, 0.0, 0.0)));
+          vec3 d0 = p0 + normal * n0 * uAmp, d1 = p1 + normalize(p1) * n1 * uAmp, d2 = p2 + normalize(p2) * n2 * uAmp;
+          objectNormal = normalize(cross(d1 - d0, d2 - d0));
+        }`);
+  };
+  return m;
+}
+
+/* ---------- one orb = renderer + scene; used for the big stage and the small caption one ---------- */
+function makeOrb(canvas, sizeCSS) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, premultipliedAlpha: false, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+  renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.25;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 20);
+  camera.position.set(0, 0, 5.2);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(2.5, 3, 4); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xbfd4ff, 1.6); rim.position.set(-3, -1.5, -2); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+  const uniforms = { uTime: { value: 0 }, uAmp: { value: 0.12 }, uFreq: { value: 1.6 } };
+  const material = makeMaterial(uniforms);
+  const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.25, 96), material);
+  scene.add(mesh);
+
+  // A faint inner core so the centre does not read hollow through the glass.
+  const core = new THREE.Mesh(new THREE.SphereGeometry(0.7, 48, 48),
+    new THREE.MeshBasicMaterial({ color: 0x1e35c8, transparent: true, opacity: 0.35 }));
+  scene.add(core);
+
+
+  function resize() {
+    const s = typeof sizeCSS === 'function' ? sizeCSS() : sizeCSS;
+    renderer.setSize(s, s, false);
+    camera.aspect = 1; camera.updateProjectionMatrix();
+  }
+  resize();
+
+  function render(t, p) {
+    uniforms.uTime.value = t * p.speed;
+    uniforms.uAmp.value = p.amp;
+    uniforms.uFreq.value = p.freq;
+    const pulse = 1 + Math.sin(t * 3.2) * p.pulse;
+    mesh.scale.setScalar(pulse); core.scale.setScalar(pulse);
+    mesh.rotation.y = t * p.spin; mesh.rotation.x = Math.sin(t * 0.3) * 0.15;
+    core.material.opacity = 0.2 + p.glow * ui.bloom * 0.5;
+    material.emissiveIntensity = 0.05 + p.glow * ui.bloom * 0.25;
+    material.transmission = ui.trans; material.roughness = ui.rough; material.iridescence = ui.irid;
+    renderer.render(scene, camera);
+  }
+  return { render, resize };
+}
+
+/* ---------- UI ---------- */
+const ui = { trans: 0.35, rough: 0.2, irid: 0.8, bloom: 1, amp: null, speed: null };
+for (const [id, key] of [['u-trans', 'trans'], ['u-rough', 'rough'], ['u-irid', 'irid'], ['u-bloom', 'bloom'], ['u-amp', 'amp'], ['u-speed', 'speed']]) {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    el.nextElementSibling.value = el.value;
+    if (key === 'amp' || key === 'speed') target[key] = +el.value; else ui[key] = +el.value;
+  });
+}
+document.getElementById('states').addEventListener('click', e => {
+  const b = e.target.closest('[data-state]'); if (!b) return;
+  document.querySelectorAll('#states button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  Object.assign(target, STATES[b.dataset.state]);
+  document.getElementById('u-amp').value = target.amp; document.getElementById('u-amp').nextElementSibling.value = target.amp;
+  document.getElementById('u-speed').value = target.speed; document.getElementById('u-speed').nextElementSibling.value = target.speed;
+});
+
+/* ---------- loop ---------- */
+const big = makeOrb(document.getElementById('stage'), () => document.getElementById('stage').clientWidth);
+const mini = makeOrb(document.getElementById('mini'), 40);
+addEventListener('resize', () => { big.resize(); mini.resize(); });
+
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const fpsEl = document.getElementById('fps');
+let frames = 0, fpsAt = performance.now(), raf = 0;
+function frame(now) {
+  const t = now / 1000;
+  for (const k in cur) cur[k] += (target[k] - cur[k]) * 0.06;   // ease between states
+  big.render(t, cur); mini.render(t, cur);
+  frames++; if (now - fpsAt > 1000) { fpsEl.textContent = `${frames} fps`; frames = 0; fpsAt = now; }
+  if (!reduced.matches && document.visibilityState === 'visible') raf = requestAnimationFrame(frame);
+}
+function start() { cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); }
+document.addEventListener('visibilitychange', start);
+reduced.addEventListener('change', start);
+start();
+
+</script>
+</body>
+</html>
