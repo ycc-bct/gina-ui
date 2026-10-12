@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gina Orb — Shader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="design-system/dist/tokens.css" />
+<style>
+  /* Lab page: the soft colour-field orb from the reference clip, drawn with a 2D fragment shader. No libraries. */
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;grid-template-columns:1fr 300px;background:#f6f8fb;color:var(--text-primary);font-family:var(--font-family-sans);font-size:14px}
+  main{display:grid;place-items:center;position:relative;gap:40px;align-content:center}
+  canvas.orb{display:block}
+  .orb.big{width:min(60vmin,420px);height:min(60vmin,420px)}
+  .orb.inline{width:56px;height:56px}
+  .orb.small{width:24px;height:24px}
+  .greeting{display:flex;align-items:center;gap:14px;font-size:34px;font-weight:600;letter-spacing:-.025em;color:#10182a}
+  .thinking{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--text-secondary)}
+  .bg-toggle{position:absolute;top:16px;left:16px;display:flex;gap:6px}
+  .bg-toggle button,.seg button{height:28px;padding:0 10px;border:1px solid var(--border-default);border-radius:6px;background:#fff;font:inherit;font-size:12px;cursor:pointer;color:var(--text-secondary)}
+  .seg button{height:32px;font-size:13px}
+  .seg button[aria-pressed="true"]{background:#001488;border-color:#001488;color:#fff}
+  body.white{background:#fff}
+  body.dark{background:#1b1f24;color:#fff}
+  body.dark .greeting{color:#fff}
+  body.dark .thinking{color:#c9ced6}
+  aside{padding:24px 22px;border-left:1px solid var(--border-subtle);background:#fff;color:var(--text-primary);display:grid;align-content:start;gap:16px}
+  h1{margin:0;font-size:15px;font-weight:600}
+  p{margin:0;font-size:12px;color:var(--text-tertiary);line-height:1.6}
+  .label{font-size:11px;font-weight:600;color:#647187;letter-spacing:.04em;margin-bottom:6px}
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .row{display:grid;grid-template-columns:1fr 44px;align-items:center;gap:10px;font-size:12px;color:var(--text-secondary)}
+  .row input{width:100%}
+  .row output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-tertiary)}
+  code{font-family:var(--font-family-mono);font-size:11px}
+</style>
+</head>
+<body>
+<main>
+  <div class="bg-toggle"><button type="button" data-bg="">畫布 #f6f8fb</button><button type="button" data-bg="white">白底</button><button type="button" data-bg="dark">深底</button></div>
+  <canvas class="orb big" role="img" aria-label="Gina"></canvas>
+  <div class="greeting"><canvas class="orb inline" aria-hidden="true"></canvas><span>午安，Kevin</span></div>
+  <div class="thinking"><canvas class="orb small" aria-hidden="true"></canvas><span>Gina 正在思考…</span></div>
+</main>
+<aside>
+  <h1>Gina Orb — Shader 版</h1>
+  <p>照影片的做法：一個圓裡面幾團顏色慢慢流動，整體柔化，邊緣加一點球面陰影。純 WebGL，約 120 行，沒有套件。</p>
+  <div><div class="label">狀態</div><div class="seg" id="states">
+    <button type="button" data-state="idle" aria-pressed="true">Idle</button>
+    <button type="button" data-state="thinking" aria-pressed="false">Thinking</button>
+    <button type="button" data-state="listening" aria-pressed="false">Listening</button>
+    <button type="button" data-state="done" aria-pressed="false">Done</button>
+  </div></div>
+  <div><div class="label">調整</div>
+    <label class="row">流動速度<input id="u-speed" type="range" min="0" max="3" step="0.05" value="1"><output>1</output></label>
+    <label class="row">顏色團大小<input id="u-scale" type="range" min="0.3" max="3" step="0.05" value="0.65"><output>0.65</output></label>
+    <label class="row">柔度<input id="u-soft" type="range" min="0" max="1" step="0.01" value="0.8"><output>0.8</output></label>
+    <label class="row">白色比例<input id="u-white" type="range" min="0" max="1" step="0.01" value="0.6"><output>0.6</output></label>
+    <label class="row">粉紫比例<input id="u-pink" type="range" min="0" max="1" step="0.01" value="0.45"><output>0.45</output></label>
+    <label class="row">邊緣泛白<input id="u-rim" type="range" min="0" max="1" step="0.01" value="0.55"><output>0.55</output></label>
+  </div>
+  <p>顏色取自影片：深藍 <code>#1848d8</code>、品牌藍 <code>#001488</code>、粉紫 <code>#e6c8f0</code>、白。狀態只改速度、對比和脈動。背景透明，深淺底都能用。</p>
+  <div class="label" id="fps">— fps</div>
+</aside>
+
+<script>
+const VERT = `attribute vec2 p; varying vec2 v; void main(){ v = p; gl_Position = vec4(p, 0.0, 1.0); }`;
+const FRAG = `
+precision highp float;
+varying vec2 v;
+uniform float uTime, uScale, uSoft, uWhite, uPink, uRim, uPulse, uContrast;
+uniform vec3 uBlue, uDeep, uPinkC;
+
+// 3D simplex noise (Ashima / Stefan Gustavson, MIT)
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy; i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}
+
+void main(){
+  float r = length(v);
+  float radius = 0.92 * (1.0 + uPulse);
+  if (r > radius + 0.02) discard;
+
+  // Map the disc onto a sphere so the colour fields curve with the surface.
+  vec2 q = v / radius;
+  float z = sqrt(max(0.0, 1.0 - dot(q, q)));
+  vec3 s = vec3(q, z);
+  float t = uTime;
+
+  // Three slow colour fields: white, pink, deep blue. Each drifts in a different direction.
+  float nW = snoise(s * uScale * 1.0 + vec3( 0.0,  t * 0.12, t * 0.07));
+  float nP = snoise(s * uScale * 1.3 + vec3( t * 0.09, -t * 0.06, 2.0));
+  float nD = snoise(s * uScale * 0.8 + vec3(-t * 0.07,  t * 0.10, 5.0));
+
+  // Softness: how gently a field fades in. 0 = hard blobs, 1 = very washed.
+  float k = mix(1.4, 0.35, uSoft);
+  float w = smoothstep(0.15 - k, 0.15 + k, nW * uContrast) * uWhite;
+  float p = smoothstep(0.20 - k, 0.20 + k, nP * uContrast) * uPink;
+  float d = smoothstep(-0.1 - k, -0.1 + k, nD * uContrast);
+
+  vec3 col = mix(uBlue, uDeep, d * 0.7);
+  col = mix(col, uPinkC, p);
+  col = mix(col, vec3(1.0), w);
+
+  // Sphere feel: the limb goes pale lavender (as in the clip) and a soft highlight sits top-left.
+  float limb = pow(1.0 - z, 2.2);
+  col = mix(col, vec3(0.85, 0.85, 0.94), limb * uRim);
+  float hl = smoothstep(0.6, 1.0, dot(normalize(s), normalize(vec3(-0.45, 0.6, 0.65))));
+  col += hl * 0.12;
+
+  // Feathered edge so the disc never looks cut out.
+  float a = 1.0 - smoothstep(radius - 0.10, radius + 0.01, r);
+  gl_FragColor = vec4(col * a, a);   // premultiplied
+}`;
+
+const HEX = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+const STATES = {
+  idle:      { speed: 1.0, contrast: 1.0, pulse: 0.00, pulseHz: 0.0 },
+  thinking:  { speed: 2.6, contrast: 1.4, pulse: 0.03, pulseHz: 1.6 },
+  listening: { speed: 1.6, contrast: 1.2, pulse: 0.05, pulseHz: 3.0 },
+  done:      { speed: 0.5, contrast: 0.8, pulse: 0.00, pulseHz: 0.0 },
+};
+const target = { ...STATES.idle }, cur = { ...STATES.idle };
+const ui = { speed: 1, scale: 0.65, soft: 0.8, white: 0.6, pink: 0.45, rim: 0.55 };
+
+function makeOrb(canvas) {
+  const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: true });
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG)); gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  const U = {}; for (const n of ['uTime','uScale','uSoft','uWhite','uPink','uRim','uPulse','uContrast','uBlue','uDeep','uPinkC']) U[n] = gl.getUniformLocation(prog, n);
+  gl.uniform3fv(U.uBlue, HEX('#1848d8')); gl.uniform3fv(U.uDeep, HEX('#001488')); gl.uniform3fv(U.uPinkC, HEX('#e6c8f0'));
+
+  function resize() {
+    const dpr = Math.min(2, devicePixelRatio || 1), s = Math.round(canvas.clientWidth * dpr);
+    if (canvas.width !== s) { canvas.width = canvas.height = s; }
+    gl.viewport(0, 0, s, s);
+  }
+  function render(t, p) {
+    resize();
+    gl.uniform1f(U.uTime, t * p.speed * ui.speed);
+    gl.uniform1f(U.uScale, ui.scale); gl.uniform1f(U.uSoft, ui.soft);
+    gl.uniform1f(U.uWhite, ui.white); gl.uniform1f(U.uPink, ui.pink); gl.uniform1f(U.uRim, ui.rim);
+    gl.uniform1f(U.uContrast, p.contrast);
+    gl.uniform1f(U.uPulse, p.pulse * Math.sin(t * p.pulseHz * 6.283));
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+  return { render };
+}
+
+const orbs = [...document.querySelectorAll('canvas.orb')].map(makeOrb);
+
+/* ---------- UI ---------- */
+for (const k of Object.keys(ui)) {
+  const el = document.getElementById('u-' + k);
+  el.addEventListener('input', () => { ui[k] = +el.value; el.nextElementSibling.value = el.value; });
+}
+document.getElementById('states').addEventListener('click', e => {
+  const b = e.target.closest('[data-state]'); if (!b) return;
+  document.querySelectorAll('#states button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  Object.assign(target, STATES[b.dataset.state]);
+});
+document.querySelector('.bg-toggle').addEventListener('click', e => { const b = e.target.closest('[data-bg]'); if (b) document.body.className = b.dataset.bg; });
+
+/* ---------- loop ---------- */
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const fpsEl = document.getElementById('fps');
+let frames = 0, fpsAt = performance.now(), raf = 0, clock = 0, last = performance.now();
+function frame(now) {
+  clock += (now - last) / 1000 * cur.speed; last = now;   // time advances at the eased speed so state changes do not jump
+  for (const k in cur) cur[k] += (target[k] - cur[k]) * 0.05;
+  for (const o of orbs) o.render(clock, { ...cur, speed: 1 });
+  frames++; if (now - fpsAt > 1000) { fpsEl.textContent = `${frames} fps`; frames = 0; fpsAt = now; }
+  if (!reduced.matches && document.visibilityState === 'visible') raf = requestAnimationFrame(frame);
+}
+function start() { cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(frame); }
+document.addEventListener('visibilitychange', start);
+reduced.addEventListener('change', start);
+start();
+</script>
+</body>
+</html>
