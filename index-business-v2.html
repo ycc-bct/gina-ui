@@ -72,18 +72,18 @@
     <input id="locale-search" type="search" autocomplete="off" placeholder="搜尋語言" aria-label="搜尋語言" />
   </div>
   <div class="locale-options" role="menu">
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="true" data-action="select-locale" data-locale="zh-TW">繁體中文<small>Taiwan</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="zh-CN">简体中文<small>China</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="en-US">English<small>United States</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ja-JP">日本語<small>Japan</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ko-KR">한국어<small>South Korea</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="vi-VN" data-search="越南 vietnam vietnamese">Tiếng Việt<small>Việt Nam</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="th-TH">ไทย<small>Thailand</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="id-ID">Bahasa Indonesia<small>Indonesia</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ms-MY">Bahasa Melayu<small>Malaysia</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="es-ES">Español<small>España</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="fr-FR">Français<small>France</small><svg class="i locale-check" data-i="check"></svg></button>
-    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="de-DE">Deutsch<small>Deutschland</small><svg class="i locale-check" data-i="check"></svg></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="true" data-action="select-locale" data-locale="zh-TW"><svg class="i locale-check" data-i="check"></svg>繁體中文<small>Taiwan</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="zh-CN"><svg class="i locale-check" data-i="check"></svg>简体中文<small>China</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="en-US"><svg class="i locale-check" data-i="check"></svg>English<small>United States</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ja-JP"><svg class="i locale-check" data-i="check"></svg>日本語<small>Japan</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ko-KR"><svg class="i locale-check" data-i="check"></svg>한국어<small>South Korea</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="vi-VN" data-search="越南 vietnam vietnamese"><svg class="i locale-check" data-i="check"></svg>Tiếng Việt<small>Việt Nam</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="th-TH"><svg class="i locale-check" data-i="check"></svg>ไทย<small>Thailand</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="id-ID"><svg class="i locale-check" data-i="check"></svg>Bahasa Indonesia<small>Indonesia</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="ms-MY"><svg class="i locale-check" data-i="check"></svg>Bahasa Melayu<small>Malaysia</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="es-ES"><svg class="i locale-check" data-i="check"></svg>Español<small>España</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="fr-FR"><svg class="i locale-check" data-i="check"></svg>Français<small>France</small></button>
+    <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="de-DE"><svg class="i locale-check" data-i="check"></svg>Deutsch<small>Deutschland</small></button>
   </div>
   <div class="locale-empty" id="locale-empty" hidden>找不到符合的語言</div>
 </div>
@@ -118,7 +118,7 @@
     </div>
     <div class="spec-only">
       <div class="side-label" id="spec-history-label">業務助理 · 歷史對話</div>
-      <div class="spec-empty">尚無與這位專員的對話紀錄</div>
+      <div id="spec-history-list" aria-label="Agent 歷史對話"></div>
     </div>
   </div>
   <div class="side-bottom">
@@ -1293,6 +1293,7 @@ const HISTORY = [
   "整理 Gina UI 專案的相關信件"
 ];
 let activeHist = -1;
+let activeAgentHist = -1;
 const pinnedHist = new Set([2, 8, 17]);   // indices into HISTORY; 示意預設釘選
 const deletedHist = new Set();
 let menuHist = -1;              // row the ⋯ menu is open for
@@ -1308,7 +1309,7 @@ function setHistoryLoading(index,loading){
 function renderHistory(){
   const q = document.getElementById('hist-search').value.trim();
   const newChatButton=document.querySelector('[data-action="new-chat"]');
-  const newChatActive=activeHist===-1;
+  const newChatActive=activeHist===-1&&activeAgentHist===-1;
   newChatButton.classList.toggle('active',newChatActive);
   if(newChatActive){newChatButton.setAttribute('aria-current','page')}else{newChatButton.removeAttribute('aria-current')}
   const row=(t,i)=>`<div class="hist-row ${i===activeHist?'active':''} ${i===menuHist?'menu-open':''}">
@@ -1534,7 +1535,7 @@ try{const saved=+localStorage.getItem('gina-sidebar-w');if(saved)setSidebarWidth
 /* ---------- Long-form review width (drag left edge; up to 160px wider) ---------- */
 function reviewPanelBounds(){
   const base=Math.round(Math.min(440,Math.max(320,window.innerWidth*.28)));
-  return {min:320,def:base,max:Math.max(320,Math.min(base+160,window.innerWidth-240))};
+  return {min:base,def:base,max:Math.max(base,Math.min(base+160,window.innerWidth-240))};
 }
 function setReviewPanelWidth(width,save=true){
   const bounds=reviewPanelBounds();
@@ -1542,6 +1543,7 @@ function setReviewPanelWidth(width,save=true){
   document.documentElement.style.setProperty('--review-panel-width',width+'px');
   const bar=$('#review-panel-resizer');
   bar.setAttribute('aria-valuemin',bounds.min);bar.setAttribute('aria-valuemax',bounds.max);bar.setAttribute('aria-valuenow',width);
+  bar.setAttribute('aria-valuetext',`${width}px，最多向左增加 ${bounds.max-bounds.def}px`);
   if(save){try{localStorage.setItem('gina-review-panel-w',width)}catch{}}
   return width;
 }
@@ -1638,7 +1640,7 @@ const LOCALES={
   'de-DE':'Deutsch'
 };
 let activeLocale='zh-TW';
-try{const savedLocale=localStorage.getItem('gina-locale');if(LOCALES[savedLocale])activeLocale=savedLocale}catch{}
+try{const savedLocale=localStorage.getItem('gina-locale-v2');if(LOCALES[savedLocale])activeLocale=savedLocale}catch{}
 function renderLocale(){
   document.documentElement.lang=activeLocale;
   $('#locale-current').textContent=LOCALES[activeLocale];
@@ -1677,7 +1679,7 @@ function setLocaleMenu(open){
 function selectLocale(locale){
   if(!LOCALES[locale])return;
   activeLocale=locale;
-  try{localStorage.setItem('gina-locale',locale)}catch{}
+  try{localStorage.setItem('gina-locale-v2',locale)}catch{}
   renderLocale();setLocaleMenu(false);closePops();toast(`介面語言已設為 ${LOCALES[locale]}（示意）`);
 }
 renderLocale();
@@ -1722,14 +1724,41 @@ const AGENT_VIEWS={
     ]
   }
 };
+const AGENT_HISTORY={
+  business:[
+    {title:'Q4 重點客戶進度',prompt:'整理 Q4 重點客戶進度',kind:'business-progress',time:'昨天'},
+    {title:'本週訂單風險摘要',prompt:'彙整本週訂單風險與待處理事項',kind:'business-risk',time:'週一'},
+    {title:'CRM 客戶分級規則與程式碼',prompt:'整理 CRM 客戶分級規則，並提供自動化程式碼範例',kind:'business-code',time:'上週五'}
+  ],
+  test:[
+    {title:'登入流程回歸測試結果',prompt:'整理登入流程的回歸測試結果',kind:'test-regression',time:'昨天'},
+    {title:'阻擋上線的缺陷摘要',prompt:'列出目前會阻擋上線的缺陷與建議處理順序',kind:'test-blockers',time:'週二'},
+    {title:'Playwright 登入測試範例',prompt:'產生 Playwright 登入測試範例與執行說明',kind:'test-code',time:'上週四'}
+  ],
+  translate:[
+    {title:'新加坡提案英文版',prompt:'把新加坡客戶提案整理成專業英文版本',kind:'translate-proposal',time:'昨天'},
+    {title:'越南供應商信件',prompt:'把供應商確認信翻譯成越南語',kind:'translate-vietnamese',time:'週一'},
+    {title:'產品術語中英越對照',prompt:'建立產品術語的繁中、英文、越南文對照與可匯入格式',kind:'translate-code',time:'上週三'}
+  ]
+};
 function currentAgent(){return AGENT_VIEWS[body.dataset.agent]||AGENT_VIEWS.business}
+function renderAgentHistory(){
+  const items=AGENT_HISTORY[body.dataset.agent]||AGENT_HISTORY.business;
+  $('#spec-history-list').innerHTML=items.map((item,index)=>`<div class="hist-row ${index===activeAgentHist?'active':''}">
+    <button class="hist ${index===activeAgentHist?'active':''}" data-agent-history="${index}" ${index===activeAgentHist?'aria-current="page"':''}>
+      <span class="hist-dot" aria-hidden="true"></span><span class="hist-title">${escapeHTML(item.title)}</span>
+    </button>
+  </div>`).join('');
+}
 function renderAgentView(agent){
   $('.spec-big').innerHTML=svg(agent.icon);
   $('#spec-title-name').textContent=agent.name;
   $('#spec-subtitle').textContent=agent.subtitle;
   $('#spec-desc').textContent=agent.description;
   $('#spec-history-label').textContent=`${agent.name} · 歷史對話`;
+  $('.agent-templates').setAttribute('aria-label',`${agent.name}對話模板`);
   $('.agent-templates').innerHTML=agent.templates.map(([icon,title,detail,prompt])=>`<button class="today-card" data-prompt="${prompt}"><span class="today-icon">${svg(icon)}</span><span class="today-text"><b>${title}</b><small>${detail}</small></span>${svg('chevron-right').replace('class="i"','class="i today-go"')}</button>`).join('');
+  renderAgentHistory();
 }
 function goHome(){
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
@@ -1739,13 +1768,14 @@ function goHome(){
   input.setAttribute('aria-label','傳送訊息給 Gina');
   input.placeholder='交給 Gina，一起完成今天的工作…';
   $('#hero').style.display='';$('#spec-hero').style.display='none';
-  thread.innerHTML='';activeHist=-1;renderHistory();
+  thread.innerHTML='';activeHist=-1;activeAgentHist=-1;renderHistory();
 }
 function goAgent(key='business'){
   const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
   body.dataset.agent=key;
+  activeAgentHist=-1;
   renderAgentView(agent);
   $('#new-label').textContent='新對話';
   input.setAttribute('aria-label',`傳送訊息給${agent.name}`);
@@ -1895,6 +1925,54 @@ async function summarizeInbox(messages) {
   </div>`;
 }
 
+function agentReviewCardHTML(title,lines){
+  const content=[title,'',...lines].join('\n');
+  return `<section class="response-section">
+    <h3>💻 長篇內容與程式碼</h3>
+    <p>完整規則、程式碼與執行說明已整理在下方，可直接捲動、複製或開啟側邊檢閱。</p>
+    <div class="review-card">
+      <div class="review-card-actions">
+        <button data-action="copy-review-card" aria-label="複製長篇內容">${svg('copy')}</button>
+        <button class="review-expand" data-action="open-review-panel" aria-label="在側邊 Panel 檢閱完整內容">${svg('maximize')}</button>
+      </div>
+      <div class="review-card-content" tabindex="0" aria-label="可捲動的長篇內容">
+        <div class="review-copy"><pre class="review-plain-text">${escapeHTML(content)}</pre></div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function agentHistoryResponseHTML(kind){
+  if(kind==='business-progress')return `<p>已依商機金額、成交機率與下一步整理 Q4 重點客戶：</p>
+    <div class="response-table-wrap"><table class="response-table"><thead><tr><th>客戶</th><th>階段</th><th>下一步</th></tr></thead><tbody>
+      <tr><td>遠東零售</td><td>報價確認</td><td>今天追蹤採購窗口</td></tr>
+      <tr><td>北區物流</td><td>技術評估</td><td>補上整合時程</td></tr>
+      <tr><td>永豐製造</td><td>合約審閱</td><td>確認付款條件</td></tr>
+    </tbody></table></div>`;
+  if(kind==='business-risk')return `<p>本週共有三項訂單風險需要處理：</p><ol class="response-list"><li><b>交期風險：</b>北區物流尚未確認測試窗口。</li><li><b>金額風險：</b>遠東零售追加需求尚未更新報價。</li><li><b>合約風險：</b>永豐製造付款條款仍待法務確認。</li></ol><blockquote><p>建議先處理今天有明確截止時間的報價與測試窗口。</p><cite>業務助理建議</cite></blockquote>`;
+  if(kind==='business-code')return `<p>已把客戶分級條件整理成可交付工程團隊的規則。</p>${agentReviewCardHTML('CRM 客戶分級與自動化範例',[
+    '分級原則','1. 以預估金額、成交機率、近期互動與逾期天數計算優先分數。','2. 分數 80 以上列為 A 級，60–79 為 B 級，其餘為 C 級。','3. A 級客戶若超過兩天未聯絡，自動建立待辦。','',
+    'const scoreCustomer = customer => {','  const value = Math.min(customer.dealValue / 100000, 1) * 35;','  const probability = customer.winProbability * 30;','  const activity = Math.max(0, 20 - customer.daysSinceContact * 3);','  const urgency = customer.isOverdue ? 15 : 0;','  return Math.round(value + probability + activity + urgency);','};','',
+    "const assignTier = score => score >= 80 ? 'A' : score >= 60 ? 'B' : 'C';",'',
+    'async function createFollowUp(customer) {','  const score = scoreCustomer(customer);',"  if (assignTier(score) === 'A' && customer.daysSinceContact > 2) {","    return crm.tasks.create({ customerId: customer.id, title: '追蹤高優先客戶' });",'  }','}','',
+    '輸出欄位','- customerId：客戶識別碼','- priorityScore：0–100 優先分數','- tier：A、B 或 C','- nextAction：建議的下一步'
+  ])}`;
+  if(kind==='test-regression')return `<p>登入流程共執行 18 項測試，17 項通過、1 項待修正。</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>範圍</th><th>結果</th><th>備註</th></tr></thead><tbody><tr><td>Microsoft SSO</td><td>通過</td><td>桌機與手機皆正常</td></tr><tr><td>Session 逾時</td><td>通過</td><td>可返回登入頁</td></tr><tr><td>錯誤訊息</td><td>失敗</td><td>網路中斷時文案不完整</td></tr></tbody></table></div>`;
+  if(kind==='test-blockers')return `<p>目前有兩項會阻擋上線：</p><ol class="response-list"><li><b>P0：</b>重新登入後偶發導向空白頁，需先修正路由狀態。</li><li><b>P1：</b>Safari 無法正確更新登入 Token，可能導致重複驗證。</li></ol><p>其餘三項視覺問題可安排在下一個修補版本。</p>`;
+  if(kind==='test-code')return `<p>已整理成可直接放入測試專案的 Playwright 範例。</p>${agentReviewCardHTML('Playwright 登入流程測試與執行說明',[
+    '測試目標','- 驗證使用者可從登入頁進入 Chat Screen。','- 驗證登入失敗時顯示可理解的錯誤訊息。','- 驗證 Session 過期後會返回登入頁。','',
+    "import { test, expect } from '@playwright/test';",'',"test.describe('Microsoft SSO login', () => {","  test('redirects to chat after successful login', async ({ page }) => {","    await page.goto('/login-business.html');","    await page.getByRole('button', { name: /Microsoft/ }).click();","    await expect(page).toHaveURL(/index-business-v2/);",'  });','});','',
+    '執行方式','1. 執行 npx playwright test tests/login.spec.ts。','2. 在 Chromium、WebKit 與 Mobile Chrome 執行。','3. 失敗時保留 trace、screenshot 與 console log。','4. P0、P1 測試全部通過後才允許部署。'
+  ])}`;
+  if(kind==='translate-proposal')return `<p>已改寫成適合新加坡企業客戶的商務英文：</p><blockquote><p>Gina helps teams turn conversations, documents, and business data into clear next steps. The platform works with existing tools while keeping review and approval in the user’s hands.</p><cite>Proposal overview</cite></blockquote>`;
+  if(kind==='translate-vietnamese')return `<p>以下為自然、正式的越南語版本：</p><blockquote><p>Kính gửi Quý đối tác, chúng tôi xin xác nhận lịch giao hàng dự kiến vào ngày 18 tháng 10. Vui lòng phản hồi trước thứ Sáu nếu cần điều chỉnh số lượng hoặc địa điểm nhận hàng.</p><cite>供應商確認信</cite></blockquote>`;
+  return `<p>已完成繁中、英文與越南文術語對照，並整理成可匯入格式。</p>${agentReviewCardHTML('產品術語中英越對照',[
+    '使用原則','1. 產品名稱保留 Gina，不進行音譯。','2. Agent 依畫面情境翻譯為智慧助理或對應職能名稱。','3. Skills 作為功能名稱時保留英文。','',
+    'terms:', '  - key: new_chat','    zh-TW: 新對話','    en: New chat','    vi-VN: Cuộc trò chuyện mới','  - key: business_agent','    zh-TW: 業務助理','    en: Sales assistant','    vi-VN: Trợ lý kinh doanh','',
+    '匯入檢查','- 所有 key 必須唯一。','- 缺少翻譯時回退至英文。','- 匯入前檢查變數名稱與標點是否完整。'
+  ])}`;
+}
+
 function loadingReplyHTML(name='Gina',steps=5){
   return `<div class="loading-state" role="status" aria-live="polite">
     <div class="loading-title"><span class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>${name} 正在處理</span></div>
@@ -1905,7 +1983,7 @@ function loadingReplyHTML(name='Gina',steps=5){
 function loadConversation(i){
   closeTools();
   body.classList.remove('specialist');$('#new-label').textContent='新對話';
-  activeHist=i;unreadHist.delete(i);renderHistory();
+  activeAgentHist=-1;activeHist=i;unreadHist.delete(i);renderHistory();
   thread.innerHTML='';startChat();
   userMsg(HISTORY[i],'13:35');
   if(i===0){
@@ -1929,6 +2007,23 @@ function loadConversation(i){
     const el=aiMsg(REPLY_NO_MAIL);finishAi(el,'13:36');
   }
   $('#scroll').scrollTop=0;
+}
+
+function loadAgentConversation(index){
+  const key=body.dataset.agent||'business';
+  const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
+  const item=(AGENT_HISTORY[key]||AGENT_HISTORY.business)[index];
+  if(!item)return;
+  closeTools();closeReviewPanel();
+  activeHist=-1;activeAgentHist=index;
+  renderHistory();renderAgentHistory();
+  thread.innerHTML='';startChat();
+  userMsg(item.prompt,item.time);
+  const el=aiMsg(agentHistoryResponseHTML(item.kind));
+  finishAi(el,'剛剛',item.kind.endsWith('code')?6:3);
+  $('#scroll').scrollTop=0;
+  input.setAttribute('aria-label',`傳送訊息給${agent.name}`);
+  input.placeholder=agent.placeholder;
 }
 
 function actionCardHTML(){
@@ -2085,6 +2180,8 @@ document.addEventListener('click',e=>{
     const label=downloadOption.textContent.trim();
     closeDownloadMenus();toast(`已選擇 ${label} 下載（示意）`);return;
   }
+  const agentHistory=e.target.closest('[data-agent-history]');
+  if(agentHistory){loadAgentConversation(+agentHistory.dataset.agentHistory);return;}
   const h=e.target.closest('[data-hist]');
   if(h){loadConversation(+h.dataset.hist);return;}
 

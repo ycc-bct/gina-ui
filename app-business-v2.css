@@ -50,8 +50,8 @@ body.business-theme {
 
 /* Agent pages inherit the Agent's identity colour across interactive states. */
 body.business-theme.specialist {
-  --bg-app: #f8f6fb;
-  --bg-canvas: #f8f6fb;
+  --bg-app: #f6f8fb;
+  --bg-canvas: #f6f8fb;
   --bg-selected: #eee9f7;
   --border-focus: #806ba1;
   --focus-ring: #806ba1;
@@ -64,8 +64,6 @@ body.business-theme.specialist {
 }
 
 body.business-theme.specialist[data-agent="test"] {
-  --bg-app: #fdfcf9;
-  --bg-canvas: #fdfcf9;
   --bg-selected: #f8f2df;
   --border-focus: #9a813c;
   --focus-ring: #9a813c;
@@ -78,8 +76,6 @@ body.business-theme.specialist[data-agent="test"] {
 }
 
 body.business-theme.specialist[data-agent="translate"] {
-  --bg-app: #f4f9f7;
-  --bg-canvas: #f4f9f7;
   --bg-selected: #e4f1ed;
   --border-focus: #5d897d;
   --focus-ring: #5d897d;
@@ -89,12 +85,6 @@ body.business-theme.specialist[data-agent="translate"] {
   --action-primary-bg: #5d897d;
   --action-primary-bg-hover: #4d7469;
   --shadow-focus: 0 0 0 3px rgb(82 123 112 / 14%);
-}
-
-/* Agent conversations return to the shared grey-blue chat canvas. */
-body.business-theme.specialist.chatting {
-  --bg-app: #f6f8fb;
-  --bg-canvas: #f6f8fb;
 }
 
 body.business-theme::before {
@@ -328,14 +318,14 @@ body.business-theme .locale-options {
 }
 body.business-theme .locale-options .menu-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
   gap: 8px;
   min-height: 38px;
   padding: 0 9px;
   font-size: 13px;
 }
 body.business-theme .locale-options .menu-item small { color: var(--text-tertiary); font-size: 11px; font-weight: 400; }
-body.business-theme .locale-options .locale-check { visibility: hidden; color: var(--accent-blue-fg); }
+body.business-theme .locale-options .locale-check { width: 15px; height: 15px; visibility: hidden; color: var(--accent-blue-fg); }
 body.business-theme .locale-options .menu-item[aria-checked="true"] { background: var(--bg-field); color: var(--text-primary); font-weight: 600; }
 body.business-theme .locale-options .menu-item[aria-checked="true"] .locale-check { visibility: visible; }
 body.business-theme .locale-empty { padding: 22px 12px; color: var(--text-tertiary); font-size: 13px; text-align: center; }
@@ -1051,7 +1041,7 @@ body.business-theme .review-panel-resizer {
   bottom: 0;
   left: 0;
   z-index: 2;
-  width: 8px;
+  width: 12px;
   cursor: col-resize;
   touch-action: none;
 }
@@ -1059,11 +1049,11 @@ body.business-theme .review-panel-resizer::after {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: 1px;
   width: 2px;
   background: var(--accent-blue-border);
   content: '';
-  opacity: 0;
+  opacity: .28;
   transition: opacity 140ms ease-out;
 }
 body.business-theme .review-panel-resizer:hover::after,
