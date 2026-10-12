@@ -14,7 +14,7 @@
 - Account Popover 提供可搜尋、可捲動的語言選擇，至少包含繁體中文、English、日本語、한국어與越南語；選擇結果寫入本機偏好並更新頁面 `lang`。語言屬個人偏好，放在管理後台正上方，不放入 Composer 或 Sidebar 導覽。Popover 頂端不顯示「連線」分組標題。
 - Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)` 作為預設寬度，左側邊緣可拖曳，最多增加 160px，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
 - Business Login、Chat、Sidebar Logo 與登出形成完整導頁：登入進入 `index-business-v2.html`，Logo 回到第二版首頁，登出回到 `login-business.html`。在 `htmlpreview.github.io` 執行時，導頁會保留 GitHub branch source query，避免相對路徑離開 Preview。
-- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「總結先前的對話／整理過去三天的重點」。Pinned 與 Recents 標題靠 Sidebar 內容左緣對齊。進入 Agent 頁時，Sidebar 最上方以「← 回到首頁」取代 GINA Logo；Agent Icon 與 Title 位於「新對話」上方並垂直置中。進入 Agent 對話後，工作區回到與 Gina Chat 相同的灰藍色。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
+- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「總結先前的對話／整理過去三天的重點」。Pinned 與 Recents 標題靠 Sidebar 內容左緣對齊。Agent 頁的 Sidebar 維持顯示 GINA Logo，不另外顯示 Agent Icon 與 Title 列；Agent 身分由主內容區的 Hero 呈現。進入 Agent 對話後，工作區回到與 Gina Chat 相同的灰藍色。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
 
 - 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。
 
