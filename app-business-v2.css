@@ -606,6 +606,28 @@ body.business-theme .hero-avatar {
   background: transparent;
   overflow: visible;
 }
+
+/* The home orb doubles as the visual style switcher. */
+body.business-theme .hero-avatar[role="button"] {
+  cursor: pointer;
+  transition: transform 180ms ease-out, filter 180ms ease-out;
+}
+body.business-theme .hero-avatar[role="button"]:hover {
+  transform: translateY(-2px) scale(1.035);
+  filter: saturate(1.12);
+}
+body.business-theme .hero-avatar[role="button"]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.business-theme .hero-avatar[role="button"] {
+    transition: none;
+  }
+  body.business-theme .hero-avatar[role="button"]:hover {
+    transform: none;
+  }
+}
 body.business-theme .hero h1 {
   margin: 0;
   color: #10182a;
