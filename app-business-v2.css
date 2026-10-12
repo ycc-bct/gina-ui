@@ -91,6 +91,12 @@ body.business-theme.specialist[data-agent="translate"] {
   --shadow-focus: 0 0 0 3px rgb(82 123 112 / 14%);
 }
 
+/* Agent conversations return to the shared grey-blue chat canvas. */
+body.business-theme.specialist.chatting {
+  --bg-app: #f6f8fb;
+  --bg-canvas: #f6f8fb;
+}
+
 body.business-theme::before {
   inset: 0;
   border: 0;
@@ -142,6 +148,14 @@ body.business-theme .spec-brand {
   line-height: 1;
 }
 
+body.business-theme .sidebar > .spec-brand {
+  width: 100%;
+  min-height: 40px;
+  margin-bottom: 6px;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
 body.business-theme .spec-brand-ico,
 body.business-theme #spec-brand-name {
   align-self: center;
@@ -154,22 +168,7 @@ body.business-theme #spec-brand-name {
   line-height: 1.4;
 }
 
-body.business-theme .spec-brand .back {
-  display: grid;
-  place-items: center;
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
-  margin: 0;
-  padding: 0;
-  line-height: 0;
-}
-
-body.business-theme .spec-brand .back .i {
-  display: block;
-  width: 16px;
-  height: 16px;
-}
+body.business-theme .sidebar > .spec-brand .spec-brand-ico { flex: 0 0 32px; }
 
 body.business-theme.collapsed .main { left: 14px; }
 body.business-theme.collapsed .header { left: 62px; }
@@ -193,6 +192,27 @@ body.business-theme .sidebar-brand img {
   width: auto;
   height: 15px;
 }
+
+body.business-theme .agent-home-link { display: none; }
+body.business-theme.specialist .sidebar-brand {
+  padding-left: 46px;
+  color: var(--text-secondary);
+}
+body.business-theme.specialist .sidebar-brand img { display: none; }
+body.business-theme.specialist .agent-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+}
+body.business-theme.specialist .agent-home-link .i {
+  width: 18px;
+  height: 18px;
+}
+body.business-theme.specialist .sidebar-brand:hover .agent-home-link { color: var(--text-primary); }
 
 body.business-theme .side-top {
   display: grid;
@@ -1059,8 +1079,8 @@ body.business-theme .loading-dots i { background: var(--action-primary-bg); }
   body.business-theme.drawer-panel-open .header {
     right: calc(var(--layout-drawer-width) + 42px);
   }
-  body.business-theme.review-panel-open:not(.review-panel-expanded) .main,
-  body.business-theme.review-panel-open:not(.review-panel-expanded) .header {
+  body.business-theme.review-panel-open .main,
+  body.business-theme.review-panel-open .header {
     right: var(--review-panel-width);
   }
 }
@@ -1076,9 +1096,62 @@ body.business-theme .review-panel {
   border-radius: 0;
   box-shadow: -10px 0 30px rgb(28 42 61 / 8%);
 }
-body.business-theme.review-panel-expanded .review-panel { left: 0; }
+body.business-theme .review-panel-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+}
+body.business-theme .review-panel-resizer::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent-blue-border);
+  content: '';
+  opacity: 0;
+  transition: opacity 140ms ease-out;
+}
+body.business-theme .review-panel-resizer:hover::after,
+body.business-theme .review-panel-resizer:focus-visible::after,
+body.business-theme.review-panel-resizing .review-panel-resizer::after { opacity: 1; }
+body.business-theme .review-panel-resizer:focus-visible { outline: none; }
+body.business-theme.review-panel-resizing { cursor: col-resize; user-select: none; }
+body.business-theme.review-panel-resizing .review-panel,
+body.business-theme.review-panel-resizing .main,
+body.business-theme.review-panel-resizing .header { transition: none; }
+
+body.business-theme .review-download-control { position: relative; }
+body.business-theme .review-download-menu {
+  top: 36px;
+  right: 0;
+  bottom: auto;
+  z-index: 3;
+}
+body.business-theme .review-download-menu .download-option {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: var(--component-menu-item-height);
+  padding: 0 var(--space-3);
+  text-align: left;
+}
+body.business-theme .review-panel-actions [data-action="copy-review"] .i {
+  width: 19px;
+  height: 19px;
+}
+body.business-theme .review-panel-actions [data-action="close-review-panel"] .i {
+  width: 21px;
+  height: 21px;
+}
 @media (max-width: 640px) {
   body.business-theme .review-panel { width: 100vw; border-left: 0; border-radius: 0; }
+  body.business-theme .review-panel-resizer { display: none; }
 }
 
 /* Outlook not connected: hint above the composer with the connect entry point */

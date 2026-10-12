@@ -14,13 +14,7 @@
 <body class="business-theme">
 
 <!-- ============ Header ============ -->
-<header class="header">
-  <div class="spec-brand">
-    <button class="back" data-action="go-home" aria-label="返回"><svg class="i" data-i="arrow-left"></svg></button>
-    <span class="spec-brand-ico"><svg class="i" data-i="chart"></svg></span>
-    <span id="spec-brand-name">業務助理</span>
-  </div>
-</header>
+<header class="header"></header>
 
 <!-- MCP Tool: registered servers -->
 <aside class="drawer" id="drawer-mcp" aria-label="MCP Tool" inert>
@@ -51,22 +45,21 @@
 
 <!-- User menu -->
 <div class="popover" id="pop-user">
-  <div class="menu-label">連線</div>
   <div class="menu-item menu-switch">
     <svg class="i" data-i="mail"></svg>
     <span class="menu-switch-text"><b>Outlook</b><small id="outlook-state">已連線 · 郵件與行事曆</small></span>
     <button class="switch" id="outlook-switch" role="switch" aria-checked="true" aria-label="Outlook 連線" data-action="toggle-outlook"><span></span></button>
   </div>
-  <button class="menu-item locale-trigger" type="button" data-action="toggle-locale-menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="locale-menu">
-    <svg class="i" data-i="globe"></svg>
-    <span class="locale-trigger-copy"><span>語言</span><small id="locale-current">繁體中文</small></span>
-    <svg class="i locale-chevron" data-i="chevron-right"></svg>
-  </button>
   <div class="menu-sep"></div>
   <button class="menu-item" data-action="open-mcp"><svg class="i" data-i="server"></svg>MCP Tool</button>
   <button class="menu-item" data-action="open-skills"><svg class="i" data-i="wrench"></svg>Skills</button>
   <button class="menu-item" data-action="open-kb"><svg class="i" data-i="book-open"></svg>個人知識</button>
   <div class="menu-sep"></div>
+  <button class="menu-item locale-trigger" type="button" data-action="toggle-locale-menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="locale-menu">
+    <svg class="i" data-i="globe"></svg>
+    <span class="locale-trigger-copy"><span>語言</span><small id="locale-current">繁體中文</small></span>
+    <svg class="i locale-chevron" data-i="chevron-right"></svg>
+  </button>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
   <div class="menu-sep"></div>
   <button class="menu-item danger" data-action="logout"><svg class="i" data-i="logout"></svg>登出</button>
@@ -99,10 +92,17 @@
 <button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄" aria-expanded="true"><svg class="i" data-i="panel-left"></svg></button>
 <aside class="sidebar" aria-label="工作空間導覽">
   <div class="sidebar-resizer" id="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側欄寬度" tabindex="0" title="拖曳調整寬度，雙擊還原"></div>
-  <a class="sidebar-brand" href="index-business-v2.html" data-action="go-home" aria-label="Gina 首頁"><img src="assets/gina-wordmark.svg" alt="Gina" width="418" height="69" /></a>
+  <a class="sidebar-brand" href="index-business-v2.html" data-action="go-home" aria-label="回到首頁">
+    <img src="assets/gina-wordmark.svg" alt="Gina" width="418" height="69" />
+    <span class="agent-home-link"><svg class="i" data-i="arrow-left"></svg><span>回到首頁</span></span>
+  </a>
   <div class="side-search main-only">
     <svg class="i" data-i="search"></svg>
     <input id="hist-search" type="search" placeholder="搜尋" aria-label="搜尋對話" />
+  </div>
+  <div class="spec-brand">
+    <span class="spec-brand-ico"><svg class="i" data-i="chart"></svg></span>
+    <span id="spec-brand-name">業務助理</span>
   </div>
   <div class="side-top">
     <button class="side-nav-item btn-new" data-action="new-chat"><svg class="i" data-i="plus"></svg><span id="new-label">新對話</span></button>
@@ -285,13 +285,23 @@
 </dialog>
 
 <aside class="review-panel" id="review-panel" aria-labelledby="review-panel-title" aria-hidden="true">
+  <div class="review-panel-resizer" id="review-panel-resizer" role="separator" aria-orientation="vertical" aria-label="調整長篇內容 Panel 寬度" tabindex="0" title="拖曳調整寬度，雙擊還原"></div>
   <header class="review-panel-header">
     <div>
       <h2 id="review-panel-title">長篇內容檢閱</h2>
       <p>完整內容</p>
     </div>
     <div class="review-panel-actions">
-      <button data-action="toggle-review-expanded" aria-label="展開檢閱 Panel" aria-expanded="false"><span class="review-maximize"><svg class="i" data-i="maximize"></svg></span><span class="review-minimize"><svg class="i" data-i="minimize"></svg></span></button>
+      <div class="review-download-control">
+        <button data-action="toggle-download" aria-label="下載檢閱內容" aria-haspopup="menu" aria-expanded="false"><svg class="i" data-i="download"></svg></button>
+        <div class="download-menu review-download-menu" role="menu" hidden>
+          <button class="download-option" role="menuitem" data-format="txt">純文字 (.txt)</button>
+          <button class="download-option" role="menuitem" data-format="md">Markdown (.md)</button>
+          <button class="download-option" role="menuitem" data-format="png">圖片 (.png)</button>
+          <button class="download-option" role="menuitem" data-format="pdf">PDF (.pdf)</button>
+          <button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button>
+        </div>
+      </div>
       <button data-action="copy-review" aria-label="複製檢閱內容"><svg class="i" data-i="copy"></svg></button>
       <button data-action="close-review-panel" aria-label="關閉檢閱 Panel"><svg class="i" data-i="x"></svg></button>
     </div>
@@ -1467,10 +1477,9 @@ function closeDownloadMenus(except){
   });
 }
 function closeReviewPanel(){
-  body.classList.remove('review-panel-open','review-panel-expanded');
+  body.classList.remove('review-panel-open','review-panel-resizing');
   $('#review-panel').setAttribute('aria-hidden','true');
-  const expand=$('[data-action="toggle-review-expanded"]');
-  expand.setAttribute('aria-expanded','false');expand.setAttribute('aria-label','展開檢閱 Panel');
+  closeDownloadMenus();
 }
 function openReviewPanel(source){
   $('#review-panel-content').innerHTML=source.innerHTML;
@@ -1526,6 +1535,47 @@ try{const saved=+localStorage.getItem('gina-sidebar-w');if(saved)setSidebarWidth
     if(e.key==='ArrowLeft'){e.preventDefault();setSidebarWidth(cur-16)}
     if(e.key==='ArrowRight'){e.preventDefault();setSidebarWidth(cur+16)}
     if(e.key==='Home'){e.preventDefault();setSidebarWidth(SIDEBAR_W.def)}
+  });
+})();
+
+/* ---------- Long-form review width (drag left edge; up to 160px wider) ---------- */
+function reviewPanelBounds(){
+  const base=Math.round(Math.min(440,Math.max(320,window.innerWidth*.28)));
+  return {min:320,def:base,max:Math.max(320,Math.min(base+160,window.innerWidth-240))};
+}
+function setReviewPanelWidth(width,save=true){
+  const bounds=reviewPanelBounds();
+  width=Math.round(Math.min(bounds.max,Math.max(bounds.min,width)));
+  document.documentElement.style.setProperty('--review-panel-width',width+'px');
+  const bar=$('#review-panel-resizer');
+  bar.setAttribute('aria-valuemin',bounds.min);bar.setAttribute('aria-valuemax',bounds.max);bar.setAttribute('aria-valuenow',width);
+  if(save){try{localStorage.setItem('gina-review-panel-w',width)}catch{}}
+  return width;
+}
+(()=>{
+  const bar=$('#review-panel-resizer');
+  const bounds=reviewPanelBounds();
+  let initial=bounds.def;
+  try{initial=+localStorage.getItem('gina-review-panel-w')||initial}catch{}
+  setReviewPanelWidth(initial,false);
+  bar.addEventListener('pointerdown',e=>{
+    if(window.matchMedia('(max-width: 640px)').matches)return;
+    e.preventDefault();body.classList.add('review-panel-resizing');
+    const startX=e.clientX,startWidth=$('#review-panel').getBoundingClientRect().width;
+    const move=ev=>setReviewPanelWidth(startWidth+(startX-ev.clientX),false);
+    const up=ev=>{
+      window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+      body.classList.remove('review-panel-resizing');setReviewPanelWidth(startWidth+(startX-ev.clientX));
+    };
+    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+  });
+  bar.addEventListener('dblclick',()=>setReviewPanelWidth(reviewPanelBounds().def));
+  bar.addEventListener('keydown',e=>{
+    const current=$('#review-panel').getBoundingClientRect().width;
+    if(e.key==='ArrowLeft'){e.preventDefault();setReviewPanelWidth(current+16)}
+    if(e.key==='ArrowRight'){e.preventDefault();setReviewPanelWidth(current-16)}
+    if(e.key==='Home'){e.preventDefault();setReviewPanelWidth(reviewPanelBounds().def)}
+    if(e.key==='End'){e.preventDefault();setReviewPanelWidth(reviewPanelBounds().max)}
   });
 })();
 
@@ -2067,7 +2117,6 @@ document.addEventListener('click',e=>{
     case 'copy-review-card': {const source=a.closest('.review-card').querySelector('.review-card-content');copyText(readableText(source),'已複製長篇內容');break;}
     case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
     case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
-    case 'toggle-review-expanded': {const expanded=body.classList.toggle('review-panel-expanded');a.setAttribute('aria-expanded',String(expanded));a.setAttribute('aria-label',expanded?'縮小檢閱 Panel':'展開檢閱 Panel');break;}
     case 'close-review-panel': closeReviewPanel(); break;
     case 'translate': {goAgent('translate');input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
