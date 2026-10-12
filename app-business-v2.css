@@ -1133,14 +1133,10 @@ body.business-theme .review-download-menu .download-option {
   padding: 0 var(--space-3);
   text-align: left;
 }
-body.business-theme .review-panel-actions [data-action="copy-review"] .i {
-  width: 19px;
-  height: 19px;
-}
-body.business-theme .review-panel-actions [data-action="close-review-panel"] .i {
-  width: 21px;
-  height: 21px;
-}
+/* Review panel header: every action is a 32px button with an 18px icon. */
+body.business-theme .review-panel-actions button .i { width: 18px; height: 18px; }
+/* Copy's two squares fill more of the box than the other glyphs; 17px evens out the visual weight. */
+body.business-theme .review-panel-actions [data-action="copy-review"] .i { width: 17px; height: 17px; }
 @media (max-width: 640px) {
   body.business-theme .review-panel { width: 100vw; border-left: 0; border-radius: 0; }
   body.business-theme .review-panel-resizer { display: none; }
@@ -1410,10 +1406,13 @@ body.business-theme .hist-status {
 body.business-theme .hist-status.is-loading { animation: hist-breathe 1.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { body.business-theme .hist-status.is-loading { animation: none; } }
 /* The ⋯ button takes the same spot on hover, focus, open menu or the active row. */
+/* Status dot and ⋯ share one spot, never both.
+   Row with a dot: the dot shows (selected or not); hover, keyboard focus or an open menu swaps it for ⋯.
+   visibility (not opacity) so the breathing animation can't bring the dot back. */
 body.business-theme .hist-row:hover .hist-status,
-body.business-theme .hist-row:focus-within .hist-status,
-body.business-theme .hist-row.menu-open .hist-status,
-body.business-theme .hist-row.active .hist-status { opacity: 0; }
+body.business-theme .hist-row:has(:focus-visible) .hist-status,
+body.business-theme .hist-row.menu-open .hist-status { visibility: hidden; }
+body.business-theme .hist-row:has(.hist-status):not(:hover):not(:has(:focus-visible)):not(.menu-open) .hist-more { opacity: 0; }
 
 /* Recents: every row has a tinted tile. Gina chats in Gina blue, Agent chats in the Agent's colour.
    Fixed values (not --accent-blue-*) so the Gina tile stays blue inside Agent pages. */
@@ -1704,3 +1703,42 @@ body.business-theme .rename-input {
   outline: none;
   box-shadow: 0 0 0 3px rgb(47 103 213 / 12%);
 }
+
+/* Reply readability: one darker body colour for all running text (was #344258 on paragraphs,
+   #172033 on lists/tables). Headings and bold stay #172033; quote attribution stays secondary. */
+body.business-theme { --text-reply: #1f2a3d; }
+body.business-theme .bubble-ai p,
+body.business-theme .bubble-ai li,
+body.business-theme .bubble-ai td,
+body.business-theme .bubble-ai th,
+body.business-theme .bubble-ai dd,
+body.business-theme .bubble-ai blockquote,
+body.business-theme .bubble-ai blockquote p,
+body.business-theme .rich-response > p:first-child,
+body.business-theme .review-card-content,
+body.business-theme .review-card pre,
+body.business-theme .review-panel-content,
+body.business-theme .review-panel-content p,
+body.business-theme .review-panel-content pre { color: var(--text-reply); }
+
+/* Tables sit in a white frame like the code / long-form cards: clearer row lines on the grey canvas,
+   a tinted header row, and an obvious edge when a wide table scrolls sideways inside the frame. */
+body.business-theme .response-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: #ffffff;
+}
+body.business-theme .response-table th {
+  background: #f4f6f9;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+body.business-theme .response-table th,
+body.business-theme .response-table td { padding: 10px 14px; }
+body.business-theme .response-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Step check: one size below the step's own icon (12px vs 15px), heavier stroke so it stays legible.
+   Keeps the deep success green; running / failed states can reuse this slot later. */
+body.business-theme .execution-status { width: 15px; justify-content: center; }
+body.business-theme .execution-status .i { width: 12px; height: 12px; stroke-width: 2.5; }

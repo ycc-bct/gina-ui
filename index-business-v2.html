@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="design-system/dist/tokens.css" />
 <link rel="stylesheet" href="app.css" />
-<link rel="stylesheet" href="app-business-v2.css?v=20261012-rename" />
+<link rel="stylesheet" href="app-business-v2.css?v=20261012-step-check" />
 <link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
 </head>
 <body class="business-theme">
@@ -311,6 +311,7 @@
       <p>完整內容</p>
     </div>
     <div class="review-panel-actions">
+      <button data-action="copy-review" aria-label="複製檢閱內容"><svg class="i" data-i="copy"></svg></button>
       <div class="review-download-control">
         <button data-action="toggle-download" aria-label="下載檢閱內容" aria-haspopup="menu" aria-expanded="false"><svg class="i" data-i="download"></svg></button>
         <div class="download-menu review-download-menu" role="menu" hidden>
@@ -321,7 +322,6 @@
           <button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button>
         </div>
       </div>
-      <button data-action="copy-review" aria-label="複製檢閱內容"><svg class="i" data-i="copy"></svg></button>
       <button data-action="close-review-panel" aria-label="關閉檢閱 Panel"><svg class="i" data-i="x"></svg></button>
     </div>
   </header>
@@ -1616,7 +1616,8 @@ function reviewPanelBounds(){
 function setReviewPanelWidth(width,save=true){
   const bounds=reviewPanelBounds();
   width=Math.round(Math.min(bounds.max,Math.max(bounds.min,width)));
-  document.documentElement.style.setProperty('--review-panel-width',width+'px');
+  // Set on <body>: the theme declares the default on body.business-theme, which would shadow a value on <html>.
+  body.style.setProperty('--review-panel-width',width+'px');
   const bar=$('#review-panel-resizer');
   bar.setAttribute('aria-valuemin',bounds.min);bar.setAttribute('aria-valuemax',bounds.max);bar.setAttribute('aria-valuenow',width);
   bar.setAttribute('aria-valuetext',`${width}px，最多向左增加 ${bounds.max-bounds.def}px`);
@@ -1954,8 +1955,8 @@ function executionDetailsHTML(steps,agentName){
   return `<details class="execution-details">
     <summary aria-label="展開或收合執行步驟"><span class="execution-summary-icon">${svg('circle-check')}</span><span>${resources.length} 個 subagent / tool 步驟</span><span class="execution-expand">${svg('chevron-down')}</span></summary>
     <div class="execution-list">${resources.map(resource=>`<article class="execution-resource">
-      <header><span class="execution-status">${svg('check')}</span><span class="execution-resource-icon">${svg(resource.icon)}</span><strong>${resource.name}</strong></header>
-      <dl><div><dt>類型</dt><dd>${resource.type}</dd></div><div><dt>狀態</dt><dd>已完成</dd></div><div><dt>事件時間</dt><dd>${resource.time}</dd></div></dl>
+      <header><span class="execution-status" role="img" aria-label="已完成" title="已完成">${svg('check')}</span><span class="execution-resource-icon">${svg(resource.icon)}</span><strong>${resource.name}</strong></header>
+      <dl><div><dt>類型</dt><dd>${resource.type}</dd></div><div><dt>事件時間</dt><dd>${resource.time}</dd></div></dl>
     </article>`).join('')}</div>
   </details>`;
 }
