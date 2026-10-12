@@ -254,7 +254,14 @@ body.business-theme .btn-new.active:hover {
 body.business-theme .btn-new:hover { background: var(--bg-field); color: var(--text-primary); }
 
 body.business-theme .side-agents { padding: 4px 0 0; }
-body.business-theme .side-agents .side-nav-item { padding-left: 6px; }
+body.business-theme .btn-new,
+body.business-theme .side-agents .side-nav-item {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  column-gap: 10px;
+  padding-left: 6px;
+}
+body.business-theme .btn-new > .i { justify-self: center; }
 body.business-theme .side-agents .side-nav-item > .i {
   width: 26px;
   height: 26px;
@@ -408,7 +415,7 @@ body.business-theme .side-search .i {
 body.business-theme .side-search input {
   width: 100%;
   height: 36px;
-  padding: 0 10px 0 34px;
+  padding: 0 10px 0 36px;
   border: 1px solid var(--border-default);
   border-radius: 6px;
   background: #ffffff;
@@ -1279,5 +1286,5 @@ body.business-theme .btn-new .i {
   color: var(--text-secondary);
   box-sizing: border-box;
 }
-body.business-theme .btn-new { gap: 8px; padding-left: 6px; }
+body.business-theme .btn-new { gap: 10px; padding-left: 6px; }
 body.business-theme .btn-new:hover .i { background: var(--bg-selected); color: var(--text-primary); }
