@@ -278,13 +278,13 @@
 </dialog>
 
 <aside class="review-panel" id="review-panel" aria-labelledby="review-panel-title" aria-hidden="true">
+  <div class="review-panel-resizer" id="review-panel-resizer" role="separator" aria-orientation="vertical" aria-label="調整長篇內容 Panel 寬度" tabindex="0" title="拖曳調整寬度，最多增加 160px；雙擊還原"></div>
   <header class="review-panel-header">
     <div>
       <h2 id="review-panel-title">長篇內容檢閱</h2>
       <p>完整內容</p>
     </div>
     <div class="review-panel-actions">
-      <button data-action="toggle-review-expanded" aria-label="展開檢閱 Panel" aria-expanded="false"><span class="review-maximize"><svg class="i" data-i="maximize"></svg></span><span class="review-minimize"><svg class="i" data-i="minimize"></svg></span></button>
       <button data-action="copy-review" aria-label="複製檢閱內容"><svg class="i" data-i="copy"></svg></button>
       <button data-action="close-review-panel" aria-label="關閉檢閱 Panel"><svg class="i" data-i="x"></svg></button>
     </div>
@@ -569,10 +569,8 @@ function closeDownloadMenus(except){
   });
 }
 function closeReviewPanel(){
-  body.classList.remove('review-panel-open','review-panel-expanded');
+  body.classList.remove('review-panel-open','review-panel-resizing');
   $('#review-panel').setAttribute('aria-hidden','true');
-  const expand=$('[data-action="toggle-review-expanded"]');
-  expand.setAttribute('aria-expanded','false');expand.setAttribute('aria-label','展開檢閱 Panel');
 }
 function openReviewPanel(source){
   $('#review-panel-content').innerHTML=source.innerHTML;
@@ -628,6 +626,48 @@ try{const saved=+localStorage.getItem('gina-sidebar-w');if(saved)setSidebarWidth
     if(e.key==='ArrowLeft'){e.preventDefault();setSidebarWidth(cur-16)}
     if(e.key==='ArrowRight'){e.preventDefault();setSidebarWidth(cur+16)}
     if(e.key==='Home'){e.preventDefault();setSidebarWidth(SIDEBAR_W.def)}
+  });
+})();
+
+/* ---------- Long-form review width (drag left edge; up to 160px wider) ---------- */
+function reviewPanelBounds(){
+  const base=Math.round(Math.min(440,Math.max(320,window.innerWidth*.28)));
+  return {min:base,def:base,max:Math.max(base,Math.min(base+160,window.innerWidth-272))};
+}
+function setReviewPanelWidth(width,save=true){
+  const bounds=reviewPanelBounds();
+  width=Math.round(Math.min(bounds.max,Math.max(bounds.min,width)));
+  body.style.setProperty('--review-panel-width',width+'px');
+  const bar=$('#review-panel-resizer');
+  bar.setAttribute('aria-valuemin',bounds.min);bar.setAttribute('aria-valuemax',bounds.max);bar.setAttribute('aria-valuenow',width);
+  bar.setAttribute('aria-valuetext',`${width}px，最多向左增加 ${bounds.max-bounds.def}px`);
+  if(save){try{localStorage.setItem('gina-v3-review-panel-w',width)}catch{}}
+  return width;
+}
+(()=>{
+  const bar=$('#review-panel-resizer');
+  const bounds=reviewPanelBounds();
+  let initial=bounds.def;
+  try{initial=+localStorage.getItem('gina-v3-review-panel-w')||initial}catch{}
+  setReviewPanelWidth(initial,false);
+  bar.addEventListener('pointerdown',e=>{
+    if(window.matchMedia('(max-width: 640px)').matches)return;
+    e.preventDefault();body.classList.add('review-panel-resizing');
+    const startX=e.clientX,startWidth=$('#review-panel').getBoundingClientRect().width;
+    const move=ev=>setReviewPanelWidth(startWidth+(startX-ev.clientX),false);
+    const up=ev=>{
+      window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+      body.classList.remove('review-panel-resizing');setReviewPanelWidth(startWidth+(startX-ev.clientX));
+    };
+    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+  });
+  bar.addEventListener('dblclick',()=>setReviewPanelWidth(reviewPanelBounds().def));
+  bar.addEventListener('keydown',e=>{
+    const current=$('#review-panel').getBoundingClientRect().width;
+    if(e.key==='ArrowLeft'){e.preventDefault();setReviewPanelWidth(current+16)}
+    if(e.key==='ArrowRight'){e.preventDefault();setReviewPanelWidth(current-16)}
+    if(e.key==='Home'){e.preventDefault();setReviewPanelWidth(reviewPanelBounds().def)}
+    if(e.key==='End'){e.preventDefault();setReviewPanelWidth(reviewPanelBounds().max)}
   });
 })();
 
@@ -1262,7 +1302,6 @@ document.addEventListener('click',e=>{
     case 'copy-review-card': {const source=a.closest('.review-card').querySelector('.review-card-content');copyText(readableText(source),'已複製長篇內容');break;}
     case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
     case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
-    case 'toggle-review-expanded': {const expanded=body.classList.toggle('review-panel-expanded');a.setAttribute('aria-expanded',String(expanded));a.setAttribute('aria-label',expanded?'縮小檢閱 Panel':'展開檢閱 Panel');break;}
     case 'close-review-panel': closeReviewPanel(); break;
     case 'translate': {goAgent('translate');input.value='請幫我翻譯以下內容：\n';autosize();updateSend();input.focus();break;}
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
