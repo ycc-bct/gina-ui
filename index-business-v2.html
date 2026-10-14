@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="design-system/dist/tokens.css" />
 <link rel="stylesheet" href="app.css" />
-<link rel="stylesheet" href="app-business-v2.css?v=20261012-step-check" />
+<link rel="stylesheet" href="app-business-v2.css?v=20261014-names" />
 <link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
 </head>
 <body class="business-theme">
@@ -36,6 +36,7 @@
 </div>
 </aside>
 
+
 <!-- Conversation menu (shared by every history row) -->
 <div class="popover" id="pop-hist" role="menu" aria-label="對話選項">
   <button class="menu-item" role="menuitem" data-action="hist-rename"><svg class="i" data-i="pencil"></svg>重新命名</button>
@@ -59,6 +60,11 @@
   <button class="menu-item locale-trigger" type="button" data-action="toggle-locale-menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="locale-menu">
     <svg class="i" data-i="globe"></svg>
     <span class="locale-trigger-copy"><span>語言</span><small id="locale-current">繁體中文</small></span>
+    <svg class="i locale-chevron" data-i="chevron-right"></svg>
+  </button>
+  <button class="menu-item locale-trigger avatar-trigger" type="button" data-action="toggle-avatar-menu" aria-haspopup="menu" aria-expanded="false" aria-controls="avatar-menu">
+    <svg class="i" data-i="smile"></svg>
+    <span class="locale-trigger-copy"><span>Gina Avatar</span><small id="avatar-current">Thought</small></span>
     <svg class="i locale-chevron" data-i="chevron-right"></svg>
   </button>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
@@ -87,6 +93,39 @@
     <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-action="select-locale" data-locale="de-DE"><svg class="i locale-check" data-i="check"></svg>Deutsch<small>Deutschland</small></button>
   </div>
   <div class="locale-empty" id="locale-empty" hidden>找不到符合的語言</div>
+</div>
+
+<!-- Gina Avatar submenu (opens beside the account menu, like 語言) -->
+<div class="locale-popover avatar-popover" id="avatar-menu" role="menu" aria-label="選擇 Gina Avatar" hidden>
+  <div class="av-cards">
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="true" data-avatar-choice="1">
+      <span class="av-tile"><span class="av-thumb" id="av-thumb-orb" aria-hidden="true"></span></span>
+      <span class="av-name">Thought</span>
+    </button>
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="false" data-avatar-choice="3">
+      <span class="av-tile"><span class="av-thumb" id="av-thumb-face" aria-hidden="true"></span></span>
+      <span class="av-name">Buddy</span>
+    </button>
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="false" data-avatar-choice="cs">
+      <span class="av-tile"><span class="av-thumb av-thumb-cs" aria-hidden="true"><img src="assets/gina-avatar-cs-240.png" alt="" />
+        <svg class="gina-eyes" viewBox="0 0 1254 1254" aria-hidden="true">
+            <ellipse cx="529" cy="629" rx="44" ry="71" fill="#fff" />
+            <ellipse cx="724" cy="628" rx="44" ry="71" fill="#fff" />
+            <g class="gina-pupils" fill="#242424">
+              <ellipse cx="529" cy="629" rx="37" ry="60" />
+              <ellipse cx="724" cy="628" rx="37" ry="60" />
+              <ellipse cx="541" cy="599" rx="10" ry="14" fill="#fff" />
+              <ellipse cx="736" cy="598" rx="10" ry="14" fill="#fff" />
+            </g>
+            <g class="gina-eyelids">
+              <ellipse cx="515" cy="623" rx="73" ry="106" fill="#ffcc9d" />
+              <ellipse cx="734" cy="621" rx="74" ry="106" fill="#ffcc9d" />
+              <path d="M467 620 Q516 648 563 620 M684 620 Q734 648 783 620" fill="none" stroke="#945d3f" stroke-width="9" stroke-linecap="round" />
+            </g>
+          </svg></span></span>
+      <span class="av-name">Host</span>
+    </button>
+  </div>
 </div>
 
 <!-- ============ Sidebar ============ -->
@@ -129,12 +168,28 @@
     <section class="hero" id="hero">
       <div class="hero-title">
         <div class="hero-avatar"><img class="gina-img" alt="Gina" /></div>
-        <!-- Style 2 sphere: AI clip, white background removed with multiply. Clicking either sphere switches style. -->
-        <div class="hero-orb2">
-          <video muted loop playsinline autoplay preload="auto" poster="assets/orb/gina-orb-v2-poster.png" aria-hidden="true">
-            <source src="assets/orb/gina-orb-v2.webm" type="video/webm">
-            <source src="assets/orb/gina-orb-v2.mp4" type="video/mp4">
-          </video>
+        <!-- Customer-service avatar (the original Gina illustration), shown as a rounded tile.
+             Eyes are an SVG overlay in the image's 1254px space; gina-gaze.js moves the pupils toward the pointer and blinks. -->
+        <div class="hero-cs"><img src="assets/gina-avatar-cs-240.png" alt="" />
+          <svg class="gina-eyes" viewBox="0 0 1254 1254" aria-hidden="true">
+            <ellipse cx="529" cy="629" rx="44" ry="71" fill="#fff" />
+            <ellipse cx="724" cy="628" rx="44" ry="71" fill="#fff" />
+            <g class="gina-pupils" fill="#242424">
+              <ellipse cx="529" cy="629" rx="37" ry="60" />
+              <ellipse cx="724" cy="628" rx="37" ry="60" />
+              <ellipse cx="541" cy="599" rx="10" ry="14" fill="#fff" />
+              <ellipse cx="736" cy="598" rx="10" ry="14" fill="#fff" />
+            </g>
+            <g class="gina-eyelids">
+              <ellipse cx="515" cy="623" rx="73" ry="106" fill="#ffcc9d" />
+              <ellipse cx="734" cy="621" rx="74" ry="106" fill="#ffcc9d" />
+              <path d="M467 620 Q516 648 563 620 M684 620 Q734 648 783 620" fill="none" stroke="#945d3f" stroke-width="9" stroke-linecap="round" />
+            </g>
+          </svg>
+        </div>
+        <!-- Style 3 face sphere: drawn in code by gina-face.js (eyes wander, follow the pointer, watch you type, react to clicks). -->
+        <div class="hero-orb3">
+          <span class="spark-layer" aria-hidden="true"></span>
         </div>
         <h1 id="hero-greeting"><span id="hero-greeting-line">嗨，Kevin</span><span class="hero-ask">今天想一起<span class="hero-ask-grad">完成什麼？</span></span></h1>
       </div>
@@ -191,7 +246,7 @@
       <button class="hint-close" type="button" data-action="dismiss-outlook-hint" aria-label="關閉提示"><svg class="i" data-i="x"></svg></button>
     </div>
     <div class="composer">
-      <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="交給 Gina，一起完成今天的工作…"></textarea>
+      <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="問 Gina 任何事，或交辦一項工作"></textarea>
       <div class="composer-toolbar">
         <button class="cbtn plus" id="composer-plus" data-action="toggle-composer-menu" aria-label="新增與工具" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-menu"><svg class="i" data-i="plus"></svg></button>
         <input id="composer-file" type="file" hidden multiple />
@@ -1189,10 +1244,11 @@ function resolvePreset(state, size) {
   return resolved;
 }
 
-/* ---- Gina orb (own scope: the engine above also defines paint/lerp/…) ---- */
+/* ---- Gina orb (own scope: the engine above also defines paint/lerp/…) ----
+   mountGinaOrb(host, display) draws a live orb into any element: the home greeting and the Appearance preview. */
 {
-const ORB={state:'composing',size:64,display:56,dotScale:1.1,color:{r:0x2f,g:0x67,b:0xd5}};
-const host=document.querySelector('.hero-avatar');
+const mountGinaOrb=(host,display=56)=>{
+const ORB={state:'composing',size:64,display,dotScale:1.1,color:{r:0x2f,g:0x67,b:0xd5}};
 const canvas=document.createElement('canvas');
 canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Gina');
 canvas.style.cssText=`width:100%;height:100%;display:block;position:relative`;
@@ -1220,12 +1276,17 @@ reduced.addEventListener('change',sync);
 new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});
 paint(0.6); // always show a frame; the loop only runs while the orb is on screen
 sync();
+};
+mountGinaOrb(document.querySelector('.hero-avatar'),80);
+window.mountGinaOrb=mountGinaOrb;
 }
 })();
 </script>
 <script>
 /* ---------- Icons (lucide-style) ---------- */
 const ICONS = {
+  "smile":'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
+  "palette":'<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>',
   "pencil":'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
   "circle-check":'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
   "server":'<rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>',
@@ -1515,7 +1576,7 @@ function closePops(except){
   if(except!=='pop-hist'){document.querySelectorAll('.hist-row.menu-open, .agent-recent-row.menu-open').forEach(r=>r.classList.remove('menu-open'));menuHist=-1;menuChat=null;}
   document.querySelectorAll('.popover.open').forEach(p=>{if(p.id!==except)p.classList.remove('open')});
   document.querySelectorAll('[data-pop].active').forEach(b=>{if(b.dataset.pop!==except){b.classList.remove('active');b.setAttribute('aria-expanded','false')}});
-  if(except!=='pop-user')setLocaleMenu(false);
+  if(except!=='pop-user'){setLocaleMenu(false);setAvatarMenu(false);}
 }
 function positionPop(pop, anchor){
   const r=anchor.getBoundingClientRect();
@@ -1676,6 +1737,22 @@ function greeting(){
   return h<5?'還在忙嗎':h<11?'早安':h<14?'午安':h<18?'下午好':'晚上好';
 }
 $('#hero-greeting-line').textContent=`${greeting()}，${USER_NAME}`;
+/* Composer placeholder for Gina: a different line each time the home (or a Gina chat) is shown, never the same twice in a row.
+   It doesn't change while you're looking at it. Agent pages keep their own placeholder. */
+const GINA_PLACEHOLDERS=[
+  '問 Gina 任何事，或交辦一項工作',
+  '例如：幫我整理今天需要回覆的信件',
+  '例如：準備下午會議的重點',
+  '例如：把這段內容翻成英文',
+  '想先處理哪件事？'
+];
+let lastGinaPlaceholder=-1;
+function nextGinaPlaceholder(){
+  let i=Math.floor(Math.random()*GINA_PLACEHOLDERS.length);
+  if(i===lastGinaPlaceholder)i=(i+1)%GINA_PLACEHOLDERS.length;
+  lastGinaPlaceholder=i;return GINA_PLACEHOLDERS[i];
+}
+if(!document.body.classList.contains('specialist'))document.getElementById('input').placeholder=nextGinaPlaceholder();
 
 /* ---------- Usage ring (示意資料；正式版由後端回傳) ---------- */
 const USAGE={context:57057,contextLimit:200000,sessionPct:32,resetMinutes:124};
@@ -1744,6 +1821,23 @@ function positionLocaleMenu(){
   menu.style.left=Math.max(pad,Math.min(left,window.innerWidth-width-pad))+'px';
   menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,window.innerHeight-height-pad))+'px';
 }
+/* Gina Avatar submenu: same placement as the language submenu, beside the account menu. */
+function positionAvatarMenu(){
+  const menu=$('#avatar-menu'),account=$('#pop-user'),trigger=$('[data-action="toggle-avatar-menu"]');
+  if(!menu||menu.hidden||!account||!trigger)return;
+  const accountRect=account.getBoundingClientRect(),triggerRect=trigger.getBoundingClientRect();
+  const width=menu.offsetWidth,height=menu.offsetHeight,gap=8,pad=12;
+  const left=window.innerWidth-accountRect.right-gap>=width ? accountRect.right+gap : accountRect.left-width-gap;
+  menu.style.left=Math.max(pad,Math.min(left,window.innerWidth-width-pad))+'px';
+  menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,window.innerHeight-height-pad))+'px';
+}
+function setAvatarMenu(open){
+  const menu=$('#avatar-menu'),trigger=$('[data-action="toggle-avatar-menu"]');
+  if(!menu||!trigger)return;
+  menu.hidden=!open;trigger.setAttribute('aria-expanded',String(open));
+  if(open)requestAnimationFrame(positionAvatarMenu); // focus stays put, so no focus ring appears on a mouse open
+}
+window.addEventListener('resize',()=>{if(!$('#avatar-menu').hidden)positionAvatarMenu()});
 function setLocaleMenu(open){
   const menu=$('#locale-menu'),trigger=$('[data-action="toggle-locale-menu"]');
   if(!menu||!trigger)return;
@@ -1844,7 +1938,7 @@ function goHome(){
   delete body.dataset.agent;
   $('#new-label').textContent='新對話';
   input.setAttribute('aria-label','傳送訊息給 Gina');
-  input.placeholder='交給 Gina，一起完成今天的工作…';
+  input.placeholder=nextGinaPlaceholder();
   $('#hero').style.display='';$('#spec-hero').style.display='none';
   thread.innerHTML='';activeHist=-1;activeAgentHist=-1;renderHistory();
 }
@@ -2133,7 +2227,7 @@ function loadConversation(i){
   stashActiveNew();
   closeTools();
   body.classList.remove('specialist');delete body.dataset.agent;$('#new-label').textContent='新對話';
-  input.setAttribute('aria-label','傳送訊息給 Gina');input.placeholder='交給 Gina，一起完成今天的工作…';
+  input.setAttribute('aria-label','傳送訊息給 Gina');input.placeholder=nextGinaPlaceholder();
   activeAgentHist=-1;activeHist=i;unreadHist.delete(i);renderHistory();
   thread.innerHTML='';startChat();
   userMsg(HISTORY[i],'13:35');
@@ -2368,7 +2462,8 @@ document.addEventListener('click',e=>{
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}a.setAttribute('aria-expanded',String(!body.classList.contains('collapsed')));closePops();break;}
     case 'add-file': setComposerMenu(false);$('#composer-file').click(); break;
     case 'toggle-composer-menu': {e.stopPropagation();closePops();setComposerMenu($('#composer-menu').hidden);break;}
-    case 'toggle-locale-menu': {e.stopPropagation();setLocaleMenu($('#locale-menu').hidden);break;}
+    case 'toggle-locale-menu': {e.stopPropagation();setAvatarMenu(false);setLocaleMenu($('#locale-menu').hidden);break;}
+    case 'toggle-avatar-menu': {e.stopPropagation();setLocaleMenu(false);setAvatarMenu($('#avatar-menu').hidden);break;}
     case 'select-locale': selectLocale(a.dataset.locale); break;
     case 'remove-tool': activeTools.delete(a.dataset.tool);renderTools(); break;
     case 'remove-file': attachedFile=null;renderTools(); break;
@@ -2457,8 +2552,10 @@ document.addEventListener('drop',e=>{
   document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.remove('is-dragover'));
   if(zone)attachForTranslation(e.dataTransfer.files[0]);
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);setAvatarMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
-<script src="style-switcher.js?v=20261012-hero-style2b"></script>
+<script src="gina-face.js?v=20261014-ap1"></script>
+<script src="gina-gaze.js?v=20261014-cs-eyes"></script>
+<script src="appearance.js?v=20261014-host"></script>
 </body>
 </html>

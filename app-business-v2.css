@@ -1636,38 +1636,9 @@ body.business-theme .ex-card.ex-drop { border: 1.5px dashed var(--border-strong)
 body.business-theme .ex-card.ex-drop:hover { border-color: var(--accent-blue-fg); background: #ffffff; }
 body.business-theme .ex-card.ex-drop.is-dragover { border-color: var(--accent-blue-fg); background: var(--accent-blue-bg); transform: none; }
 
-/* ---------- Home Style 2 (click the sphere): video sphere above a two-line greeting ---------- */
-body.business-theme .hero-orb2,
+/* ---------- Two-line greeting (used by the face style) ---------- */
 body.business-theme .hero-ask { display: none; }
-body.business-theme.hero-style-2 .hero-avatar { display: none; }
-body.business-theme.hero-style-2 .hero-title { flex-direction: column; gap: 18px; text-align: center; }
-body.business-theme.hero-style-2 .hero-orb2 { display: block; width: 84px; height: 84px; cursor: pointer; border-radius: 50%; transition: transform 180ms ease-out; }
-body.business-theme.hero-style-2 .hero-orb2:hover { transform: translateY(-2px) scale(1.035); }
-body.business-theme.hero-style-2 .hero-orb2:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 6px; }
-body.business-theme .hero-orb2 video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  mix-blend-mode: multiply; /* removes the clip's near-white background on the light canvas */
-  -webkit-mask-image: radial-gradient(circle, #000 62%, transparent 72%);
-  mask-image: radial-gradient(circle, #000 62%, transparent 72%);
-  pointer-events: none;
-}
-body.business-theme.hero-style-2 .hero h1 {
-  display: grid;
-  gap: 2px;
-  font-size: 32px;
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -.02em;
-}
-body.business-theme.hero-style-2 .hero-ask { display: block; }
 body.business-theme .hero-ask-grad { color: inherit; } /* was a blue gradient; now the same dark as the rest of the line */
-@media (prefers-reduced-motion: reduce) {
-  body.business-theme.hero-style-2 .hero-orb2 { transition: none; }
-  body.business-theme.hero-style-2 .hero-orb2:hover { transform: none; }
-}
 
 /* ---------- Menu spacing, one rule set ----------
    popover inset 6px · single-line row 40px · two-line row (label + note) 8px top/bottom, ~54px
@@ -1742,3 +1713,140 @@ body.business-theme .response-table tbody tr:last-child td { border-bottom: 0; }
    Keeps the deep success green; running / failed states can reuse this slot later. */
 body.business-theme .execution-status { width: 15px; justify-content: center; }
 body.business-theme .execution-status .i { width: 12px; height: 12px; stroke-width: 2.5; }
+
+
+/* ---------- Home Style 3: face sphere above the two-line greeting ---------- */
+body.business-theme .hero-orb3 { display: none; }
+body.business-theme.hero-style-3 .hero-avatar { display: none; }
+body.business-theme.hero-style-3 .hero-title { flex-direction: column; gap: 14px; text-align: center; }
+body.business-theme.hero-style-3 .hero-orb3 {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+body.business-theme.hero-style-3 .hero-orb3:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; }
+body.business-theme .face-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+body.business-theme .face-body { transform-origin: 60px 60px; animation: face-breathe 3.6s ease-in-out infinite; }
+@keyframes face-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.022); } }
+body.business-theme .hero-orb3 .face-svg { transition: transform 180ms ease-out; }
+body.business-theme .hero-orb3.is-hover .face-svg { transform: scale(1.04); }
+body.business-theme .hero-orb3.is-poked .face-svg { animation: face-poke 420ms cubic-bezier(.3, 1.5, .5, 1); }
+/* Happy eyes after a click: curved crescents replace the round eyes for a moment. */
+body.business-theme .face-svg .eye-happy { opacity: 0; }
+body.business-theme .face-svg.is-happy .eye-happy { opacity: 1; }
+body.business-theme .face-svg.is-happy .eye-ball,
+body.business-theme .face-svg.is-happy .eye-glint { opacity: 0; }
+@keyframes face-poke { 0% { transform: scale(1); } 35% { transform: scale(.9); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
+body.business-theme.hero-style-3 .hero h1 { display: grid; gap: 2px; font-size: 32px; font-weight: 500; line-height: 1.3; letter-spacing: -.02em; }
+body.business-theme.hero-style-3 .hero-ask { display: block; }
+
+/* Sparks: four-point stars that fly out from the sphere's edge and fade */
+body.business-theme .spark-layer { position: absolute; inset: 0; pointer-events: none; }
+body.business-theme .spark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  opacity: 0;
+  animation: spark-fly 720ms cubic-bezier(.2, .7, .3, 1) var(--delay) forwards;
+}
+@keyframes spark-fly {
+  0% { opacity: 0; transform: translate(calc(var(--dx) * .55), calc(var(--dy) * .55)) scale(.3) rotate(0deg); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--spin)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.business-theme .hero-orb3.is-poked .face-svg,
+  body.business-theme .face-body { animation: none; }
+}
+
+/* ---------- Home avatar: customer-service illustration (Appearance → 客服) ---------- */
+body.business-theme .hero-cs { display: none; }
+body.business-theme.hero-style-cs .hero-avatar { display: none; }
+body.business-theme.hero-style-cs .hero-title { flex-direction: column; gap: 14px; text-align: center; }
+body.business-theme.hero-style-cs .hero-cs {
+  position: relative; /* anchors the eye overlay */
+  display: block;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #f3f3f1;
+}
+body.business-theme .hero-cs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+body.business-theme.hero-style-cs .hero h1 { display: grid; gap: 2px; font-size: 32px; font-weight: 500; line-height: 1.3; letter-spacing: -.02em; }
+body.business-theme.hero-style-cs .hero-ask { display: block; }
+
+/* ---------- All three avatars share one home layout: avatar on top, two-line greeting below ---------- */
+body.business-theme .hero-title { flex-direction: column; gap: 14px; text-align: center; }
+body.business-theme .hero h1 { display: grid; gap: 2px; font-size: 32px; font-weight: 500; line-height: 1.3; letter-spacing: -.02em; }
+body.business-theme .hero-ask { display: block; }
+body.business-theme .hero-avatar { width: 72px; height: 72px; }
+
+/* ---------- Same visible size for all three avatars on the home page ----------
+   The orb's drawing fills ~80% of its canvas and the face sphere ~77% of its box, while the customer-service
+   tile fills 100%, so each box is sized to make the visible shape equal, and the negative margin cancels the
+   transparent edge so the gap to the greeting matches too. */
+body.business-theme .hero-avatar { width: 100px; height: 100px; margin: -10px 0; }
+body.business-theme.hero-style-3 .hero-orb3 { width: 104px; height: 104px; margin: -12px 0; }
+body.business-theme.hero-style-cs .hero-cs { width: 80px; height: 80px; border-radius: 20px; }
+
+
+/* Home avatar, tuned: visible size 64px (was 80) and a 22px gap to the greeting (was 14) for all three. */
+body.business-theme .hero-title,
+body.business-theme.hero-style-3 .hero-title,
+body.business-theme.hero-style-cs .hero-title { gap: 22px; }
+body.business-theme .hero-avatar { width: 80px; height: 80px; margin: -8px 0; }
+body.business-theme.hero-style-3 .hero-orb3 { width: 84px; height: 84px; margin: -10px 0; }
+body.business-theme.hero-style-cs .hero-cs { width: 64px; height: 64px; border-radius: 16px; }
+
+/* ---------- Gina Avatar submenu (account menu → Gina Avatar ›): three small cards ---------- */
+body.business-theme .avatar-popover { width: auto; padding: 12px; }
+body.business-theme .av-cards { display: grid; grid-template-columns: repeat(3, 64px); gap: 10px; }
+body.business-theme .av-card {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+body.business-theme .av-tile {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: #f6f8fb;
+  transition: border-color 120ms ease-out, box-shadow 120ms ease-out;
+}
+body.business-theme .av-card:hover .av-tile { border-color: var(--border-strong); }
+body.business-theme .av-card[aria-checked="true"] { color: var(--text-primary); font-weight: 600; }
+body.business-theme .av-card[aria-checked="true"] .av-tile { border-color: #172033; box-shadow: 0 0 0 1px #172033; }
+body.business-theme .av-card:focus { outline: none; }
+body.business-theme .av-card:focus-visible .av-tile { box-shadow: 0 0 0 3px rgb(47 103 213 / 28%); }
+body.business-theme .av-card[aria-checked="true"]:focus-visible .av-tile { box-shadow: 0 0 0 1px #172033, 0 0 0 4px rgb(47 103 213 / 28%); }
+/* Previews at the same ~40px visible size: orb drawing is ~80% of its canvas, face sphere ~77% of its box. */
+body.business-theme .av-thumb { position: relative; display: grid; place-items: center; }
+body.business-theme #av-thumb-orb canvas { width: 50px !important; height: 50px !important; }
+body.business-theme .av-thumb .face-mini { width: 52px; height: 52px; }
+body.business-theme .av-thumb-cs { width: 40px; height: 40px; overflow: hidden; border-radius: 10px; background: #f3f3f1; }
+body.business-theme .av-thumb-cs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+body.business-theme .face-mini .eye-happy { opacity: 0; }
+body.business-theme .face-mini .eye-ball { transform-box: fill-box; transform-origin: center; animation: mini-blink 4.2s infinite; }
+@keyframes mini-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@media (prefers-reduced-motion: reduce) { body.business-theme .face-mini .eye-ball { animation: none; } }
+/* Longer names (e.g. Thought-orb, bold when selected) stay on one line; columns may grow past the 64px tile. */
+body.business-theme .av-cards { grid-template-columns: repeat(3, minmax(64px, auto)); column-gap: 12px; }
+body.business-theme .av-name { white-space: nowrap; }
