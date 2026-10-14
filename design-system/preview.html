@@ -109,7 +109,7 @@
 <body>
 <header>
   <img src="../assets/giant-g.svg" alt="" />
-  <div><b>Gina Tokens</b> <span>v1.0</span></div>
+  <div><b>Gina Tokens</b> <span>v1.6-business</span></div>
   <div class="theme-toggle" role="group" aria-label="主題">
     <button type="button" data-set-theme="light" aria-pressed="true">淺色</button>
     <button type="button" data-set-theme="dark" aria-pressed="false">深色</button>
@@ -220,9 +220,10 @@ const refresh = () => { renderColors(); renderShadows(); };
 
 const SEMANTIC = {
   '背景': ['bg-app','bg-canvas','bg-surface','bg-raised','bg-field','bg-hover','bg-selected','bg-overlay'],
-  '文字與圖示': ['text-primary','text-secondary','text-tertiary','text-placeholder','text-inverse','icon-default','icon-muted'],
+  '文字與圖示': ['text-primary','text-secondary','text-tertiary','text-reply','text-placeholder','text-inverse','icon-default','icon-muted'],
   '框線與 focus': ['border-subtle','border-default','border-strong','border-focus','focus-ring'],
   '動作': ['action-primary-bg','action-primary-bg-hover','action-primary-fg','action-secondary-bg','action-secondary-bg-hover','action-secondary-border','action-disabled-bg','action-disabled-fg'],
+  'Agent（Business v2，fg 只用於 icon）': ['agent-sales-bg','agent-sales-fg','agent-sales-action','agent-test-bg','agent-test-fg','agent-test-action','agent-translate-bg','agent-translate-fg','agent-translate-action'],
 };
 const GRAYS = ['0','25','50','75','100','150','200','300','400','500','550','600','700','800','900','950'];
 const STATUS = ['success','danger','warning','info'];

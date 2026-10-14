@@ -1,7 +1,55 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.5-business · 2026-10-12 · 決策紀錄見 `decisions.md`
+> 版本：v1.6-business · 2026-10-14 · 決策紀錄見 `decisions.md`
+
+### 2026-10-14 商業版更新
+
+本節是 Business v2 目前的規格，優先於下方 10-08 與更早的段落。數值對應 `tokens/` 裡的 `theme.agent.*`、`theme.text.reply`、`component.ginaAvatar.*` 與 `component.greeting.*`。
+
+**Sidebar 與對話管理**
+
+- 進入 Agent 時 Sidebar 不變：搜尋、新對話、三個 Agent、Pinned、Recents 都保留；只有主內容區切換。目前所在的 Agent 列以選取底色標示。
+- 「新對話」一律開啟新的 Gina 對話。Agent 的新對話由 Agent 首頁右上的主要按鈕開啟。
+- 新對話、業務助理、測試助手、翻譯四列連續排列、不加間隔，左側皆為 26px 方形 icon tile：新對話 `#eaf1fb` / `#3d6aa8`，Agent 使用 `--agent-*-bg` / `--agent-*-fg`。
+- 對話列左側為 18px icon tile，中心與上方 26px tile 對齊、標題與 Agent 名稱對齊：Gina 對話用淡藍底對話 icon；Agent 對話用該 Agent 的 icon 與顏色。
+- 對話列右側狀態點：回覆中為呼吸點，有新回覆未讀為實心藍點 `#3a6fd8`。狀態點與 ⋯ 共用同一位置，不同時出現：有點時預設顯示點，滑鼠移入、鍵盤焦點或選單開啟時改顯示 ⋯。
+- 選取列與 Agent 選取列底色皆為 `#f1f4f8`，不使用 Agent 色。
+- 新對話送出第一則訊息時，加到 Recents 最上方；回覆中與未讀狀態同上。
+- 每列 ⋯ 選單依序為「重新命名、釘選／取消釘選、刪除」，Agent 對話與新對話皆適用，側欄與 Agent 首頁同步。Sidebar 雙擊對話可直接改名：Enter 或點擊外部儲存，Esc 取消，空白保留原名。改名只改顯示名稱，不改原本送出的訊息。
+- Pinned 區塊不在每列顯示圖釘 icon，以區塊標題表示。
+
+**Agent 首頁**
+
+- 標題列：56px Agent icon、名稱與副標；右上為主要按鈕，`#172033` 底白字、高 36px，文字依 Agent：「新業務任務」「新測試」「新翻譯」。Agent 首頁不顯示輸入框。
+- 點主要按鈕或範例卡進入空白的 Agent 對話：中央顯示「和 {Agent} 開始新對話」與 Agent 說明，輸入框在底部並取得焦點。送出第一則訊息後才成為一筆對話。
+- 範例卡兩欄，樣式與 Gina 首頁卡片相同：白底、1px 框、圓角 10px、左側 34px icon，無右側箭頭。點範例卡只把提示文字填入輸入框，不送出。
+- 範例卡下方為該 Agent 的 Pinned 與 Recents：每列標題與時間，滑鼠移入顯示 ⋮。
+- 沒有對話時顯示空狀態：插圖與「還沒有{Agent}紀錄」，下方直接接範例卡，不加分隔線。翻譯的第一張範例卡為拖拉檔案卡（1.5px 虛線框），可拖放或點選檔案，進入新對話並帶入檔案標籤；支援格式文字為「支援 PDF、Word、PowerPoint 等」。
+
+**Gina Avatar 與首頁**
+
+- 使用者選單「Gina Avatar ›」，下方小字顯示目前選擇。點擊後在選單旁展開子選單（定位規則同「語言」，兩者互斥）。子選單為三張卡片：方塊 64px、圓角 10px、底色 `#f6f8fb`、1px 框；名稱在方塊下方 12px、不換行；選中為 `#172033` 視覺 2px 外框與粗體名稱；縮圖為活的預覽，看得到的大小 40px。點卡片立即套用並收起；打開時不自動移動焦點。
+- 三款頭像：**Thought**（thinking-orbs，見 `orb.md`）、**Buddy**（程式繪製的表情球，`gina-face.js`）、**Host**（客服插畫加眼睛圖層，`gina-gaze.js`）。預設 Thought。原型以 `localStorage` 的 `gina-hero-style` 保存，正式版請存為使用者設定。
+- 首頁版面三款共用：頭像在上、置中；下方兩行招呼語「{時段問候}，{名字}」與「今天想一起完成什麼？」，32px、字重 500、行高 1.3、`--text-primary`。三款看得到的大小一致為 64px，與招呼語視覺間距 22px；因各自留白不同，外框分別為 Thought 80px（上下 −8px）、Buddy 84px（上下 −10px）、Host 64px 圓角 16px。
+- 頭像不再用來切換樣式。只有 Buddy 可點擊：彈一下、噴出 14 顆藍紫四角星火花、眼睛變成 ^ ^ 約 950ms；選到 Buddy 時也會以此打招呼。
+- Buddy 互動：閒置時眼睛在幾個位置間移動（1.4–3.2s）、每 2.5–5.5s 眨眼（20% 連眨兩下）、偶爾半瞇；整顆球 3.6s 呼吸；眼睛跟隨滑鼠，停止 2.8s 後回到閒置；在輸入框打字時看向輸入框；滑鼠移入時球放大到 104%、眼睛睜大。完整數值見交接文件。
+- Host 互動：沿用 `gina-gaze.js`，瞳孔朝滑鼠位移（1254 座標中最遠 x 16、y 12），每 3.5–6.5s 眨眼；觸控裝置不跟隨。
+- 減少動態效果時：Buddy 停止閒置移動、呼吸、眨眼與火花，保留跟隨滑鼠；Host 隱藏眼睛圖層；Thought 停在固定一格。
+- Gina 輸入框提示每次回到首頁隨機換一句、不連續重複，顯示中不自動輪播：「問 Gina 任何事，或交辦一項工作」「例如：幫我整理今天需要回覆的信件」「例如：準備下午會議的重點」「例如：把這段內容翻成英文」「想先處理哪件事？」。Agent 頁維持各自提示。
+
+**回覆內容與檢閱面板**
+
+- Gina 回覆的段落、清單、表格、引用一律使用 `--text-reply` `#1f2a3d`；標題與粗體 `--text-primary`；引用出處維持 `--text-tertiary`。
+- 回覆中的表格放在白色框內：1px `border-default`、圓角 8px、標題列 `#f4f6f9` 與 600 字重、儲存格內距 10×14px；過寬時在框內橫向捲動。
+- 執行步驟：每項左側 12px 綠色勾勾（線寬 2.5px，外圍保留 15px），附無障礙標籤「已完成」；下方只列類型與事件時間，不再顯示「狀態：已完成」。
+- 檢閱面板右上按鈕順序為 Copy、下載、Close，與回覆下方一致；按鈕 32px、icon 18px，Copy 為 17px 以平衡視覺重量。左緣可拖曳調寬。
+
+**其他**
+
+- 測試助手識別色改為陶土色：底 `#f9e9e2`、icon `#b35f43`、主要操作 `#c4674a`。Agent 的 fg 只用於 icon（非文字對比 3:1），不可當內文色。
+- Sidebar Logo 改用深色 `assets/gina-wordmark-dark.svg`（`#172033`）。
+- 使用者選單間距：選單內距 6px；單行項目 40px；含說明的兩行項目（Outlook、語言、Gina Avatar）上下各 8px；分隔線上下各 6px；標籤 14px、說明 12px。
 
 ### 2026-10-08 商業版覆寫
 
@@ -9,20 +57,20 @@
 
 - Business v2 的 Sidebar 顯示「可用協作 Agents」入口，包括業務助理、測試助手與翻譯。Composer 使用至少 96px 的雙層結構：上層是文字輸入區，下層依序放新增／工具、啟用中的工具、彈性空間、用量、語音與送出。啟用工具後標籤留在下層，不改變文字區的排列；Composer 不提供 Agent 選擇。
 - Gina 首頁只顯示三張今日 Reference 卡片，不再顯示第二排「整理需求／審閱合約／安排會議／整理文件」建議按鈕。Agent 首頁使用相同的標題層級、三張 Reference 模板、Chat Bubble、執行步驟與 Composer；業務助理只保留待跟進客戶、重點訂單進度、本週業務摘要三個模板，不顯示第二排 chips 或 `Pilot` Tag。
-- Agent 只從 Sidebar 進入，不在 Composer 或 Header 重複提供切換入口。進入業務助理後，輸入框文案與 `aria-label` 改為業務助理；從 Agent 頁點「新對話」時必須保留目前 Agent，清空對話與工具後回到該 Agent 的新對話首頁。
-- Agent Icon 使用低飽和淡色區分類型，顏色只出現在 26px Icon Tile：業務助理為淡紫、測試助手為淡黃、翻譯為淡綠。所有 Agent 首頁與對話畫布皆使用一般 Chat 的灰藍背景 `#f6f8fb`；選取背景與主要操作仍可保留 Agent 識別色。
-- 每個 Agent 在 Sidebar 的 `Recent` 區塊顯示三筆符合職能的示範歷史對話；點選後直接開啟完整對話內容。選取狀態沿用該 Agent Icon 的淡色背景與前景色。每個 Agent 至少提供一筆「長篇內容與程式碼」範例，沿用共用 Review Card、Copy 與側邊 Review Panel，不建立 Agent 專屬的另一套樣式。
+- Agent 只從 Sidebar 進入，不在 Composer 或 Header 重複提供切換入口。進入業務助理後，輸入框文案與 `aria-label` 改為業務助理；「新對話」一律回到 Gina 新對話；Agent 的新對話由 Agent 首頁右上的主要按鈕開啟（10-14 更新）。
+- Agent Icon 使用低飽和淡色區分類型，顏色只出現在 26px Icon Tile：業務助理為淡紫、測試助手為陶土色、翻譯為淡綠（10-14 更新）。所有 Agent 首頁與對話畫布皆使用一般 Chat 的灰藍背景 `#f6f8fb`；主要操作（送出、焦點）保留 Agent 識別色；Sidebar 選取一律使用中性 `#f1f4f8`（10-14 更新）。
+- 每個 Agent 提供三筆符合職能的示範歷史對話，併入共用的 Pinned / Recents 並在 Agent 首頁列出；點選後直接開啟完整對話內容（10-14 更新）。每個 Agent 至少提供一筆「長篇內容與程式碼」範例，沿用共用 Review Card、Copy 與側邊 Review Panel，不建立 Agent 專屬的另一套樣式。
 - Account Popover 提供可搜尋、可捲動的語言選擇，至少包含繁體中文、English、日本語、한국어與越南語；首次使用預設繁體中文，選擇結果寫入本機偏好並更新頁面 `lang`。選取勾勾固定置於語言列左側。語言屬個人偏好，放在管理後台正上方，不放入 Composer 或 Sidebar 導覽。Popover 頂端不顯示「連線」分組標題。
-- Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)` 作為預設寬度，左側邊緣可拖曳，最多增加 160px，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁 Sphere 使用較明亮的品牌藍 `#2f67d5`，不追蹤游標。
+- Business v2 的 Chat Space 最大寬度為 900px；右側長篇檢閱 Panel 使用 `clamp(320px, 28vw, 440px)` 作為預設寬度，左側邊緣可拖曳，最多增加 160px，維持全高現有樣式並讓主要對話保留更多閱讀空間。首頁頭像改為 Gina Avatar 三選一，Thought 使用品牌藍 `#2f67d5`（10-14 更新）。
 - Business Login、Chat、Sidebar Logo 與登出形成完整導頁：登入進入 `index-business-v2.html`，Logo 回到第二版首頁，登出回到 `login-business.html`。在 `htmlpreview.github.io` 執行時，導頁會保留 GitHub branch source query，避免相對路徑離開 Preview。
-- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「總結先前的對話／整理過去三天的重點」。Pinned 與 Recents 標題靠 Sidebar 內容左緣對齊。Agent 頁的 Sidebar 維持顯示 GINA Logo，不另外顯示 Agent Icon 與 Title 列；Agent 身分由主內容區的 Hero 呈現。進入 Agent 對話後，工作區回到與 Gina Chat 相同的灰藍色。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型、狀態與事件時間，並顯示狀態及資源圖示。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
+- Business v2 收合 Sidebar 時整個側欄移出畫面，不保留邊框或內容殘影；首頁捷徑使用「總結先前的對話／整理過去三天的重點」。Pinned 與 Recents 標題靠 Sidebar 內容左緣對齊。Agent 頁的 Sidebar 維持顯示 GINA Logo，不另外顯示 Agent Icon 與 Title 列；Agent 身分由主內容區的 Hero 呈現。進入 Agent 對話後，工作區回到與 Gina Chat 相同的灰藍色。執行步驟展開後以緊湊單列呈現 Subagent 與 Tool 的名稱、類型與事件時間；完成狀態只以左側綠色勾勾表示，並顯示資源圖示（10-14 更新）。長篇內容使用貼齊視窗右側的全高 Review Panel，桌機會推動聊天區，Panel 本身不使用浮動卡片外觀。
 
 - 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。
 
-- 品牌使用提供的 `assets/gina-wordmark.png`：Sidebar 寬 180px，登入頁寬 220px，保持原圖比例。Sidebar 移除原本的 Gina 與「Giant 內部 AI 助理」文字。右上角暫時隱藏 Account 和 Agents 入口，保留 Outlook 狀態。
+- 品牌使用 GINA wordmark：Sidebar 使用深色 `assets/gina-wordmark-dark.svg`（10-14 更新），登入頁寬 220px，保持原圖比例。Sidebar 移除原本的 Gina 與「Giant 內部 AI 助理」文字。右上角暫時隱藏 Account 和 Agents 入口，保留 Outlook 狀態。
 
-- 首頁 Gina 使用 `assets/gina-breath.gif`，以 112px 圓形完整顯示 GIF 動態。Chat Screen 不顯示 Gina 頭像，回覆內容直接與對話欄左緣對齊。
-- 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文與 Chat 回覆使用 `--text-secondary` `#344258`；時間、狀態與補充說明使用 `--text-tertiary` `#56657a`。內文提高對比，但仍與 Title 保持清楚區別。
+- 首頁 Gina 頭像見 10-14「Gina Avatar 與首頁」。Chat Screen 不顯示 Gina 頭像，回覆內容直接與對話欄左緣對齊。
+- 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文使用 `--text-secondary` `#344258`；Gina 回覆內文改用 `--text-reply` `#1f2a3d`（10-14 更新）；時間、狀態與補充說明使用 `--text-tertiary` `#56657a`。內文提高對比，但仍與 Title 保持清楚區別。
 - AI 與使用者訊息使用相同的 14px / 1.8 閱讀規格。只有區段 Title 使用 `--text-primary` 與 600 字重；一般段落不以粗體製造層級。
 - 其餘第二版規則維持白色 Sidebar、淺藍灰工作區、低圓角與冷色商業工具風格。
 - 第二版登入頁為 `login-business.html`，使用 `login-business.css`：淺藍灰底、420px 白色卡片、8px 圓角，頂部只顯示去背 GINA Logo，不顯示 Gina 頭像、「Hi, I am Gina」、副標題或 Logo 下方分隔線；Logo 與 Microsoft 登入按鈕相隔 32px。欄位與按鈕高 46px、圓角 5px。Microsoft 登入直接進入 `index-business-v2.html`，帳密登入檢查必填欄位後進入同頁；目前是原型導頁，未串接 Microsoft OAuth 或後端驗證。第二版登出返回此登入頁。
@@ -51,6 +99,9 @@
 | `../app.css`、`../login.css` | 第一版原型頁面的樣式，只引用 token，可當作實作範例 |
 | `orb.md` | 首頁 Gina 球的套件、參數與行為（thinking-orbs） |
 | `../index-business-v2.html`、`../app-business-v2.css` | 第二版商業化視覺與其頁面覆寫 |
+| `../appearance.js` | Gina Avatar 選擇與套用（第二版） |
+| `../gina-face.js` | Buddy 表情球的繪製與互動 |
+| `../gina-gaze.js` | Host 插畫眼睛跟隨滑鼠與眨眼 |
 
 修改 token 後執行 `node build-tokens.mjs` 重新產生 `dist/`。**不要手改 `dist/`。**
 
@@ -270,7 +321,10 @@ export function Button({ variant = 'primary', ...props }: ButtonProps) {
 | `--size-control-touch` | 44px | 手機最小點擊區域 |
 | `--size-icon-sm / md / lg` | 14 / 16 / 18px | 小標示 / 預設 / 輸入框工具列 |
 | `--size-avatar-md` | 34px | 對話中的 Gina（手機 28px） |
-| `--size-avatar-hero` / `-hero-sm` | 112px / 100px | 首頁 Gina / 手機與登入頁 |
+| `--size-avatar-hero` / `-hero-sm` | 112px / 100px | 第一版首頁 Gina / 手機與登入頁 |
+| `--component-gina-avatar-visible` | 64px | 第二版首頁頭像看得到的大小（三款一致） |
+| `--component-gina-avatar-gap` | 22px | 第二版頭像與招呼語的間距 |
+| `--component-gina-avatar-picker-tile` | 64px | Gina Avatar 選擇器卡片（縮圖 40px） |
 
 Icon 使用 Lucide 風格線條圖示，線寬 2px，顏色繼承文字色。
 
@@ -497,7 +551,7 @@ Business v2 的 Gina 與 Agent 新對話首頁不顯示第二排 Chip；首頁�
 
 Drawer 寬 400px（最大 100vw − 48px）；Review Panel 寬 `clamp(360px, 40vw, 560px)`。距視窗 24px · 圓角 `--radius-3xl` · bg `bg-surface` · `shadow-sm`。從右側滑入 200ms。
 
-長篇內容展開時使用 Review Panel，不開新 Dialog。Panel 會將 Chat Section 往中間擠；右上提供格式下載、Copy 與 Close icon。下載選單沿用回覆下載格式：純文字、Markdown、圖片、PDF 與 Word。Close icon 的視覺尺寸須與 Copy 一致。Panel 不提供全螢幕 Expand / Minimize，改由左側邊緣拖曳控制寬度，最多比預設寬 160px；雙擊邊緣恢復預設寬度。
+長篇內容展開時使用 Review Panel，不開新 Dialog。Panel 會將 Chat Section 往中間擠；右上依序為 Copy、格式下載、Close icon（與回覆下方順序一致；Business v2 按鈕 32px、icon 18px，Copy 17px）。下載選單沿用回覆下載格式：純文字、Markdown、圖片、PDF 與 Word。Close icon 的視覺尺寸須與 Copy 一致。Panel 不提供全螢幕 Expand / Minimize，改由左側邊緣拖曳控制寬度，最多比預設寬 160px；雙擊邊緣恢復預設寬度。
 
 ### 12.13 對話訊息 Message
 
@@ -520,7 +574,7 @@ Markdown：段落間距 12px；清單項目間距 8px；`h4` 15px / 600、上 16
 
 ### 12.14 執行步驟 Execution details
 
-位於 Gina Chat Bubble 上方，使用 12px `text-tertiary` 的純文字摘要、完成狀態 icon 與 icon-only 展開控制，不使用卡片或額外 Panel。摘要顯示「N 個 subagent / tool 步驟」。展開後以分隔線條列 Subagent 與 Tool；每一項都有資源 icon、完成狀態、類型與事件時間。
+位於 Gina Chat Bubble 上方，使用 12px `text-tertiary` 的純文字摘要、完成狀態 icon 與 icon-only 展開控制，不使用卡片或額外 Panel。摘要顯示「N 個 subagent / tool 步驟」。展開後以分隔線條列 Subagent 與 Tool；每一項都有完成狀態勾勾、資源 icon、類型與事件時間。Business v2 的勾勾為 12px、線寬 2.5px，不另外顯示「狀態」文字。
 
 ### 12.15 待處理操作卡片 Action card（確認寄出 Outlook 郵件）
 

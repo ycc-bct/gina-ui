@@ -96,6 +96,7 @@
   --color-fg-placeholder: var(--gina-text-placeholder);
   --color-fg-disabled: var(--gina-text-disabled);
   --color-fg-inverse: var(--gina-text-inverse);
+  --color-fg-reply: var(--gina-text-reply);
   --color-icon: var(--gina-icon-default);
   --color-icon-muted: var(--gina-icon-muted);
   --color-line-subtle: var(--gina-border-subtle);
@@ -121,6 +122,15 @@
   --color-warning-soft: var(--gina-status-warning-bg);
   --color-info: var(--gina-status-info-fg);
   --color-info-soft: var(--gina-status-info-bg);
+  --color-agent-sales-soft: var(--gina-agent-sales-bg);
+  --color-agent-sales: var(--gina-agent-sales-fg);
+  --color-agent-sales-action: var(--gina-agent-sales-action);
+  --color-agent-test-soft: var(--gina-agent-test-bg);
+  --color-agent-test: var(--gina-agent-test-fg);
+  --color-agent-test-action: var(--gina-agent-test-action);
+  --color-agent-translate-soft: var(--gina-agent-translate-bg);
+  --color-agent-translate: var(--gina-agent-translate-fg);
+  --color-agent-translate-action: var(--gina-agent-translate-action);
   --shadow-xs: var(--gina-shadow-xs);
   --shadow-sm: var(--gina-shadow-sm);
   --shadow-md: var(--gina-shadow-md);
@@ -176,6 +186,16 @@
   --gina-shadow-lg: 0 12px 40px #25272814, 0 2px 6px #25272806;
   --gina-shadow-frame: 0 16px 48px #25272808;
   --gina-shadow-focus: 0 0 0 3px #254fc414;
+  --gina-text-reply: #1f2a3d;
+  --gina-agent-sales-bg: #f1edfa;
+  --gina-agent-sales-fg: #766493;
+  --gina-agent-sales-action: #806ba1;
+  --gina-agent-test-bg: #f9e9e2;
+  --gina-agent-test-fg: #b35f43;
+  --gina-agent-test-action: #c4674a;
+  --gina-agent-translate-bg: #eaf5f1;
+  --gina-agent-translate-fg: #527b70;
+  --gina-agent-translate-action: #5d897d;
 }
 
 /* Dark theme (draft — not yet validated on screens) */
@@ -290,4 +310,16 @@
   --component-popover-radius: 16px;
   --component-popover-padding: 18px;
   --component-drawer-radius: 18px;
+  --component-gina-avatar-visible: 64px;
+  --component-gina-avatar-gap: 22px;
+  --component-gina-avatar-thought-box: 80px;
+  --component-gina-avatar-buddy-box: 84px;
+  --component-gina-avatar-host-box: 64px;
+  --component-gina-avatar-host-radius: 16px;
+  --component-gina-avatar-picker-tile: 64px;
+  --component-gina-avatar-picker-radius: 10px;
+  --component-gina-avatar-picker-thumb: 40px;
+  --component-greeting-font-size: 32px;
+  --component-greeting-font-weight: 500;
+  --component-greeting-line-height: 1.3;
 }

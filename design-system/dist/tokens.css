@@ -143,6 +143,7 @@
   --text-primary: var(--color-gray-900);
   --text-secondary: var(--color-gray-700);
   --text-tertiary: var(--color-gray-600);
+  --text-reply: #1f2a3d;
   --text-placeholder: var(--color-gray-550);
   --text-disabled: var(--color-gray-550);
   --text-inverse: var(--color-gray-0);
@@ -194,6 +195,15 @@
   --glass-blue: oklch(83% 0.065 260 / 0.24);
   --glass-pink: oklch(89% 0.055 345 / 0.20);
   --glass-amber: oklch(92% 0.055 85 / 0.16);
+  --agent-sales-bg: #f1edfa;
+  --agent-sales-fg: #766493;
+  --agent-sales-action: #806ba1;
+  --agent-test-bg: #f9e9e2;
+  --agent-test-fg: #b35f43;
+  --agent-test-action: #c4674a;
+  --agent-translate-bg: #eaf5f1;
+  --agent-translate-fg: #527b70;
+  --agent-translate-action: #5d897d;
 }
 
 /* Dark theme (draft — not yet validated on screens) */
@@ -286,4 +296,16 @@
   --component-popover-radius: var(--radius-xl);
   --component-popover-padding: 18px;
   --component-drawer-radius: var(--radius-2xl);
+  --component-gina-avatar-visible: 64px;
+  --component-gina-avatar-gap: 22px;
+  --component-gina-avatar-thought-box: 80px;
+  --component-gina-avatar-buddy-box: 84px;
+  --component-gina-avatar-host-box: 64px;
+  --component-gina-avatar-host-radius: 16px;
+  --component-gina-avatar-picker-tile: 64px;
+  --component-gina-avatar-picker-radius: 10px;
+  --component-gina-avatar-picker-thumb: 40px;
+  --component-greeting-font-size: 32px;
+  --component-greeting-font-weight: 500;
+  --component-greeting-line-height: 1.3;
 }

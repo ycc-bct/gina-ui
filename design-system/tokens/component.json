@@ -165,6 +165,72 @@
         "$type": "dimension",
         "$value": "{radius.2xl}"
       }
+    },
+    "ginaAvatar": {
+      "$description": "首頁 Gina 頭像（Thought / Buddy / Host）與使用者選單的 Gina Avatar 選擇器。三款「看得到的大小」一致，外框依各自留白放大。",
+      "visible": {
+        "$type": "dimension",
+        "$value": "64px",
+        "$description": "首頁三款頭像看得到的大小"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "22px",
+        "$description": "頭像與兩行招呼語的視覺間距"
+      },
+      "thoughtBox": {
+        "$type": "dimension",
+        "$value": "80px",
+        "$description": "Thought 外框（圖形約佔 80%），上下負邊距 -8px"
+      },
+      "buddyBox": {
+        "$type": "dimension",
+        "$value": "84px",
+        "$description": "Buddy 外框（球半徑 46 / viewBox 120），上下負邊距 -10px"
+      },
+      "hostBox": {
+        "$type": "dimension",
+        "$value": "64px",
+        "$description": "Host 插畫方塊（填滿）"
+      },
+      "hostRadius": {
+        "$type": "dimension",
+        "$value": "16px",
+        "$description": "Host 插畫方塊圓角"
+      },
+      "pickerTile": {
+        "$type": "dimension",
+        "$value": "64px",
+        "$description": "選擇器卡片方塊"
+      },
+      "pickerRadius": {
+        "$type": "dimension",
+        "$value": "10px",
+        "$description": "選擇器卡片圓角"
+      },
+      "pickerThumb": {
+        "$type": "dimension",
+        "$value": "40px",
+        "$description": "選擇器縮圖看得到的大小"
+      }
+    },
+    "greeting": {
+      "$description": "首頁兩行招呼語（三款頭像共用）",
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "32px",
+        "$description": "字級"
+      },
+      "fontWeight": {
+        "$type": "fontWeight",
+        "$value": 500,
+        "$description": "字重"
+      },
+      "lineHeight": {
+        "$type": "number",
+        "$value": 1.3,
+        "$description": "行高"
+      }
     }
   }
 }

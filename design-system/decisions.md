@@ -40,3 +40,30 @@
 - AI bubbles and the review panel remain opaque. User bubbles use a pale blue background with the existing dark body text. Reply typography and reading widths are preserved.
 - Source palette lives in tokens/theme.light.json; generated CSS and JSON are rebuilt with build-tokens.mjs.
 - Browser visual verification was blocked by the browser policy for local file URLs. Token resolution, accent contrast, JavaScript syntax and whitespace checks passed.
+
+## v1.6-business · 2026-10-14
+
+Business v2 第三輪調整。新增 token：`theme.agent.*`、`theme.text.reply`、`component.ginaAvatar.*`、`component.greeting.*`；`build-tokens.mjs` 讓 Tailwind 主題也輸出這些顏色。
+
+| # | 議題 | 決定 | 原因 |
+|---|---|---|---|
+| D13 | Agent 識別色只寫在 `app-business-v2.css`，RD 照 token 做會拿不到 | 新增 `theme.agent.{sales,test,translate}.{bg,fg,action}`；Tailwind 為 `bg-agent-*-soft`、`text-agent-*`、`bg-agent-*-action` | 讓原型與 token 同一份來源 |
+| D14 | 測試助手淡黃 `#fdf8e9` / `#80682d` 在畫布上幾乎看不出來 | 改陶土色：底 **#f9e9e2**、icon **#b35f43**、主要操作 **#c4674a**（由 #D97757 加深） | 試過琥珀、珊瑚、橘黃與低彩度方案後選定；與紫、綠、藍色相距離最遠 |
+| D15 | Agent fg 對底的對比：業務 4.54、測試 3.84、翻譯 4.25 | **只用於 icon**（非文字 3:1 皆通過），不可當內文 | 維持淡色 tile 的柔和感；文字一律用 text 色 |
+| D16 | 回覆內文 `#344258` 偏藍灰、與清單 `#172033` 深淺不一 | 新增 `text.reply` **#1f2a3d**，回覆段落、清單、表格、引用統一使用（畫布上 13.55:1） | 閱讀感覺偏淡；同一則回覆不應忽深忽淺 |
+| D17 | 三款首頁頭像各自留白不同，同尺寸外框看起來大小不一 | 以「看得到的大小」對齊：**64px**；外框 Thought 80、Buddy 84、Host 64；間距 **22px** | 切換頭像時大小與位置不跳動 |
+| D18 | 頭像命名：小球 / 表情球 / 客服 依大小、特徵、職業命名，邏輯不一 | **Thought、Buddy、Host** | 「客服」會限縮 Gina 的定位；客戶指定英文命名，且不加 -orb |
+| D19 | 點球切換樣式只適合展示，使用者會誤觸 | 改為使用者選單 **Gina Avatar** 子選單選擇；頭像本身只有 Buddy 可點（打招呼） | 選擇是個人偏好，與「語言」同層 |
+| D20 | Buddy 原本是 AI 生成影片，背景、深色模式、狀態都受限 | 改為 **SVG 程式繪製** | 任何尺寸清晰、全瀏覽器透明、可互動（跟滑鼠、看輸入框）、版權乾淨 |
+| D21 | 新對話在 Agent 頁會保留 Agent，與側欄「新對話」語意衝突 | **新對話一律回到 Gina**；Agent 新對話用 Agent 首頁的主要按鈕 | 側欄行為一致，不因所在頁面改變 |
+| D22 | 側欄選取色隨 Agent 變色，且偏深 | 選取底色統一 **#f1f4f8** | 減少干擾；Agent 身分已由 icon 顏色表示 |
+| D23 | 狀態點與 ⋯ 會疊在同一位置 | 互斥：有點時顯示點；滑鼠移入、鍵盤焦點、選單開啟時顯示 ⋯ | 呼吸動畫會蓋過透明度設定，改用 visibility 控制 |
+| D24 | 檢閱面板按鈕順序與 icon 大小不一致 | 順序 **Copy、下載、Close**；icon 18px，Copy 17px | 與回覆下方一致；Copy 的雙框視覺較重 |
+| D25 | Pinned 列加圖釘 icon 與區塊標題重複 | 移除 | 資訊重複 |
+| D26 | Tailwind 主題只為「有深色值」的 token 產生 `--gina-*` 變數 | 淺色區塊改為定義所有 utility 會用到的變數；沒有深色值的顏色在深色模式沿用淺色值 | 否則 Agent 色等 utility 會解析為空值 |
+
+### 同時更新
+
+- `DESIGN.md` 新增「2026-10-14 商業版更新」，並修正 10-08 段落中已不適用的條目。
+- `orb.md` 改為 Thought 規格：外框 80px、顏色 `#2f67d5`、不跟隨游標、不可點擊。
+- 移除 `STUDIO-V3.md`（Studio V3 已不再使用）。

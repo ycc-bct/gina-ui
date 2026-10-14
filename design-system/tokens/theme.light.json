@@ -64,6 +64,11 @@
         "$value": "{color.gray.600}",
         "$description": "說明、時間、計數"
       },
+      "reply": {
+        "$type": "color",
+        "$value": "#1f2a3d",
+        "$description": "Business v2：Gina 回覆的一般內文（段落、清單、表格、引用），比 secondary 深，標題仍用 primary"
+      },
       "placeholder": {
         "$type": "color",
         "$value": "{color.gray.550}",
@@ -320,6 +325,60 @@
       "amber": {
         "$type": "color",
         "$value": "oklch(92% 0.055 85 / 0.16)"
+      }
+    },
+    "agent": {
+      "$description": "Business v2 的 Agent 識別色。bg/fg 只用在 icon tile 與 Agent 圖示（非文字 3:1）；action 是該 Agent 對話中的送出按鈕與焦點色。不要拿 fg 當內文顏色。",
+      "sales": {
+        "bg": {
+          "$type": "color",
+          "$value": "#f1edfa",
+          "$description": "業務助理 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#766493",
+          "$description": "業務助理 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#806ba1",
+          "$description": "業務助理對話中的主要操作"
+        }
+      },
+      "test": {
+        "bg": {
+          "$type": "color",
+          "$value": "#f9e9e2",
+          "$description": "測試助手 icon 底（陶土，取自 #D97757 加深）"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#b35f43",
+          "$description": "測試助手 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#c4674a",
+          "$description": "測試助手對話中的主要操作"
+        }
+      },
+      "translate": {
+        "bg": {
+          "$type": "color",
+          "$value": "#eaf5f1",
+          "$description": "翻譯 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#527b70",
+          "$description": "翻譯 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#5d897d",
+          "$description": "翻譯對話中的主要操作"
+        }
       }
     }
   }
