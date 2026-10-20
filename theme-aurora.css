@@ -252,3 +252,7 @@ body.business-theme.theme-aurora .export-pop {
 }
 body.business-theme.theme-aurora .export-format { border-color: #ffffff; border-radius: 12px; background: rgb(255 255 255 / 80%); box-shadow: 0 1px 3px rgb(36 70 180 / 10%); }
 body.business-theme.theme-aurora .export-format:hover { background: linear-gradient(135deg, #f1f7fe, #e5eefb); }
+
+/* The composer sits inside the frosted panel here, so it needs room above the panel edge. */
+body.business-theme.theme-aurora .bottom { padding-bottom: 20px; }
+@media (max-width: 640px) { body.business-theme.theme-aurora .bottom { padding-bottom: 12px; } }
