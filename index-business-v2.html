@@ -1934,7 +1934,7 @@ function positionLocaleMenu(){
   const spaceRight=window.innerWidth-accountRect.right-gap;
   const left=spaceRight>=width ? accountRect.right+gap : accountRect.left-width-gap;
   menu.style.left=Math.max(pad,Math.min(left,window.innerWidth-width-pad))+'px';
-  menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,window.innerHeight-height-pad))+'px';
+  menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,accountRect.bottom-height,window.innerHeight-height-pad))+'px'; // level with the trigger, never lower than the account menu's bottom
 }
 /* Gina Avatar submenu: same placement as the language submenu, beside the account menu. */
 function positionAvatarMenu(menuSel='#avatar-menu',triggerSel='[data-action="toggle-avatar-menu"]'){
@@ -1944,7 +1944,7 @@ function positionAvatarMenu(menuSel='#avatar-menu',triggerSel='[data-action="tog
   const width=menu.offsetWidth,height=menu.offsetHeight,gap=8,pad=12;
   const left=window.innerWidth-accountRect.right-gap>=width ? accountRect.right+gap : accountRect.left-width-gap;
   menu.style.left=Math.max(pad,Math.min(left,window.innerWidth-width-pad))+'px';
-  menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,window.innerHeight-height-pad))+'px';
+  menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,accountRect.bottom-height,window.innerHeight-height-pad))+'px'; // level with the trigger, never lower than the account menu's bottom
 }
 function setAvatarMenu(open){
   const menu=$('#avatar-menu'),trigger=$('[data-action="toggle-avatar-menu"]');
