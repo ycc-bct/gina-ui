@@ -2437,3 +2437,7 @@ body.business-theme .export-format:focus-visible { outline: 2px solid var(--focu
 /* The fixed app header is empty in this prototype but sits over the chat header: let clicks through
    (it was blocking the 匯出 button and the Agent name link). */
 body.business-theme .header:empty { pointer-events: none; }
+
+/* Agent home avatar without photo editing (no role=button): a plain picture, no pencil overlay on hover. */
+body.business-theme .spec-big:not([role]) { cursor: default; }
+body.business-theme .spec-big:not([role])::after { display: none; }

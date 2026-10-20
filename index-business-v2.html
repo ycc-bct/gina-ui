@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="design-system/dist/tokens.css" />
 <link rel="stylesheet" href="app.css" />
-<link rel="stylesheet" href="app-business-v2.css?v=20261020-export" />
+<link rel="stylesheet" href="app-business-v2.css?v=20261020-edit-off" />
 <link rel="stylesheet" href="theme-aurora.css?v=20261020-bottom" />
 <link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
 </head>
@@ -277,7 +277,7 @@
     <section class="spec-hero" id="spec-hero">
       <header class="agent-head">
         <div class="spec-title">
-          <div class="spec-big" role="button" tabindex="0" aria-label="更換照片"><svg class="i" data-i="chart"></svg></div>
+          <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
           <div><div class="spec-name-row"><h1 id="spec-title-name">業務助理</h1><span class="role-tag" id="spec-role" hidden></span></div><div class="s" id="spec-subtitle">客戶、訂單與業務資料</div></div>
         </div>
         <button class="agent-new" type="button" data-action="agent-new-chat"><svg class="i" data-i="plus"></svg><span id="agent-new-label">新業務任務</span></button>
@@ -2247,12 +2247,16 @@ const TR=(()=>{
   badge();run(); // jobs already in progress keep running in the background
   return {add,render};
 })();
+// Changing an Agent's photo (pencil on the Agent home avatar) is switched off for now: everyone sees the default
+// avatars. Set to true to bring back the pencil, the 更換照片 / 恢復預設 menu and the crop dialog (agent-photo.js).
+const AGENT_PHOTO_EDIT=false;
 function renderAgentView(agent){
   // Tools (翻譯) get a plain icon: no photo, no pencil, not a button.
   body.classList.toggle('tool-page',agent.tool);
   $('#tr-tool').hidden=!agent.tool;
-  $('.spec-big').innerHTML=svg(agent.icon)+(agent.tool?'':`<span class="photo-badge" aria-hidden="true">${svg('pencil')}</span>`);
-  if(agent.tool){['role','tabindex','aria-label','title'].forEach(n=>$('.spec-big').removeAttribute(n));}
+  const editable=AGENT_PHOTO_EDIT&&!agent.tool;
+  $('.spec-big').innerHTML=svg(agent.icon)+(editable?`<span class="photo-badge" aria-hidden="true">${svg('pencil')}</span>`:'');
+  if(!editable){['role','tabindex','aria-label','title'].forEach(n=>$('.spec-big').removeAttribute(n));}
   else{
     $('.spec-big').setAttribute('role','button');$('.spec-big').setAttribute('tabindex','0');
     $('.spec-big').setAttribute('aria-label',`更換 ${agent.name} 的照片（只有你看得到）`);
@@ -2896,7 +2900,7 @@ document.addEventListener('drop',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);setAvatarMenu(false);setAgentStyleMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
-<script src="agent-photo.js?v=20261020-style-off"></script>
+<script src="agent-photo.js?v=20261020-edit-off"></script>
 <script src="gina-face.js?v=20261014-ap1"></script>
 <script src="gina-gaze.js?v=20261014-cs-eyes"></script>
 <script src="appearance.js?v=20261020-theme"></script>

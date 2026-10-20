@@ -8,6 +8,7 @@
   const read = k => { try { return localStorage.getItem(KEY(k)); } catch { return null; } };
   const write = (k, v) => { try { v ? localStorage.setItem(KEY(k), v) : localStorage.removeItem(KEY(k)); return true; } catch { return false; } };
   const agents = () => (typeof AGENTS !== 'undefined' ? AGENTS : []);
+  const editOn = () => typeof AGENT_PHOTO_EDIT !== 'undefined' && AGENT_PHOTO_EDIT;
   const nameOf = k => (agents().find(a => a.key === k) || {}).name || k;
 
   // Agent avatar style for everyone at once (account menu → Agent 頭像): 'icon' (default) or 'person'.
@@ -39,7 +40,8 @@ body.specialist[data-agent="${k}"] .spec-big > .i:first-child { opacity: 0; }`;
     presetEl.textContent = style === 'person'
       ? agents().filter(a => !NON_PERSON.has(a.key)).map(a => rule(a.key, portraitOf(a))).join('\n')
       : '';
-    styleEl.textContent = agents().map(a => { const url = read(a.key); return url ? rule(a.key, url) : ''; }).join('\n');
+    // Saved photos only show while photo editing is on (AGENT_PHOTO_EDIT in the page script).
+    styleEl.textContent = !editOn() ? '' : agents().map(a => { const url = read(a.key); return url ? rule(a.key, url) : ''; }).join('\n');
     const current = document.getElementById('agent-style-current');
     if (current) current.textContent = style === 'person' ? '人物' : '圖示';
     document.querySelectorAll('[data-agent-style]').forEach(c => c.setAttribute('aria-checked', String(c.dataset.agentStyle === style)));
@@ -134,6 +136,7 @@ body.specialist[data-agent="${k}"] .spec-big > .i:first-child { opacity: 0; }`;
   document.addEventListener('click', e => {
     const avatar = e.target.closest('.spec-big');
     if (avatar) {
+      if (!editOn()) return; // photo editing switched off: the avatar is just a picture
       agentKey = document.body.dataset.agent;
       if (NON_PERSON.has(agentKey)) return; // tools (翻譯) keep their icon: no photo
 
