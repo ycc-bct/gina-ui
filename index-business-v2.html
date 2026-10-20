@@ -8,7 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="design-system/dist/tokens.css" />
 <link rel="stylesheet" href="app.css" />
-<link rel="stylesheet" href="app-business-v2.css?v=20261014-names" />
+<link rel="stylesheet" href="app-business-v2.css?v=20261020-export" />
+<link rel="stylesheet" href="theme-aurora.css?v=20261020-export" />
 <link rel="icon" type="image/svg+xml" href="assets/giant-g.svg" />
 </head>
 <body class="business-theme">
@@ -37,10 +38,41 @@
 </aside>
 
 
+</div>
+<!-- Shown only when this Agent already has your photo: change it, or go back to the default icon. -->
+<div class="popover" id="pop-agent-photo" role="menu" aria-label="Agent 照片">
+  <button class="menu-item" role="menuitem" data-action="agent-photo-change"><svg class="i" data-i="upload"></svg>更換照片</button>
+  <button class="menu-item" role="menuitem" data-action="agent-photo-reset"><svg class="i" data-i="arrow-left"></svg>恢復預設</button>
+</div>
+<input type="file" id="agent-photo-input" accept="image/*" hidden />
+<dialog class="photo-crop" id="photo-crop" aria-labelledby="photo-crop-title">
+  <form method="dialog" class="photo-crop-body">
+    <h2 id="photo-crop-title">調整照片</h2>
+    <p class="photo-crop-note">拖曳調整位置，用滑桿縮放。</p>
+    <div class="crop-frame" id="crop-frame"><img id="crop-img" alt="" draggable="false" /></div>
+    <label class="crop-zoom"><svg class="i" data-i="minimize"></svg><input type="range" id="crop-zoom" min="1" max="3" step="0.01" value="1" aria-label="縮放" /><svg class="i" data-i="maximize"></svg></label>
+    <div class="photo-crop-actions">
+      <button type="button" class="btn-cancel" data-action="photo-crop-cancel">取消</button>
+      <button type="button" class="btn-primary" data-action="photo-crop-apply">套用</button>
+    </div>
+  </form>
+</dialog>
+
 <!-- Conversation menu (shared by every history row) -->
+<!-- 匯出對話 (chat-export.js): opened from the chat header's 匯出 button or a chat's ⋯ menu. -->
+<div class="export-pop" id="export-pop" role="dialog" aria-labelledby="export-pop-title" hidden>
+  <div class="export-title" id="export-pop-title">匯出對話</div>
+  <p class="export-note">只包含已完成的訊息，正在產生的回覆、附件和圖表原始檔不會匯出。</p>
+  <div class="export-formats">
+    <button class="export-format" type="button" data-export="txt">純文字 (.txt)</button>
+    <button class="export-format" type="button" data-export="md">Markdown (.md)</button>
+  </div>
+</div>
+
 <div class="popover" id="pop-hist" role="menu" aria-label="對話選項">
   <button class="menu-item" role="menuitem" data-action="hist-rename"><svg class="i" data-i="pencil"></svg>重新命名</button>
   <button class="menu-item" role="menuitem" data-action="hist-pin"><svg class="i" data-i="pin"></svg><span id="hist-pin-label">釘選</span></button>
+  <button class="menu-item" role="menuitem" data-action="hist-export"><svg class="i" data-i="download"></svg>匯出對話</button>
   <div class="menu-sep"></div>
   <button class="menu-item danger" role="menuitem" data-action="hist-delete"><svg class="i" data-i="trash"></svg>刪除</button>
 </div>
@@ -63,8 +95,15 @@
     <svg class="i locale-chevron" data-i="chevron-right"></svg>
   </button>
   <button class="menu-item locale-trigger avatar-trigger" type="button" data-action="toggle-avatar-menu" aria-haspopup="menu" aria-expanded="false" aria-controls="avatar-menu">
-    <svg class="i" data-i="smile"></svg>
-    <span class="locale-trigger-copy"><span>Gina Avatar</span><small id="avatar-current">Thought</small></span>
+    <svg class="i" data-i="palette"></svg>
+    <span class="locale-trigger-copy"><span>外觀</span><small id="avatar-current">Minimalism · Thought</small></span>
+    <svg class="i locale-chevron" data-i="chevron-right"></svg>
+  </button>
+  <!-- Agent 頭像 (圖示 / 人物) is switched off for now: icons are the default. Remove `hidden` here and set
+       AGENT_STYLE_ENABLED in agent-photo.js to bring it back. -->
+  <button class="menu-item locale-trigger agent-style-trigger" type="button" hidden data-action="toggle-agent-style-menu" aria-haspopup="menu" aria-expanded="false" aria-controls="agent-style-menu">
+    <svg class="i" data-i="users"></svg>
+    <span class="locale-trigger-copy"><span>Agent 頭像</span><small id="agent-style-current">圖示</small></span>
     <svg class="i locale-chevron" data-i="chevron-right"></svg>
   </button>
   <button class="menu-item" data-action="toast" data-msg="前往管理後台（示意）"><svg class="i" data-i="grid"></svg>管理後台</button>
@@ -96,8 +135,22 @@
 </div>
 
 <!-- Gina Avatar submenu (opens beside the account menu, like 語言) -->
-<div class="locale-popover avatar-popover" id="avatar-menu" role="menu" aria-label="選擇 Gina Avatar" hidden>
-  <div class="av-cards">
+<!-- 外觀: 主題 (Minimalism default / Aurora) + Gina avatar, one panel. -->
+<div class="locale-popover avatar-popover" id="avatar-menu" role="menu" aria-label="外觀" hidden>
+  <div class="ap-label" id="ap-theme-label">主題</div>
+  <div class="av-cards av-themes" role="group" aria-labelledby="ap-theme-label">
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="true" data-theme-choice="minimal">
+      <span class="av-tile"><span class="ap-theme ap-minimal" aria-hidden="true"></span></span>
+      <span class="av-name">Minimalism</span>
+    </button>
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="false" data-theme-choice="aurora">
+      <span class="av-tile"><span class="ap-theme ap-aurora" aria-hidden="true"></span></span>
+      <span class="av-name">Aurora</span>
+    </button>
+  </div>
+  <div class="ap-sep" role="separator"></div>
+  <div class="ap-label" id="ap-gina-label">Gina</div>
+  <div class="av-cards" role="group" aria-labelledby="ap-gina-label">
     <button class="av-card" type="button" role="menuitemradio" aria-checked="true" data-avatar-choice="1">
       <span class="av-tile"><span class="av-thumb" id="av-thumb-orb" aria-hidden="true"></span></span>
       <span class="av-name">Thought</span>
@@ -128,6 +181,20 @@
   </div>
 </div>
 
+<!-- Agent 頭像 submenu: one style for all Agents (圖示 / 人物). Your own uploaded photos still win. -->
+<div class="locale-popover avatar-popover" id="agent-style-menu" role="menu" aria-label="選擇 Agent 頭像" hidden>
+  <div class="av-cards av-cards-2">
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="true" data-agent-style="icon">
+      <span class="av-tile"><span class="as-preview" data-style-preview="icon" aria-hidden="true"></span></span>
+      <span class="av-name">圖示</span>
+    </button>
+    <button class="av-card" type="button" role="menuitemradio" aria-checked="false" data-agent-style="person">
+      <span class="av-tile"><span class="as-preview" data-style-preview="person" aria-hidden="true"></span></span>
+      <span class="av-name">人物</span>
+    </button>
+  </div>
+</div>
+
 <!-- ============ Sidebar ============ -->
 <button class="collapse-btn" data-action="toggle-sidebar" aria-label="切換側欄" aria-expanded="true"><svg class="i" data-i="panel-left"></svg></button>
 <aside class="sidebar" aria-label="工作空間導覽">
@@ -142,9 +209,7 @@
   </div>
   <div class="side-scroll" id="side-scroll">
     <nav class="side-agents" aria-label="可用協作 Agents">
-      <button class="side-nav-item" data-action="go-agent" data-agent="business"><svg class="i" data-i="chart"></svg><span>業務助理</span></button>
-      <button class="side-nav-item" data-action="go-agent" data-agent="test"><svg class="i" data-i="monitor"></svg><span>測試助手</span></button>
-      <button class="side-nav-item" data-action="go-agent" data-agent="translate"><svg class="i" data-i="languages"></svg><span>翻譯</span></button>
+      <!-- Agents are rendered from AGENTS (see "Agents" in the script). -->
     </nav>
     <div>
       <details class="history-group" id="pinned-group" open hidden>
@@ -158,12 +223,21 @@
     </div>
   </div>
   <div class="side-bottom">
+    <!-- Fixed tools above the account (Agents with dock:true, e.g. 翻譯); same row style as the Agent list. -->
+    <nav class="side-agents side-dock" aria-label="工具"></nav>
     <button class="side-nav-item user-btn" data-pop="pop-user" aria-haspopup="menu" aria-expanded="false"><span class="avatar-d">K</span><span>Kevin Cheng</span><svg class="i chev" data-i="chevron-down"></svg></button>
   </div>
 </aside>
 
 <!-- ============ Main ============ -->
 <main class="main">
+  <!-- Chat header: conversation name ⌄ · who is in it. Only shown inside a chat. -->
+  <div class="chat-head" id="chat-head" hidden>
+    <span class="ch-title" id="ch-title"><span id="ch-title-text"></span></span>
+    <span class="ch-sep" id="ch-sep" aria-hidden="true">·</span>
+    <span class="ch-agents" id="ch-agents"></span>
+    <button class="ch-export" id="ch-export" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="export-pop" title="匯出對話"><svg class="i" data-i="download"></svg><span>匯出</span></button>
+  </div>
   <div class="scroll" id="scroll">
     <section class="hero" id="hero">
       <div class="hero-title">
@@ -194,21 +268,51 @@
         <h1 id="hero-greeting"><span id="hero-greeting-line">嗨，Kevin</span><span class="hero-ask">今天想一起<span class="hero-ask-grad">完成什麼？</span></span></h1>
       </div>
       <div class="today" aria-label="今天的狀況">
-        <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span></button>
-        <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span></button>
-        <button class="today-card" data-hist="2"><span class="today-icon"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>總結先前的對話</b><small>整理過去三天的重點</small></span></button>
+        <button class="today-card" data-prompt="幫我看今天有哪些信件需要處理，依優先順序排列"><span class="today-icon" data-icon="mail"><svg class="i" data-i="mail"></svg></span><span class="today-text"><b>5 封信待處理</b><small>其中 2 封需要今天回覆</small></span></button>
+        <button class="today-card" data-prompt="幫我準備下午 2:00 Gina UI 會議的重點與相關信件"><span class="today-icon" data-icon="calendar"><svg class="i" data-i="calendar"></svg></span><span class="today-text"><b>14:00 Gina UI 會議</b><small>Teams · 王小明發起</small></span></button>
+        <button class="today-card" data-hist="2"><span class="today-icon" data-icon="message"><svg class="i" data-i="message"></svg></span><span class="today-text"><b>總結先前的對話</b><small>整理過去三天的重點</small></span></button>
       </div>
     </section>
 
     <section class="spec-hero" id="spec-hero">
       <header class="agent-head">
         <div class="spec-title">
-          <div class="spec-big"><svg class="i" data-i="chart"></svg></div>
-          <div><h1 id="spec-title-name">業務助理</h1><div class="s" id="spec-subtitle">客戶、訂單與業務資料</div></div>
+          <div class="spec-big" role="button" tabindex="0" aria-label="更換照片"><svg class="i" data-i="chart"></svg></div>
+          <div><div class="spec-name-row"><h1 id="spec-title-name">業務助理</h1><span class="role-tag" id="spec-role" hidden></span></div><div class="s" id="spec-subtitle">客戶、訂單與業務資料</div></div>
         </div>
         <button class="agent-new" type="button" data-action="agent-new-chat"><svg class="i" data-i="plus"></svg><span id="agent-new-label">新業務任務</span></button>
       </header>
       <div class="desc" id="spec-desc">整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。</div>
+      <!-- Document translation (翻譯 tool page): drop files → pick a language → 開始翻譯. Jobs land in 翻譯紀錄 right away. -->
+      <div class="tr-tool" id="tr-tool" hidden>
+        <div class="tr-card">
+          <!-- The dashed drop zone never changes size. Picked files list from its top; the space left below
+               is still the drop target ("拖曳更多檔案"). Too many files: the list scrolls, the add line stays. -->
+          <div class="tr-drop" id="tr-drop" data-tr-drop>
+            <ul class="tr-files" id="tr-files" aria-label="待翻譯的檔案" hidden></ul>
+            <label class="tr-pick">
+              <input type="file" id="tr-input" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.webp" />
+              <span class="tr-drop-ico"><svg class="i" data-i="upload"></svg></span>
+              <span class="tr-drop-title"><span id="tr-drop-lead">拖曳檔案到這裡</span>，或 <u>選擇檔案</u></span>
+              <span class="tr-drop-hint">PDF、Word、PPT、JPG、PNG、WebP · 每個檔案最大 20MB · 可一次選多個</span>
+            </label>
+          </div>
+          <div class="tr-actions">
+            <div class="tr-lang"><span id="tr-lang-label">翻譯成</span>
+              <div class="tr-select">
+                <button type="button" class="tr-select-btn" id="tr-lang" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="tr-lang-label tr-lang-text"><span id="tr-lang-text">繁體中文</span><svg class="i" data-i="chevron-down"></svg></button>
+                <ul class="tr-select-menu" id="tr-lang-menu" role="listbox" tabindex="-1" aria-labelledby="tr-lang-label" hidden></ul>
+              </div>
+            </div>
+            <button class="tr-start" id="tr-start" type="button" disabled>開始翻譯</button>
+          </div>
+        </div>
+        <section class="tr-log" aria-labelledby="tr-log-label">
+          <div class="agent-section-label" id="tr-log-label">翻譯紀錄</div>
+          <div class="tr-list" id="tr-list"></div>
+          <button class="tr-more" id="tr-more" type="button" hidden>顯示更多</button>
+        </section>
+      </div>
       <div class="agent-empty" id="agent-empty" hidden>
         <svg class="agent-empty-art" viewBox="0 0 120 96" aria-hidden="true">
           <rect x="14" y="14" width="52" height="64" rx="6" fill="#fff" stroke="#172033" stroke-width="2"/>
@@ -232,7 +336,6 @@
         <div class="agent-section-label">Recents</div>
         <div class="agent-recents-list" id="agent-recents-list"></div>
       </div>
-      <input type="file" id="agent-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" hidden />
     </section>
 
     <section class="thread" id="thread"></section>
@@ -248,7 +351,13 @@
     <div class="composer">
       <textarea id="input" aria-label="傳送訊息給 Gina" rows="1" placeholder="問 Gina 任何事，或交辦一項工作"></textarea>
       <div class="composer-toolbar">
-        <button class="cbtn plus" id="composer-plus" data-action="toggle-composer-menu" aria-label="新增與工具" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-menu"><svg class="i" data-i="plus"></svg></button>
+        <!-- Tools live on the composer (no "+" menu): attach, then three always-visible toggles. -->
+        <button class="cbtn attach" type="button" data-action="add-file" aria-label="上傳檔案"><svg class="i" data-i="paperclip"></svg><span class="tip">上傳文件或圖片</span></button>
+        <div class="tool-toggles" role="group" aria-label="工具">
+          <button class="tool-toggle" type="button" data-tool-toggle="web" aria-pressed="false" title="查詢最新的網路資訊"><svg class="i" data-i="search"></svg><span>網路搜尋</span></button>
+          <button class="tool-toggle" type="button" data-tool-toggle="kb" aria-pressed="false" title="讀取你上傳的文件"><svg class="i" data-i="book-open"></svg><span>個人知識</span></button>
+          <button class="tool-toggle" type="button" data-tool-toggle="skills" aria-pressed="false" title="使用個人 Skills"><svg class="i" data-i="wrench"></svg><span>Skills</span></button>
+        </div>
         <input id="composer-file" type="file" hidden multiple />
         <div class="active-tools" id="active-tools" aria-label="已啟用的工具"></div>
         <span class="toolbar-spacer"></span>
@@ -260,14 +369,6 @@
         </div>
         <button class="cbtn mic" id="mic" type="button" data-action="toggle-mic" aria-label="語音輸入" aria-pressed="false"><svg class="i" data-i="mic"></svg><span class="tip">語音輸入</span></button>
         <button class="cbtn send" id="send" data-action="send" aria-label="送出"><svg class="i" data-i="arrow-up"></svg></button>
-      </div>
-      <div class="composer-menu" id="composer-menu" role="menu" hidden>
-        <div class="composer-menu-label">新增</div>
-        <button class="composer-menu-item" role="menuitem" data-action="add-file"><svg class="i" data-i="paperclip"></svg><span>檔案</span><small>上傳文件或圖片</small></button>
-        <div class="composer-menu-label">工具</div>
-        <button class="composer-menu-item" role="menuitemcheckbox" data-tool="web" aria-checked="false"><svg class="i" data-i="search"></svg><span>網路搜尋</span><small>查詢最新的網路資訊</small><svg class="i ck" data-i="check"></svg></button>
-        <button class="composer-menu-item" role="menuitemcheckbox" data-tool="kb" aria-checked="false"><svg class="i" data-i="book-open"></svg><span>個人知識</span><small>讀取你上傳的文件</small><svg class="i ck" data-i="check"></svg></button>
-        <button class="composer-menu-item" role="menuitemcheckbox" data-tool="skills" aria-checked="false"><svg class="i" data-i="wrench"></svg><span>Skills</span><small>使用個人 Skills</small><svg class="i ck" data-i="check"></svg></button>
       </div>
     </div>
   </div>
@@ -1285,6 +1386,10 @@ window.mountGinaOrb=mountGinaOrb;
 <script>
 /* ---------- Icons (lucide-style) ---------- */
 const ICONS = {
+  "camera":'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  "scale":'<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+  "banknote":'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  "database":'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/>',
   "smile":'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>',
   "palette":'<path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>',
   "pencil":'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
@@ -1428,14 +1533,14 @@ function renderHistory(){
   const moreBtn=(ck,title)=>`<button class="hist-more" type="button" data-pop="pop-hist" data-chat-key="${ck}" aria-haspopup="menu" aria-expanded="false" aria-label="更多選項：${escapeHTML(title)}">${svg('more')}</button>`;
   const agentRow=(key,index,title)=>{
     const on=document.body.dataset.agent===key&&index===activeAgentHist;const ck=`a:${key}:${index}`;
-    const icon={business:'chart',test:'monitor',translate:'languages'}[key];
+    const icon=AGENT_BY_KEY[key]?.icon||'message';
     return `<div class="hist-row agent-hist ${on?'active':''} ${menuChat===ck?'menu-open':''}" data-agent-key="${key}">
       <button class="hist ${on?'active':''}" data-agent-history="${index}" data-agent-key="${key}" ${on?'aria-current="page"':''}><span class="hist-agent" data-agent-key="${key}" aria-hidden="true">${svg(icon)}</span><span class="hist-title">${title}</span></button>${moreBtn(ck,title)}
     </div>`;
   };
   const newRow=c=>{
     const on=c.id===activeNew;const ck=`n:${c.id}`;
-    const icon=c.agent?{business:'chart',test:'monitor',translate:'languages'}[c.agent]:'message';
+    const icon=c.agent?(AGENT_BY_KEY[c.agent]?.icon||'message'):'message';
     const lead=c.agent?`<span class="hist-agent" data-agent-key="${c.agent}" aria-hidden="true">${svg(icon)}</span>`:`<span class="hist-ico" aria-hidden="true">${svg('message')}</span>`;
     const status=c.loading?'<span class="hist-status is-loading" role="img" aria-label="正在處理"></span>':c.unread?'<span class="hist-status is-unread" role="img" aria-label="有新回覆"></span>':'';
     return `<div class="hist-row new-hist ${c.agent?'agent-hist':''} ${on?'active':''} ${menuChat===ck?'menu-open':''}"><button class="hist ${on?'active':''}" data-new-chat="${c.id}" ${on?'aria-current="page"':''}>${lead}<span class="hist-title">${escapeHTML(chatTitle(ck,c.title))}</span>${status}</button>${moreBtn(ck,chatTitle(ck,c.title))}</div>`;
@@ -1458,6 +1563,7 @@ function renderHistory(){
   while(a<agentItems.length)html.push(agentRow(...agentItems[a++]));
   document.getElementById('hist-list').innerHTML=html.join('');
   if(document.body.classList.contains('specialist')&&typeof renderAgentRecents==='function')renderAgentRecents();
+  if(typeof updateChatHead==='function')updateChatHead();
   document.querySelectorAll('[data-action="go-agent"]').forEach(b=>{const on=document.body.classList.contains('specialist')&&document.body.dataset.agent===b.dataset.agent&&activeAgentHist===-1&&activeNew===null;b.classList.toggle('active',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current');});
 }
 document.getElementById('hist-search').addEventListener('input', renderHistory);
@@ -1576,7 +1682,8 @@ function closePops(except){
   if(except!=='pop-hist'){document.querySelectorAll('.hist-row.menu-open, .agent-recent-row.menu-open').forEach(r=>r.classList.remove('menu-open'));menuHist=-1;menuChat=null;}
   document.querySelectorAll('.popover.open').forEach(p=>{if(p.id!==except)p.classList.remove('open')});
   document.querySelectorAll('[data-pop].active').forEach(b=>{if(b.dataset.pop!==except){b.classList.remove('active');b.setAttribute('aria-expanded','false')}});
-  if(except!=='pop-user'){setLocaleMenu(false);setAvatarMenu(false);}
+  if(except!=='pop-user'){setLocaleMenu(false);setAvatarMenu(false);setAgentStyleMenu(false);}
+  document.querySelectorAll('.spec-big.active').forEach(el=>el.classList.remove('active')); // Agent photo menu anchor
 }
 function positionPop(pop, anchor){
   const r=anchor.getBoundingClientRect();
@@ -1717,15 +1824,11 @@ const TOOLS={web:{label:'網路搜尋',icon:'search'},kb:{label:'個人知識',i
 const activeTools=new Set();
 var attachedFile=null; // file name added from the translate drop zone
 function renderTools(){
-  $('#active-tools').innerHTML=(attachedFile?`<span class="tool-chip file-chip">${svg('file-text')}<span>${escapeHTML(attachedFile)}</span><button type="button" data-action="remove-file" aria-label="移除檔案">${svg('x')}<span class="tip">移除</span></button></span>`:'')+[...activeTools].map(k=>`<span class="tool-chip" data-tool="${k}">${svg(TOOLS[k].icon)}<span>${TOOLS[k].label}</span><button type="button" data-action="remove-tool" data-tool="${k}" aria-label="移除 ${TOOLS[k].label}">${svg('x')}<span class="tip">清除</span></button></span>`).join('');
-  document.querySelector('.composer').classList.toggle('has-active-tools',activeTools.size>0||!!attachedFile);
-  document.querySelectorAll('#composer-menu [data-tool]').forEach(b=>b.setAttribute('aria-checked',String(activeTools.has(b.dataset.tool))));
+  $('#active-tools').innerHTML=(attachedFile?`<span class="tool-chip file-chip">${svg('file-text')}<span>${escapeHTML(attachedFile)}</span><button type="button" data-action="remove-file" aria-label="移除檔案">${svg('x')}<span class="tip">移除</span></button></span>`:'')+[].map(k=>`<span class="tool-chip" data-tool="${k}">${svg(TOOLS[k].icon)}<span>${TOOLS[k].label}</span><button type="button" data-action="remove-tool" data-tool="${k}" aria-label="移除 ${TOOLS[k].label}">${svg('x')}<span class="tip">清除</span></button></span>`).join('');
+  document.querySelector('.composer').classList.toggle('has-active-tools',!!attachedFile);
+  document.querySelectorAll('[data-tool-toggle]').forEach(b=>b.setAttribute('aria-pressed',String(activeTools.has(b.dataset.toolToggle))));
 }
-function setComposerMenu(open){
-  $('#composer-menu').hidden=!open;
-  $('#composer-plus').setAttribute('aria-expanded',String(open));
-  $('#composer-plus').classList.toggle('open',open);
-}
+function setComposerMenu(open){ /* the + menu was removed; tools are always visible on the composer */ }
 
 /* ---------- Sidebar scroll: show a hairline under the fixed header once content scrolls ---------- */
 $('#side-scroll').addEventListener('scroll',e=>body.classList.toggle('side-scrolled',e.target.scrollTop>2),{passive:true});
@@ -1735,6 +1838,17 @@ const USER_NAME='Kevin';
 function greeting(){
   const h=new Date().getHours();
   return h<5?'還在忙嗎':h<11?'早安':h<14?'午安':h<18?'下午好':'晚上好';
+}
+/* Greeting follows the interface language (示意：只有招呼語會切換). English is kept short so the
+   second line stays about as wide as the Chinese one and never outweighs the cards. */
+function greetingEn(){
+  const h=new Date().getHours();
+  return h<5?'Still at it':h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+}
+function renderGreeting(){
+  const en=typeof activeLocale==='string'&&activeLocale.startsWith('en');
+  $('#hero-greeting-line').textContent=en?`${greetingEn()}, ${USER_NAME}`:`${greeting()}，${USER_NAME}`;
+  $('.hero-ask').textContent=en?'What can we get done today?':'今天想一起完成什麼？';
 }
 $('#hero-greeting-line').textContent=`${greeting()}，${USER_NAME}`;
 /* Composer placeholder for Gina: a different line each time the home (or a Gina chat) is shown, never the same twice in a row.
@@ -1798,6 +1912,7 @@ let activeLocale='zh-TW';
 try{const savedLocale=localStorage.getItem('gina-locale-v2');if(LOCALES[savedLocale])activeLocale=savedLocale}catch{}
 function renderLocale(){
   document.documentElement.lang=activeLocale;
+  renderGreeting();
   $('#locale-current').textContent=LOCALES[activeLocale];
   document.querySelectorAll('#locale-menu [data-locale]').forEach(option=>option.setAttribute('aria-checked',String(option.dataset.locale===activeLocale)));
 }
@@ -1822,8 +1937,8 @@ function positionLocaleMenu(){
   menu.style.top=Math.max(pad,Math.min(triggerRect.top-8,window.innerHeight-height-pad))+'px';
 }
 /* Gina Avatar submenu: same placement as the language submenu, beside the account menu. */
-function positionAvatarMenu(){
-  const menu=$('#avatar-menu'),account=$('#pop-user'),trigger=$('[data-action="toggle-avatar-menu"]');
+function positionAvatarMenu(menuSel='#avatar-menu',triggerSel='[data-action="toggle-avatar-menu"]'){
+  const menu=$(menuSel),account=$('#pop-user'),trigger=$(triggerSel);
   if(!menu||menu.hidden||!account||!trigger)return;
   const accountRect=account.getBoundingClientRect(),triggerRect=trigger.getBoundingClientRect();
   const width=menu.offsetWidth,height=menu.offsetHeight,gap=8,pad=12;
@@ -1835,9 +1950,16 @@ function setAvatarMenu(open){
   const menu=$('#avatar-menu'),trigger=$('[data-action="toggle-avatar-menu"]');
   if(!menu||!trigger)return;
   menu.hidden=!open;trigger.setAttribute('aria-expanded',String(open));
-  if(open)requestAnimationFrame(positionAvatarMenu); // focus stays put, so no focus ring appears on a mouse open
+  if(open)requestAnimationFrame(()=>positionAvatarMenu()); // wrapped: rAF would pass its timestamp as the selector; focus stays put
 }
 window.addEventListener('resize',()=>{if(!$('#avatar-menu').hidden)positionAvatarMenu()});
+function setAgentStyleMenu(open){
+  const menu=$('#agent-style-menu'),trigger=$('[data-action="toggle-agent-style-menu"]');
+  if(!menu||!trigger)return;
+  menu.hidden=!open;trigger.setAttribute('aria-expanded',String(open));
+  if(open)requestAnimationFrame(()=>positionAvatarMenu('#agent-style-menu','[data-action="toggle-agent-style-menu"]'));
+}
+window.addEventListener('resize',()=>{if(!$('#agent-style-menu').hidden)positionAvatarMenu('#agent-style-menu','[data-action="toggle-agent-style-menu"]')});
 function setLocaleMenu(open){
   const menu=$('#locale-menu'),trigger=$('[data-action="toggle-locale-menu"]');
   if(!menu||!trigger)return;
@@ -1858,69 +1980,288 @@ renderLocale();
 $('#locale-search').addEventListener('input',e=>filterLocales(e.target.value));
 
 /* ---------- Views ---------- */
-const AGENT_VIEWS={
-  business:{
-    name:'業務助理',icon:'chart',subtitle:'客戶、訂單與業務資料',action:'新業務任務',
-    description:'整理客戶進度、訂單狀態與業務資料，產生可以直接檢閱的工作摘要。',
-    placeholder:'交給業務助理，整理客戶與訂單工作…',
-    fallback:'<p>收到！目前我尚未啟用任何業務資料來源，因此無法直接查詢 CRM 或訂單系統。</p><p>你可以先提供相關資料，我會協助你整理成報價單或進度摘要。</p>',
-    clarifications:['提供客戶或訂單資訊','說明想整理的結果','補充相關背景'],
-    templates:[
-      ['users','待跟進客戶','依優先順序整理下一步','整理本週待跟進客戶'],
-      ['server','重點訂單進度','列出風險與待處理項目','檢查重點訂單進度'],
-      ['chart','本週業務摘要','彙整數字、進展與風險','產生本週業務摘要'],
-      ['mail','客戶跟進信','依最新進度擬好跟進信','幫我擬一封客戶跟進信，客戶與進度如下：\n']
-    ]
-  },
-  test:{
-    name:'測試助手',icon:'monitor',subtitle:'測試案例、缺陷與驗證紀錄',action:'新測試',
-    description:'整理測試範圍、執行結果與缺陷資訊，快速產生可追蹤的驗證摘要。',
-    placeholder:'交給測試助手，整理測試與缺陷工作…',
-    fallback:'<p>收到！請提供需求、測試範圍或目前的缺陷資料。</p><p>我會協助整理測試案例、回歸清單與可追蹤的驗證摘要。</p>',
-    clarifications:['提供需求或規格','說明測試平台與版本','指定需要的輸出格式'],
-    templates:[
-      ['check','建立測試案例','依需求整理主要情境','依這份需求建立測試案例'],
-      ['monitor','回歸測試清單','列出本次需要驗證的功能','整理這次版本的回歸測試清單'],
-      ['file-text','缺陷摘要','彙整嚴重度與重現步驟','產生目前缺陷的摘要'],
-      ['list-box','測試報告','把執行結果整理給 PM','把以下測試結果整理成測試報告：\n']
-    ]
-  },
-  translate:{
-    name:'翻譯',icon:'languages',subtitle:'多語翻譯與語氣調整',action:'新翻譯',emptyText:'還沒有翻譯紀錄',
-    description:'依內容與使用情境翻譯文字，並保留原意、專有名詞與適合的語氣。',
-    placeholder:'貼上要翻譯的內容，並告訴我目標語言…',
-    fallback:'<p>可以，請貼上要翻譯的內容，並告訴我目標語言。</p><p>如果有特定語氣、專有名詞或使用情境，也可以一併說明。</p>',
-    clarifications:['貼上要翻譯的內容','選擇目標語言','指定語氣與使用情境'],
-    templates:[
-      ['upload','拖拉檔案翻譯','把文件拖到這裡，或點一下選擇檔案','請把這份文件翻譯成英文：','支援 PDF、Word、PowerPoint 等','drop'],
-      ['mail','翻譯信件','把英文信件翻成中文，並附上商務英文的回信建議','請把以下英文信件翻譯成中文，並提供商務英文的回信建議：\n','英文 → 繁中 · 商務英文回信'],
-      ['globe','回覆越南供應商','用禮貌、清楚的越南文回覆','請把以下回覆翻譯成越南文，語氣禮貌：\n','繁中 → 越南文'],
-      ['list-box','術語對照表','整理產品術語的多語對照','請把以下產品術語整理成繁中、英文、越南文對照表：\n','繁中 · 英文 · 越南文'],
-      ['file-text','雙語對照','保留原文並逐段翻譯','請把以下內容整理成雙語對照：\n','原文 ＋ 譯文'],
-      ['message','調整語氣','讓譯文更在地、更有禮貌','請調整以下譯文的語氣，讓它更自然：\n','任何語言']
-    ]
-  }
-};
-const AGENT_HISTORY={
-  business:[
-    {title:'Q4 重點客戶進度',prompt:'整理 Q4 重點客戶進度',kind:'business-progress',time:'昨天'},
-    {title:'本週訂單風險摘要',prompt:'彙整本週訂單風險與待處理事項',kind:'business-risk',time:'週一'},
-    {title:'CRM 客戶分級規則與程式碼',prompt:'整理 CRM 客戶分級規則，並提供自動化程式碼範例',kind:'business-code',time:'上週五'}
-  ],
-  test:[
-    {title:'登入流程回歸測試結果',prompt:'整理登入流程的回歸測試結果',kind:'test-regression',time:'昨天'},
-    {title:'阻擋上線的缺陷摘要',prompt:'列出目前會阻擋上線的缺陷與建議處理順序',kind:'test-blockers',time:'週二'},
-    {title:'Playwright 登入測試範例',prompt:'產生 Playwright 登入測試範例與執行說明',kind:'test-code',time:'上週四'}
-  ],
-  translate:[] // empty on purpose: shows the Agent's empty state
-};
+/* ---------- Agents (one source of truth: sidebar, Agent home, colours, Recents, chats) ----------
+   bg / fg = icon tile (fg is for icons only, not body text); action = main button and focus colour in that Agent. */
+const T=(icon,title,detail,prompt,meta,type)=>[icon,title,detail,prompt,meta,type];
+const AGENTS=[
+  {key:'tony',name:'Tony',role:'IT 架構',icon:'monitor',bg:'#fbeee3',fg:'#b8692a',action:'#c27434',
+    subtitle:'系統架構、雲端資源與技術評估',description:'協助規劃系統架構、評估技術選項與整理維運文件，讓決策有清楚的依據。',
+    placeholder:'交給 Tony，討論架構或技術問題…',cta:'新架構諮詢',
+    templates:[T('server','架構評估','比較方案的優缺點與風險','幫我評估這兩個架構方案的優缺點：\n'),T('monitor','系統健檢','列出效能與安全風險','檢查我們目前系統架構的效能與安全風險'),T('file-text','技術文件','把設計整理成可交付文件','把以下設計整理成架構說明文件：\n'),T('wrench','故障排查','依症狀列出可能原因','依以下症狀列出可能原因與排查步驟：\n')],
+    history:[{title:'Playwright 登入測試範例',prompt:'產生 Playwright 登入測試範例與執行說明',kind:'test-code',time:'昨天'},
+      {title:'雲端費用優化建議',prompt:'檢視上月雲端費用並提出優化建議',time:'週二',html:'<p>上月雲端費用共 US$18,420，三項調整約可節省 22%：</p><ol class="response-list"><li><b>關閉閒置測試環境：</b>週末自動關機，約省 US$2,100。</li><li><b>改用預留執行個體：</b>正式環境 6 台主機簽一年約，約省 US$1,450。</li><li><b>調整儲存層級：</b>90 天前的日誌移到冷儲存，約省 US$500。</li></ol>'}]},
+  {key:'matt',name:'Matt',role:'法務',icon:'scale',bg:'#fbe9e9',fg:'#b54848',action:'#c05252',
+    subtitle:'合約審閱、條款風險與法規',description:'審閱合約條款、標示風險並提出修改建議，協助你在簽署前掌握重點。',
+    placeholder:'交給 Matt，審閱合約或詢問法務問題…',cta:'新合約審閱',
+    templates:[T('file-text','合約審閱','標示高風險條款','幫我審閱這份合約，標示高風險條款：\n'),T('scale','條款比較','比對兩版差異與影響','比較以下兩版條款的差異與影響：\n'),T('check','NDA 檢查','確認保密範圍與期限','檢查這份 NDA 的保密範圍與期限：\n'),T('message','法務諮詢','確認做法是否可行','我想確認以下做法在法務上是否可行：\n')],
+    history:[{title:'經銷合約付款條件審閱',prompt:'審閱經銷合約的付款條件與違約責任',time:'昨天',html:'<p>付款與違約條款有三點需要調整：</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>條款</th><th>風險</th><th>建議</th></tr></thead><tbody><tr><td>第 5 條 付款期限</td><td>高</td><td>由 90 天改為 60 天</td></tr><tr><td>第 9 條 違約金</td><td>中</td><td>上限設為合約金額 10%</td></tr><tr><td>第 12 條 管轄法院</td><td>低</td><td>改為臺灣臺北地方法院</td></tr></tbody></table></div>'},
+      {title:'供應商 NDA 檢查',prompt:'檢查供應商 NDA 的保密範圍',time:'週一',html:'<p>保密範圍大致合理，建議補充兩點：保密期限由 2 年延長為 3 年，並明定「已公開資訊」的認定方式。</p>'}]},
+  {key:'phil',name:'Phil',role:'會議',icon:'calendar',bg:'#efeafb',fg:'#6d55b5',action:'#7660c0',
+    subtitle:'會議安排、議程與紀錄',description:'協助安排會議、準備議程與整理會議紀錄，讓每場會議都有明確結論。',
+    placeholder:'交給 Phil，安排會議或整理紀錄…',cta:'新會議任務',
+    templates:[T('calendar','安排會議','找出大家都有空的時間','幫我安排下週和設計團隊的評審會議'),T('list-box','準備議程','依目的整理討論重點','幫我準備明天產品會議的議程'),T('file-text','會議紀錄','整理決議與待辦','把以下逐字稿整理成會議紀錄：\n'),T('mail','會後追蹤','寄出決議與待辦提醒','幫我擬一封會後追蹤信，內容如下：\n')],
+    history:[{title:'Gina UI 評審會議紀錄',prompt:'整理 Gina UI 評審會議紀錄',time:'昨天',html:'<p>會議結論與待辦如下：</p><ul><li><b>決議：</b>Agent 首頁改為範例卡加 Recents。</li><li><b>待辦：</b>設計於 10/24 前提供 Agent 大頭照；RD 評估頂部列實作方式。</li></ul>'},
+      {title:'下週行程安排',prompt:'幫我排下週的會議',time:'週一',html:'<p>已排入 3 場會議，並在週三下午保留 2 小時專注時間：</p><ul><li>週一 10:00 週會</li><li>週二 14:00 客戶簡報</li><li>週四 11:00 設計評審</li></ul>'}]},
+  {key:'seth',name:'Seth',role:'財務',icon:'banknote',bg:'#e6f4ea',fg:'#3f8a55',action:'#46935d',
+    subtitle:'報表、預算與費用分析',description:'整理財務報表、追蹤預算執行並分析費用，協助你快速看懂數字。',
+    placeholder:'交給 Seth，分析報表或預算…',cta:'新財務分析',
+    templates:[T('chart','預算執行','比對預算與實際','整理本季各部門預算執行率'),T('banknote','費用分析','找出異常支出','分析上月費用，找出異常支出'),T('file-text','報表摘要','一頁看懂月報','把這份月報整理成一頁摘要：\n'),T('check','帳務核對','比對兩份資料差異','核對以下兩份帳務資料的差異：\n')],
+    history:[{title:'Q3 預算執行率',prompt:'整理 Q3 各部門預算執行率',time:'週三',html:'<p>Q3 各部門預算執行情況：</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>部門</th><th>預算</th><th>實際</th><th>執行率</th></tr></thead><tbody><tr><td>業務</td><td>1,200 萬</td><td>1,140 萬</td><td>95%</td></tr><tr><td>研發</td><td>2,000 萬</td><td>1,560 萬</td><td>78%</td></tr><tr><td>行銷</td><td>800 萬</td><td>860 萬</td><td>108%</td></tr></tbody></table></div><p>行銷超支 60 萬，主要來自展會費用。</p>'},
+      {title:'差旅費異常檢查',prompt:'檢查上月差旅費有無異常',time:'上週五',html:'<p>共有 3 筆差旅費超出標準，合計 NT$48,200。已列出申請人與超出原因，建議主管覆核。</p>'}]},
+  {key:'sapphire',name:'Sapphire',role:'SAP',icon:'database',bg:'#e3f0f8',fg:'#2f7aa6',action:'#3584b2',
+    subtitle:'SAP 單據、庫存與主檔查詢',description:'查詢 SAP 訂單、庫存與主檔資料，並把結果整理成好讀的表格。',
+    placeholder:'交給 Sapphire，查詢 SAP 資料…',cta:'新 SAP 查詢',
+    templates:[T('database','訂單查詢','依單號或客戶查詢','查詢客戶 Van der Linde 本月的 SAP 訂單'),T('server','庫存狀況','查看各倉庫存量','查詢 XR-200 在各倉的庫存量'),T('users','客戶主檔','確認聯絡人與付款條件','查詢客戶主檔的付款條件與聯絡人'),T('file-text','單據追蹤','追蹤出貨與發票狀態','追蹤訂單 4500123 的出貨與發票狀態')],
+    history:[{title:'XR-200 各倉庫存',prompt:'查詢 XR-200 在各倉的庫存量',time:'昨天',html:'<p>XR-200 目前庫存：</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>倉別</th><th>庫存</th><th>在途</th></tr></thead><tbody><tr><td>台中</td><td>1,240</td><td>300</td></tr><tr><td>荷蘭</td><td>860</td><td>0</td></tr><tr><td>美國</td><td>420</td><td>120</td></tr></tbody></table></div>'},
+      {title:'訂單 4500123 出貨狀態',prompt:'追蹤訂單 4500123 的出貨與發票狀態',time:'週二',html:'<p>訂單 4500123 已於 10/15 出貨，發票 9001877 已開立，預計 10/28 抵達鹿特丹港。</p>'}]},
+  {key:'francis',name:'Francis',role:'資料',icon:'chart',bg:'#e2f2f1',fg:'#2f8580',action:'#348f89',
+    subtitle:'數據分析、圖表與報表',description:'把資料整理成圖表與重點，回答「發生了什麼」與「為什麼」。',
+    placeholder:'交給 Francis，分析數據或製作圖表…',cta:'新資料分析',
+    templates:[T('chart','營收排名','依地區或通路排序','列出歐洲經銷商 2026 營收前 10 名'),T('list-box','趨勢分析','找出成長與下滑','分析近四季各產品線的營收趨勢'),T('users','客戶分群','依購買行為分群','把客戶依購買行為分群並說明特徵'),T('file-text','資料清理','檢查缺漏與重複','檢查這份資料的缺漏與重複：\n')],
+    history:[{title:'歐洲經銷商營收排名',prompt:'列出歐洲經銷商 2026 營收前 10 名',time:'今天',html:'<p>2026 歐洲經銷商營收前三名：Van der Linde Almere BV（63,187.59 USD）、Eat Sleep Cycle（27,940.10）、Biking Point（11,820.00），合計佔前 10 名的 61%。</p>'},
+      {title:'CRM 客戶分級規則與程式碼',prompt:'整理 CRM 客戶分級規則，並提供自動化程式碼範例',kind:'business-code',time:'上週五'}]},
+  {key:'maria',name:'Maria',role:'HR',icon:'users',bg:'#eceff3',fg:'#4f5d70',action:'#5a687c',
+    subtitle:'人事規章、請假與招募',description:'回答人事規章、請假與福利問題，並協助招募與新人到職準備。',
+    placeholder:'交給 Maria，詢問人事或招募問題…',cta:'新人事任務',
+    templates:[T('users','新人到職','準備到職清單','幫我準備下週新人到職的清單'),T('calendar','請假規定','查詢假別與天數','特休與病假的規定是什麼？'),T('file-text','職缺描述','撰寫招募 JD','幫我寫一份 UI 設計師的職缺描述'),T('check','福利查詢','確認補助申請方式','員工健康檢查補助怎麼申請？')],
+    history:[{title:'健保加保申請進度',prompt:'查詢家人健保加保的申請進度',time:'週二',html:'<p>申請已於 10/14 送出，預計 10/21 完成加保，完成後會寄通知信給你。</p>'},
+      {title:'UI 設計師職缺描述',prompt:'幫我寫一份 UI 設計師的職缺描述',time:'上週三',html:'<p>職缺重點：負責 Gina 等內部產品的介面設計與設計系統維護；需 3 年以上經驗、熟悉 Figma 與元件化設計，能與工程師協作落地。</p>'}]},
+  {key:'nick',name:'Nick',role:'文件',icon:'file-text',bg:'#e7ecfb',fg:'#3d5bc4',action:'#4664cc',
+    subtitle:'文件整理、摘要與格式轉換',description:'整理、摘要與轉換文件格式，把長文件變成能快速掌握的重點。',
+    placeholder:'交給 Nick，整理或摘要文件…',cta:'新文件任務',
+    templates:[T('file-text','文件摘要','一頁看懂長文件','把這份文件摘要成一頁重點：\n'),T('list-box','格式轉換','整理成表格或清單','把以下內容整理成表格：\n'),T('check','版本比對','標出兩版差異','比較以下兩個版本的差異：\n'),T('pencil','改寫潤飾','讓內容更清楚易讀','幫我潤飾以下內容，讓它更清楚：\n')],
+    history:[{title:'產品規格書摘要',prompt:'把產品規格書摘要成一頁重點',time:'昨天',html:'<p>規格書重點：</p><ul><li>適用車型：XR-200、XR-300</li><li>主要變更：電池容量提升至 750Wh，重量增加 0.4kg</li><li>待確認：歐盟認證文件預計 11 月取得</li></ul>'},
+      {title:'合約新舊版本比對',prompt:'比較合約 v2 與 v3 的差異',time:'週一',html:'<p>v3 共有 4 處修改：付款期限、違約金上限、保密期限與管轄法院。其中付款期限由 90 天改為 60 天影響最大。</p>'}]},
+  // 翻譯 is a tool, not an Agent: file translation only, its own page (see "Document translation"), no chats, no photo.
+  {key:'translate',dock:true,tool:true,name:'翻譯',title:'文件翻譯',role:'',icon:'languages',bg:'#eaf5f1',fg:'#527b70',action:'#5d897d',
+    subtitle:'',description:'上傳文件，保留原本的版面與格式，翻譯成你選的語言。',
+    placeholder:'',cta:'',templates:[],history:[]}
+];
+const AGENT_BY_KEY=Object.fromEntries(AGENTS.map(a=>[a.key,a]));
+const DEFAULT_AGENT=AGENTS[0].key;
+const AGENT_VIEWS=Object.fromEntries(AGENTS.map(a=>[a.key,{
+  tool:!!a.tool,title:a.title||a.name,name:a.name,role:a.role,icon:a.icon,subtitle:a.subtitle,description:a.description,placeholder:a.placeholder,action:a.cta,emptyText:a.emptyText,templates:a.templates,
+  fallback:`<p>收到！我是 ${a.name}，負責${a.role||a.name}相關的工作。請提供相關資料或更多細節，我會整理成可以直接使用的結果。</p>`,
+  clarifications:['提供相關資料','說明想要的結果','補充背景與期限']
+}]));
+const AGENT_HISTORY=Object.fromEntries(AGENTS.map(a=>[a.key,a.history]));
+// Per-Agent colours as CSS variables: --ag-bg / --ag-fg on anything tagged with the Agent, and the Agent theme inside its pages.
+(()=>{
+  const css=AGENTS.map(a=>`[data-agent-key="${a.key}"],.side-agents [data-agent="${a.key}"]{--ag-bg:${a.bg};--ag-fg:${a.fg}}
+body.business-theme.specialist[data-agent="${a.key}"]{--bg-selected:${a.bg};--accent-blue-bg:${a.bg};--accent-blue-fg:${a.fg};--accent-blue-border:color-mix(in srgb,${a.fg} 35%,#fff);--action-primary-bg:${a.action};--action-primary-bg-hover:color-mix(in srgb,${a.action} 85%,#000);--border-focus:${a.action};--focus-ring:${a.action};--shadow-focus:0 0 0 3px color-mix(in srgb,${a.action} 16%,transparent)}`).join('\n');
+  const el=document.createElement('style');el.id='agent-colours';el.textContent=css;document.head.appendChild(el);
+  // Agents with dock:true (翻譯) sit in the fixed area above the account instead of the scrolling list.
+  const item=a=>`<button class="side-nav-item" data-action="go-agent" data-agent="${a.key}">${svg(a.icon)}<span class="agent-label">${a.name}${a.role?`<small> · ${a.role}</small>`:''}</span></button>`;
+  document.querySelector('.side-scroll .side-agents').insertAdjacentHTML('beforeend',AGENTS.filter(a=>!a.dock).map(item).join(''));
+  document.querySelector('.side-dock').insertAdjacentHTML('beforeend',AGENTS.filter(a=>a.dock).map(item).join(''));
+})();
+const AGENT_META=Object.fromEntries(AGENTS.map(a=>[a.key,{name:a.name,role:a.role,icon:a.icon}]));
+const speakerHTML=key=>key==='gina'
+  ?`<div class="ai-speaker"><span class="sp-ico sp-gina" aria-hidden="true"></span><b>Gina</b></div>`
+  :`<div class="ai-speaker"><span class="sp-ico" data-agent-key="${key}">${svg(AGENT_META[key].icon)}</span><b>${AGENT_META[key].name}</b>${AGENT_META[key].role?`<span class="role-tag">${AGENT_META[key].role}</span>`:''}</div>`;
+const mentionHTML=key=>`<span class="mention" data-agent-key="${key}">@${AGENT_META[key].name}</span>`;
+const handoffHTML=(from,to)=>`<div class="handoff" role="note"><span>${from==='gina'?'Gina':AGENT_META[from].name}</span>${svg('chevron-right')}<span>${AGENT_META[to].name}</span></div>`;
+function multiAgentDemoHTML(){
+  // Consecutive replies from the same speaker show the name only once (grouping).
+  const turns=[
+    {who:'user',time:'10:02',text:'幫我準備 Q4 歐洲經銷商的業績報告，找出風險，並寫一封英文信給荷蘭的 Van der Linde 說明調整。'},
+    {who:'gina',time:'10:02',html:`<p>好的，我請三位 Agent 分工處理：</p><ul><li>${mentionHTML('francis')}：整理 Q4 業績與風險</li><li>${mentionHTML('seth')}：核對營收與退貨</li><li>${mentionHTML('matt')}：確認英文信的措辭</li></ul>`},
+    {handoff:['gina','francis']},
+    {who:'francis',time:'10:03',html:`<p>Q4 歐洲前五名經銷商如下：</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>經銷商</th><th>營收（USD）</th><th>較 Q3</th></tr></thead><tbody><tr><td>Van der Linde Almere BV</td><td>63,187.59</td><td>+18%</td></tr><tr><td>Eat Sleep Cycle</td><td>27,940.10</td><td>−6%</td></tr><tr><td>Biking Point</td><td>11,820.00</td><td>−21%</td></tr><tr><td>Velo Centrum</td><td>9,410.75</td><td>+3%</td></tr><tr><td>Rad &amp; Tour</td><td>7,905.30</td><td>−2%</td></tr></tbody></table></div><p>${mentionHTML('seth')} Van der Linde 成長特別高，請幫我確認是否已扣除退貨。</p>`},
+    {handoff:['francis','seth']},
+    {who:'seth',time:'10:04',html:`<p>已核對：Van der Linde 的 63,187.59 <b>尚未扣除退貨 2,340.00</b>，實際為 <b>60,847.59</b>，較 Q3 為 +14%。其餘四家數字一致。</p>`},
+    {handoff:['seth','francis']},
+    {who:'francis',time:'10:05',html:`<p>已更新表格。主要風險：</p><ul><li>Biking Point 連續兩季下滑，Q4 −21%，建議下週拜訪。</li><li>Van der Linde 退貨比例偏高（3.7%），需要對方說明原因。</li></ul>`},
+    {who:'gina',time:'10:06',html:`<p>我先起草英文信，${mentionHTML('matt')} 請幫忙確認措辭：</p><blockquote><p>Dear Van der Linde team,</p><p>Thank you for a strong Q4. After reconciling returns of USD 2,340.00, your Q4 revenue is USD 60,847.59, up 14% from Q3. Could you share the main reasons for this quarter's returns?</p><p>Best regards</p></blockquote>`},
+    {handoff:['gina','matt']},
+    {who:'matt',time:'10:07',html:`<p>措辭沒有法律疑慮。建議把「Could you share」改成較委婉的說法，避免被解讀成指責：</p><blockquote><p>We would appreciate it if you could share the main reasons for this quarter's returns, so we can support you better in Q1.</p></blockquote>`},
+    {who:'matt',time:'10:07',html:`<p>另外，信中提到的營收數字請以 SAP 入帳金額為準，避免與對方帳務有出入。</p>`},
+    {who:'gina',time:'10:08',html:`<p>完成了，整理如下：</p><ul><li>Q4 前五名業績表（已修正 Van der Linde 數字）</li><li>兩項風險與建議行動</li><li>給 Van der Linde 的英文說明信（已依法務建議修改）</li></ul><p>需要我把信件存成 Outlook 草稿嗎？</p>`}
+  ];
+  let last=null;
+  return turns.map(t=>{
+    if(t.handoff){last=null;return handoffHTML(...t.handoff);}
+    if(t.who==='user'){last=null;return `<div class="msg-user"><div class="col"><div class="bubble-user">${escapeHTML(t.text)}</div><div class="msg-time">${t.time}</div></div></div>`;}
+    const head=t.who===last?'':speakerHTML(t.who);last=t.who;
+    return `<div class="msg-ai${head?'':' is-continued'}"><div class="ai-col">${head}<div class="bubble-wrap"><div class="bubble-ai">${t.html}</div></div><div class="ai-meta"><div class="ai-time">${t.time}</div></div></div></div>`;
+  }).join('');
+}
+{
+  const tpl=document.createElement('template');tpl.innerHTML=multiAgentDemoHTML();
+  NEW_CHATS.push({id:++newChatSeq,agent:null,agents:['francis','seth','matt'],title:'Q4 歐洲經銷商報告',loading:false,unread:false,frag:tpl.content});
+}
+
+/* Chat header: conversation name · the Agent(s) in it, each with a grey role tag, e.g. Tony ‹IT 架構›. Gina-only chats show the name alone. */
+const agentWithRole=k=>AGENT_META[k].role?`${AGENT_META[k].name}<span class="role-tag">${AGENT_META[k].role}</span>`:AGENT_META[k].name;
+function updateChatHead(){
+  const head=document.getElementById('chat-head');if(!head)return;
+  let title=null,agents=[],ck=null,index=null;
+  if(activeNew!==null){const c=NEW_CHATS.find(x=>x.id===activeNew);if(c){ck=`n:${c.id}`;title=chatTitle(ck,c.title);agents=c.agents||(c.agent?[c.agent]:[]);}}
+  else if(document.body.classList.contains('specialist')&&activeAgentHist>=0){const k=document.body.dataset.agent;const item=(AGENT_HISTORY[k]||[])[activeAgentHist];if(item){ck=`a:${k}:${activeAgentHist}`;title=chatTitle(ck,item.title);agents=[k];}}
+  else if(activeHist>=0){index=activeHist;title=chatTitle(`g:${activeHist}`,HISTORY[activeHist]);}
+  const show=!!title&&document.body.classList.contains('chatting');
+  head.hidden=!show;if(!show)return;
+  document.getElementById('ch-title-text').textContent=title;
+  document.getElementById('ch-sep').hidden=!agents.length;
+  document.getElementById('ch-agents').innerHTML=agents.length?`<span class="ch-stack">${agents.map(k=>`<span class="sp-ico" data-agent-key="${k}">${svg(AGENT_META[k].icon)}</span>`).join('')}</span><span class="ch-names">${agents.length===1?`<button type="button" class="ch-agent-link" data-action="go-agent" data-agent="${agents[0]}">${agentWithRole(agents[0])}</button>`:agents.map(k=>`<span class="ch-agent">${agentWithRole(k)}</span>`).join('')}</span>`:'';
+}
+new MutationObserver(updateChatHead).observe(document.body,{attributes:true,attributeFilter:['class']});
+
 renderHistory(); // first paint, once AGENT_HISTORY exists
-function currentAgent(){return AGENT_VIEWS[body.dataset.agent]||AGENT_VIEWS.business}
+function currentAgent(){return AGENT_VIEWS[body.dataset.agent]||AGENT_VIEWS[DEFAULT_AGENT]}
 function renderAgentHistory(){renderHistory()}
+// ---------- Document translation (翻譯 tool) ----------
+// Prototype only: jobs run on a timer. Each job: {name,size,lang,progress,status:'running'|'done'|'failed'|'stopped',date}.
+const TR=(()=>{
+  const MAX=20*1024*1024, OK=/\.(pdf|docx?|pptx?|jpe?g|png|webp)$/i, PAGE=5;
+  const LANG_KEY='gina-tr-lang';
+  let picked=[], shown=PAGE, flash=null, timer=null;
+  const day=(m,d)=>new Date(2026,m-1,d);
+  const jobs=[
+    {name:'Receipt-2026-1809-9276.pdf',size:1.8e6,lang:'繁體中文',progress:.62,status:'running',date:new Date()},
+    {name:'Screenshot 2026-10-16 at 5.03.02 PM.png',size:.9e6,lang:'繁體中文',progress:1,status:'done',date:day(10,16)},
+    {name:'合約-v3.pdf',size:3.2e6,lang:'English',progress:.4,status:'failed',date:day(10,15)},
+    {name:'影像.png',size:.6e6,lang:'繁體中文',progress:1,status:'done',date:day(10,14)},
+    {name:'XR-300 產品規格書.pptx',size:8.4e6,lang:'Tiếng Việt',progress:1,status:'done',date:day(10,9)},
+    {name:'Van der Linde 報價單.docx',size:.4e6,lang:'English',progress:1,status:'done',date:day(10,7)},
+    {name:'員工手冊 2026.pdf',size:12.6e6,lang:'日本語',progress:1,status:'done',date:day(9,30)}
+  ];
+  const mb=n=>n>=1e6?(n/1e6).toFixed(1)+' MB':Math.max(1,Math.round(n/1e3))+' KB';
+  const when=d=>{const t=new Date();if(d.toDateString()===t.toDateString())return '今天 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    const y=new Date(t);y.setDate(t.getDate()-1);if(d.toDateString()===y.toDateString())return '昨天';return `${d.getMonth()+1}月${d.getDate()}日`;};
+  const ext=n=>(n.split('.').pop()||'').toUpperCase().slice(0,4);
+  const fileIco=n=>`<span class="tr-ext" data-ext="${ext(n).toLowerCase()}">${ext(n)}</span>`;
+
+  function renderPicked(){
+    const ul=$('#tr-files');ul.hidden=!picked.length;
+    ul.innerHTML=picked.map((f,i)=>`<li class="tr-file">${fileIco(f.name)}<span class="tr-file-name">${escapeHTML(f.name)}</span><span class="tr-file-size">${mb(f.size)}</span><button type="button" class="tr-x" data-tr-remove="${i}" aria-label="移除 ${escapeHTML(f.name)}">${svg('x')}</button></li>`).join('');
+    $('#tr-start').disabled=!picked.length;
+    $('#tr-start').textContent=picked.length>1?`開始翻譯 ${picked.length} 個檔案`:'開始翻譯';
+    $('#tr-drop').classList.toggle('has-files',!!picked.length);
+    $('#tr-drop-lead').textContent=picked.length?'拖曳更多檔案':'拖曳檔案到這裡';
+  }
+  function renderList(){
+    const rows=jobs.slice(0,shown).map((j,i)=>{
+      const status=j.status==='running'
+        ?`<span class="tr-progress" role="progressbar" aria-label="翻譯進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(j.progress*100)}"><span style="width:${Math.round(j.progress*100)}%"></span></span><span class="tr-pct">${Math.round(j.progress*100)}%</span><button type="button" class="tr-btn" data-tr-stop="${i}" aria-label="停止翻譯 ${escapeHTML(j.name)}">停止</button>`
+        :j.status==='stopped'
+        ?`<span class="tr-stopped">已停止</span><button type="button" class="tr-btn" data-tr-retry="${i}">重新翻譯</button>`
+        :j.status==='failed'
+        ?`<span class="tr-failed">${svg('info')}翻譯失敗</span><button type="button" class="tr-btn" data-tr-retry="${i}">重試</button>`
+        :`<span class="tr-date">${when(j.date)}</span><button type="button" class="tr-btn tr-dl" data-tr-download="${i}">${svg('download')}<span>下載</span></button>`;
+      return `<div class="tr-row ${j===flash?'is-new':''} is-${j.status}">${fileIco(j.name)}<div class="tr-row-main"><span class="tr-row-name">${escapeHTML(j.name)}</span><span class="tr-row-meta">${j.lang} · ${mb(j.size)}${j.status==='running'?' · 翻譯中':''}</span></div><div class="tr-row-status">${status}</div></div>`;
+    });
+    $('#tr-list').innerHTML=rows.join('')||'<p class="tr-empty">還沒有翻譯過的文件</p>';
+    $('#tr-more').hidden=jobs.length<=shown;
+  }
+  // Progress updates patch the bar in place; a finished job re-renders the list once (so its highlight plays once).
+  function tick(){
+    let busy=false, changed=false;
+    jobs.forEach((j,i)=>{if(j.status!=='running')return;busy=true;
+      j.progress=Math.min(1,j.progress+.04+Math.random()*.06);
+      if(j.progress>=1){j.status='done';j.date=new Date();flash=j;changed=true;toast(`${j.name} 翻譯完成`);return;}
+      const row=$('#tr-list').children[i];if(!row)return;const pct=Math.round(j.progress*100);
+      row.querySelector('.tr-progress > span').style.width=pct+'%';row.querySelector('.tr-progress').setAttribute('aria-valuenow',pct);row.querySelector('.tr-pct').textContent=pct+'%';});
+    if(changed){if(onPage())renderList();else unseen=true;setTimeout(()=>{flash=null;},1700);}
+    if(!busy){clearInterval(timer);timer=null;}
+    badge();
+  }
+  // Sidebar 翻譯 dot, same as chats in Recents: breathing blue while a job runs, solid blue when one finished
+  // while you were elsewhere. Opening the 翻譯 page clears it.
+  let unseen=false;
+  const onPage=()=>body.classList.contains('specialist')&&body.dataset.agent==='translate';
+  function badge(){
+    const item=document.querySelector('.side-dock [data-agent="translate"]');if(!item)return;
+    if(onPage())unseen=false;
+    const running=!onPage()&&jobs.some(j=>j.status==='running');
+    let dot=item.querySelector('.side-status');
+    if(!dot){dot=document.createElement('span');dot.setAttribute('role','img');item.appendChild(dot);}
+    dot.className='hist-status side-status'+(unseen?' is-unread':running?' is-loading':'');
+    dot.hidden=!(unseen||running);
+    dot.setAttribute('aria-label',unseen?'翻譯完成':'翻譯中');
+  }
+  new MutationObserver(badge).observe(body,{attributes:true,attributeFilter:['class','data-agent']});
+  const run=()=>{if(!timer)timer=setInterval(tick,700);};
+  function add(fileList){
+    const files=[...fileList];let skipped=0;
+    files.forEach(f=>{if(!OK.test(f.name)||f.size>MAX){skipped++;return;}
+      if(!picked.some(p=>p.name===f.name&&p.size===f.size))picked.push({name:f.name,size:f.size});});
+    renderPicked();$('#tr-files').scrollTop=$('#tr-files').scrollHeight; // newest at the bottom, keep it in view
+    if(skipped)toast(skipped===files.length?'不支援這個檔案（類型或大小超過 20MB）':`有 ${skipped} 個檔案不支援，已略過`);
+  }
+  function start(){
+    if(!picked.length)return;
+    const fresh=picked.map(f=>({...f,lang,progress:0,status:'running',date:new Date()}));
+    jobs.unshift(...fresh);
+    toast(`已開始翻譯 ${picked.length} 個檔案，完成後可在下方下載`);
+    picked=[];shown=Math.max(shown,PAGE);renderPicked();renderList();run();
+  }
+  function render(){
+    renderPicked();renderList();run();
+  }
+  // ---- 翻譯成: custom listbox (native name + Chinese name), remembered per browser ----
+  const LANGS=[['繁體中文',''],['簡體中文',''],['English','英文'],['日本語','日文'],['한국어','韓文'],['Tiếng Việt','越南文'],['ไทย','泰文'],['Bahasa Indonesia','印尼文'],['Deutsch','德文'],['Français','法文'],['Español','西班牙文']];
+  let lang=(()=>{try{const l=localStorage.getItem(LANG_KEY);return LANGS.some(([n])=>n===l)?l:LANGS[0][0];}catch{return LANGS[0][0];}})();
+  const btn=$('#tr-lang'),menu=$('#tr-lang-menu');let active=0;
+  const paintLang=()=>{$('#tr-lang-text').textContent=lang;};
+  const paintActive=()=>{[...menu.children].forEach((li,i)=>li.classList.toggle('is-active',i===active));menu.setAttribute('aria-activedescendant','tr-lang-opt-'+active);menu.children[active]?.scrollIntoView({block:'nearest'});};
+  function openLang(){
+    menu.innerHTML=LANGS.map(([n,zh],i)=>`<li role="option" id="tr-lang-opt-${i}" data-lang="${n}" aria-selected="${n===lang}"><span class="tr-opt-name">${n}</span>${zh?`<span class="tr-opt-zh">${zh}</span>`:''}${svg('check')}</li>`).join('');
+    active=LANGS.findIndex(([n])=>n===lang);
+    menu.hidden=false;btn.setAttribute('aria-expanded','true');
+    // Open upward when there is not enough room below.
+    const r=btn.getBoundingClientRect();menu.classList.toggle('is-up',innerHeight-r.bottom<menu.offsetHeight+16&&r.top>menu.offsetHeight+16);
+    paintActive();menu.focus({preventScroll:true});
+  }
+  function closeLang(focusBtn=true){if(menu.hidden)return;menu.hidden=true;btn.setAttribute('aria-expanded','false');if(focusBtn)btn.focus();}
+  function pickLang(i){lang=LANGS[i][0];try{localStorage.setItem(LANG_KEY,lang);}catch{}paintLang();closeLang();}
+  btn.addEventListener('click',e=>{e.stopPropagation();menu.hidden?openLang():closeLang();});
+  btn.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();openLang();}});
+  menu.addEventListener('click',e=>{e.stopPropagation();const li=e.target.closest('[data-lang]');if(li)pickLang([...menu.children].indexOf(li));});
+  menu.addEventListener('mousemove',e=>{const li=e.target.closest('[data-lang]');if(li){const i=[...menu.children].indexOf(li);if(i!==active){active=i;paintActive();}}});
+  menu.addEventListener('keydown',e=>{
+    const n=LANGS.length;
+    if(e.key==='ArrowDown'){e.preventDefault();active=(active+1)%n;paintActive();}
+    else if(e.key==='ArrowUp'){e.preventDefault();active=(active-1+n)%n;paintActive();}
+    else if(e.key==='Home'){e.preventDefault();active=0;paintActive();}
+    else if(e.key==='End'){e.preventDefault();active=n-1;paintActive();}
+    else if(e.key==='Enter'||e.key===' '){e.preventDefault();pickLang(active);}
+    else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeLang();}
+    else if(e.key==='Tab'){closeLang(false);}
+    else if(e.key.length===1){ // type-ahead: jump to the next language starting with that letter
+      const k=e.key.toLowerCase();const order=[...Array(n).keys()].map(x=>(active+1+x)%n);
+      const hit=order.find(x=>LANGS[x][0].toLowerCase().startsWith(k)||LANGS[x][1].startsWith(e.key));if(hit!==undefined){active=hit;paintActive();}
+    }
+  });
+  document.addEventListener('click',e=>{if(!e.target.closest('.tr-select'))closeLang(false);});
+  paintLang();
+  $('#tr-input').addEventListener('change',e=>{add(e.target.files);e.target.value='';});
+  $('#tr-start').addEventListener('click',start);
+  $('#tr-more').addEventListener('click',()=>{shown+=PAGE;renderList();});
+  $('#tr-tool').addEventListener('click',e=>{
+    const rm=e.target.closest('[data-tr-remove]');if(rm){e.preventDefault();picked.splice(+rm.dataset.trRemove,1);renderPicked();return;}
+    const dl=e.target.closest('[data-tr-download]');if(dl){toast(`下載 ${jobs[+dl.dataset.trDownload].name}（示意）`);return;}
+    const st=e.target.closest('[data-tr-stop]');if(st){const j=jobs[+st.dataset.trStop];j.status='stopped';renderList();toast(`已停止翻譯 ${j.name}`);return;}
+    const rt=e.target.closest('[data-tr-retry]');if(rt){const j=jobs[+rt.dataset.trRetry];j.status='running';j.progress=0;renderList();run();}
+  });
+  badge();run(); // jobs already in progress keep running in the background
+  return {add,render};
+})();
 function renderAgentView(agent){
-  $('.spec-big').innerHTML=svg(agent.icon);
-  $('#spec-title-name').textContent=agent.name;
-  $('#spec-subtitle').textContent=agent.subtitle;
+  // Tools (翻譯) get a plain icon: no photo, no pencil, not a button.
+  body.classList.toggle('tool-page',agent.tool);
+  $('#tr-tool').hidden=!agent.tool;
+  $('.spec-big').innerHTML=svg(agent.icon)+(agent.tool?'':`<span class="photo-badge" aria-hidden="true">${svg('pencil')}</span>`);
+  if(agent.tool){['role','tabindex','aria-label','title'].forEach(n=>$('.spec-big').removeAttribute(n));}
+  else{
+    $('.spec-big').setAttribute('role','button');$('.spec-big').setAttribute('tabindex','0');
+    $('.spec-big').setAttribute('aria-label',`更換 ${agent.name} 的照片（只有你看得到）`);
+    $('.spec-big').setAttribute('title','更換照片（只有你看得到）');
+  }
+  if(window.AgentPhoto)window.AgentPhoto.sync();
+  $('#spec-title-name').textContent=agent.title;
+  $('#spec-role').textContent=agent.role||'';$('#spec-role').hidden=!agent.role;
+  $('#spec-subtitle').textContent=agent.subtitle;$('#spec-subtitle').hidden=!agent.subtitle;
   $('#spec-desc').textContent=agent.description;
   $('#agent-new-label').textContent=agent.action;
   $('#agent-empty-text').textContent=agent.emptyText||`還沒有${agent.name}的對話`;
@@ -1929,9 +2270,10 @@ function renderAgentView(agent){
       <span class="ex-text"><b>${title}</b><span class="ex-desc">${detail}</span>${meta?`<span class="ex-meta">${meta}</span>`:''}</span>
     </button>`).join('');
   renderAgentHistory();
-  renderAgentRecents();
+  if(agent.tool)TR.render();else renderAgentRecents();
 }
 function goHome(){
+  body.classList.remove('tool-page');
   stashActiveNew();
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('specialist','chatting');
@@ -1942,9 +2284,9 @@ function goHome(){
   $('#hero').style.display='';$('#spec-hero').style.display='none';
   thread.innerHTML='';activeHist=-1;activeAgentHist=-1;renderHistory();
 }
-function goAgent(key='business'){
+function goAgent(key=DEFAULT_AGENT){
   stashActiveNew();
-  const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
+  const agent=AGENT_VIEWS[key]||AGENT_VIEWS[DEFAULT_AGENT];
   closePops();closeTools();closeReviewPanel();body.classList.remove('mobile-nav-open');
   body.classList.remove('chatting');body.classList.add('specialist');
   body.dataset.agent=key;
@@ -1956,7 +2298,7 @@ function goAgent(key='business'){
   $('#hero').style.display='none';$('#spec-hero').style.display='flex';
   thread.innerHTML='';activeHist=-1;renderHistory();
 }
-function goSpecialist(){goAgent('business')}
+function goSpecialist(){goAgent(DEFAULT_AGENT)}
 // Inline rename: an input laid over the row. Enter or click away saves, Esc cancels, empty keeps the old title.
 function rowKey(row){
   const b=row.querySelector('[data-chat-key],[data-rename-key]');
@@ -2009,15 +2351,11 @@ function startAgentChat(prefill='',fileName=null){
   stashActiveNew();closePops();closeReviewPanel();
   activeHist=-1;activeAgentHist=-1;
   startChat();
-  thread.innerHTML=`<div class="agent-blank"><span class="agent-blank-icon">${svg(agent.icon)}</span><h2>和${agent.name}開始新對話</h2><p>${agent.description}</p></div>`;
+  thread.innerHTML=`<div class="agent-blank"><span class="agent-blank-icon" data-agent-key="${body.dataset.agent}">${svg(agent.icon)}</span><h2>和${agent.name}開始新對話</h2><p>${agent.description}</p></div>`;
   activeTools.clear();attachedFile=fileName;renderTools();setComposerMenu(false);
   input.value=prefill;autosize();updateSend();
   input.focus();input.setSelectionRange(input.value.length,input.value.length);
   renderHistory();
-}
-function attachForTranslation(file){
-  if(!file)return;
-  startAgentChat('請把這份文件翻譯成英文：',file.name);
 }
 function openNewChat(id){
   const entry=NEW_CHATS.find(c=>c.id===id);if(!entry||id===activeNew)return;
@@ -2254,19 +2592,19 @@ function loadConversation(i){
   $('#scroll').scrollTop=0;
 }
 
-function loadAgentConversation(index,key=body.dataset.agent||'business'){
+function loadAgentConversation(index,key=body.dataset.agent||DEFAULT_AGENT){
   stashActiveNew();
   if(body.dataset.agent!==key||!body.classList.contains('specialist'))goAgent(key);
-  const agent=AGENT_VIEWS[key]||AGENT_VIEWS.business;
-  const item=(AGENT_HISTORY[key]||AGENT_HISTORY.business)[index];
+  const agent=AGENT_VIEWS[key]||AGENT_VIEWS[DEFAULT_AGENT];
+  const item=(AGENT_HISTORY[key]||[])[index];
   if(!item)return;
   closeTools();closeReviewPanel();
   activeHist=-1;activeAgentHist=index;
   renderHistory();renderAgentHistory();
   thread.innerHTML='';startChat();
   userMsg(item.prompt,item.time);
-  const el=aiMsg(agentHistoryResponseHTML(item.kind));
-  finishAi(el,'剛剛',item.kind.endsWith('code')?6:3);
+  const el=aiMsg(item.html||agentHistoryResponseHTML(item.kind));
+  finishAi(el,'剛剛',(item.kind||'').endsWith('code')?6:3);
   $('#scroll').scrollTop=0;
   input.setAttribute('aria-label',`傳送訊息給${agent.name}`);
   input.placeholder=agent.placeholder;
@@ -2350,7 +2688,7 @@ function send(){
   const specialist=body.classList.contains('specialist');
   if(!body.classList.contains('chatting')||thread.querySelector('.agent-blank')){
     thread.innerHTML='';startChat();
-    const entry={id:++newChatSeq,agent:specialist?(body.dataset.agent||'business'):null,title:text,loading:false,unread:false,frag:null};
+    const entry={id:++newChatSeq,agent:specialist?(body.dataset.agent||DEFAULT_AGENT):null,title:text,loading:false,unread:false,frag:null};
     NEW_CHATS.unshift(entry);activeNew=entry.id;activeHist=-1;activeAgentHist=-1;
   }
   const newEntry=NEW_CHATS.find(c=>c.id===activeNew);
@@ -2412,19 +2750,18 @@ document.addEventListener('click',e=>{
       const isPinned=ck?pinnedChats.has(ck):pinnedHist.has(menuHist);
       $('#hist-pin-label').textContent=isPinned?'取消釘選':'釘選';
       $('[data-action="hist-pin"] svg').outerHTML=svg(isPinned?'pin-off':'pin');
-      popBtn.closest('.hist-row, .agent-recent-row').classList.add('menu-open');
+      popBtn.closest('.hist-row, .agent-recent-row')?.classList.add('menu-open');
     }
     return;
   }
 
-  const toolItem=e.target.closest('#composer-menu [data-tool]');
-  if(toolItem){
-    const k=toolItem.dataset.tool;activeTools.has(k)?activeTools.delete(k):activeTools.add(k);
+  const toolToggle=e.target.closest('[data-tool-toggle]');
+  if(toolToggle){
+    const k=toolToggle.dataset.toolToggle;activeTools.has(k)?activeTools.delete(k):activeTools.add(k);
     renderTools();return;
   }
-  if(!e.target.closest('#composer-menu, #composer-plus')&&!$('#composer-menu').hidden)setComposerMenu(false);
   const ex=e.target.closest('.ex-card');
-  if(ex){ex.hasAttribute('data-ex-drop')?$('#agent-file-input').click():startAgentChat(ex.dataset.exPrompt);return;}
+  if(ex){startAgentChat(ex.dataset.exPrompt);return;}
   const chip=e.target.closest('.chip, .today-card[data-prompt]');
   if(chip){input.value=chip.dataset.prompt;send();return;}
   const replyOption=e.target.closest('.reply-option');
@@ -2461,9 +2798,9 @@ document.addEventListener('click',e=>{
   switch(a.dataset.action){
     case 'toggle-sidebar': {if(window.matchMedia('(max-width: 640px)').matches){body.classList.toggle('mobile-nav-open')}else{body.classList.toggle('collapsed')}a.setAttribute('aria-expanded',String(!body.classList.contains('collapsed')));closePops();break;}
     case 'add-file': setComposerMenu(false);$('#composer-file').click(); break;
-    case 'toggle-composer-menu': {e.stopPropagation();closePops();setComposerMenu($('#composer-menu').hidden);break;}
-    case 'toggle-locale-menu': {e.stopPropagation();setAvatarMenu(false);setLocaleMenu($('#locale-menu').hidden);break;}
-    case 'toggle-avatar-menu': {e.stopPropagation();setLocaleMenu(false);setAvatarMenu($('#avatar-menu').hidden);break;}
+    case 'toggle-locale-menu': {e.stopPropagation();setAvatarMenu(false);setAgentStyleMenu(false);setLocaleMenu($('#locale-menu').hidden);break;}
+    case 'toggle-avatar-menu': {e.stopPropagation();setLocaleMenu(false);setAgentStyleMenu(false);setAvatarMenu($('#avatar-menu').hidden);break;}
+    case 'toggle-agent-style-menu': {e.stopPropagation();setLocaleMenu(false);setAvatarMenu(false);setAgentStyleMenu($('#agent-style-menu').hidden);break;}
     case 'select-locale': selectLocale(a.dataset.locale); break;
     case 'remove-tool': activeTools.delete(a.dataset.tool);renderTools(); break;
     case 'remove-file': attachedFile=null;renderTools(); break;
@@ -2473,7 +2810,7 @@ document.addEventListener('click',e=>{
     case 'open-review-panel': {const source=a.closest('.review-card').querySelector('.review-card-content');openReviewPanel(source);break;}
     case 'copy-review': copyText(readableText($('#review-panel-content')),'已複製檢閱內容'); break;
     case 'close-review-panel': closeReviewPanel(); break;
-    case 'translate': {goAgent('translate');startAgentChat('請幫我翻譯以下內容：\n');break;}
+    case 'translate': goAgent('translate'); break;
     case 'toggle-card': {const closed=a.closest('.capcard').classList.toggle('closed');a.setAttribute('aria-expanded',String(!closed));break;}
     case 'open-mcp': openDrawer('drawer-mcp'); break;
     case 'open-kb': openDrawer('drawer-kb'); break;
@@ -2502,7 +2839,7 @@ document.addEventListener('click',e=>{
     case 'new-chat': {
       // 新對話 always means a new Gina chat; to start fresh with an Agent, click the Agent in the sidebar.
       goHome();
-      activeTools.clear();renderTools();setComposerMenu(false);
+      activeTools.clear();attachedFile=null;renderTools();setComposerMenu(false);
       input.value='';autosize();updateSend();input.focus();
       break;
     }
@@ -2512,8 +2849,14 @@ document.addEventListener('click',e=>{
     case 'cancel-send': a.closest('.action-btns').outerHTML='<div class="action-done">已取消，郵件未寄出。</div>'; break;
     case 'toggle-outlook': {e.stopPropagation();setOutlook($('#outlook-switch').getAttribute('aria-checked')!=='true');break;}
     case 'hist-rename': {
-      const row=document.querySelector('.hist-row.menu-open, .agent-recent-row.menu-open');
+      const key=menuChat||(menuHist>=0?`g:${menuHist}`:null);
+      // From the chat header there is no open row: rename in the sidebar row of the same chat.
+      const row=document.querySelector('.hist-row.menu-open, .agent-recent-row.menu-open')||(key&&document.querySelector(`.sidebar [data-chat-key="${key}"], .sidebar [data-rename-key="${key}"]`)?.closest('.hist-row'));
       closePops();if(row)startRename(row);break;
+    }
+    case 'hist-export': {
+      const key=menuChat||(menuHist>=0?`g:${menuHist}`:null);closePops();
+      if(window.ChatExport)ChatExport.openFor(key);break;
     }
     case 'hist-pin': {
       const ck=menuChat,i=menuHist;closePops();
@@ -2535,27 +2878,29 @@ document.addEventListener('click',e=>{
     case 'toast': closePops();toast(a.dataset.msg); break;
   }
 });
-// Translate drop zone. Files dropped anywhere else are ignored instead of opening in the browser.
-$('#agent-file-input').addEventListener('change',e=>{attachForTranslation(e.target.files[0]);e.target.value='';});
+// 文件翻譯 drop zone. Files dropped anywhere else are ignored instead of opening in the browser.
 ['dragenter','dragover'].forEach(type=>document.addEventListener(type,e=>{
   if(!e.dataTransfer||![...e.dataTransfer.types].includes('Files'))return;
   e.preventDefault();
-  const zone=e.target.closest&&e.target.closest('[data-ex-drop]');
-  document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.toggle('is-dragover',z===zone));
+  const zone=e.target.closest&&e.target.closest('[data-tr-drop]');
+  document.querySelectorAll('[data-tr-drop]').forEach(z=>z.classList.toggle('is-dragover',z===zone));
   e.dataTransfer.dropEffect=zone?'copy':'none';
 }));
-document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.remove('is-dragover'));});
+document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.querySelectorAll('[data-tr-drop]').forEach(z=>z.classList.remove('is-dragover'));});
 document.addEventListener('drop',e=>{
   if(!e.dataTransfer||!e.dataTransfer.files.length)return;
   e.preventDefault();
-  const zone=e.target.closest&&e.target.closest('[data-ex-drop]');
-  document.querySelectorAll('[data-ex-drop]').forEach(z=>z.classList.remove('is-dragover'));
-  if(zone)attachForTranslation(e.dataTransfer.files[0]);
+  const zone=e.target.closest&&e.target.closest('[data-tr-drop]');
+  document.querySelectorAll('[data-tr-drop]').forEach(z=>z.classList.remove('is-dragover'));
+  if(zone)TR.add(e.dataTransfer.files);
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);setAvatarMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){setComposerMenu(false);setLocaleMenu(false);setAvatarMenu(false);setAgentStyleMenu(false);closePops();closeTools();closeDownloadMenus();closeDrawers();closeReviewPanel();body.classList.remove('mobile-nav-open');}});
 </script>
+<script src="agent-photo.js?v=20261020-style-off"></script>
 <script src="gina-face.js?v=20261014-ap1"></script>
 <script src="gina-gaze.js?v=20261014-cs-eyes"></script>
-<script src="appearance.js?v=20261014-host"></script>
+<script src="appearance.js?v=20261020-theme"></script>
+<script src="gina-speaker.js?v=20261020-1"></script>
+<script src="chat-export.js?v=20261020-1"></script>
 </body>
 </html>

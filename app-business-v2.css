@@ -228,9 +228,6 @@ body.business-theme .side-agents .side-nav-item > .i {
   border-radius: 6px;
   box-sizing: border-box;
 }
-body.business-theme .side-agents .side-nav-item:nth-child(1) > .i { background: var(--agent-sales-bg); color: var(--agent-sales-fg); }
-body.business-theme .side-agents .side-nav-item:nth-child(2) > .i { background: var(--agent-test-bg); color: var(--agent-test-fg); }
-body.business-theme .side-agents .side-nav-item:nth-child(3) > .i { background: var(--agent-translate-bg); color: var(--agent-translate-fg); }
 
 body.business-theme .side-bottom {
   margin-top: auto;
@@ -1850,3 +1847,593 @@ body.business-theme .face-mini .eye-ball { transform-box: fill-box; transform-or
 /* Longer names (e.g. Thought-orb, bold when selected) stay on one line; columns may grow past the 64px tile. */
 body.business-theme .av-cards { grid-template-columns: repeat(3, minmax(64px, auto)); column-gap: 12px; }
 body.business-theme .av-name { white-space: nowrap; }
+
+/* Greeting trial: 28px (was 32) so the heading doesn't outweigh the cards. Local only, not pushed. */
+body.business-theme .hero h1,
+body.business-theme.hero-style-3 .hero h1,
+body.business-theme.hero-style-cs .hero h1 { font-size: 28px; }
+
+/* ---------- Composer tools on the bar (no "+" menu): attach + three toggles ----------
+   Quiet at rest (no border, secondary text), blue tint when on. Labels hide on narrow screens. */
+body.business-theme .cbtn.attach { width: 36px; height: 36px; border: 0; border-radius: 999px; background: transparent; color: var(--text-secondary); }
+body.business-theme .cbtn.attach .i { width: 19px; height: 19px; }
+body.business-theme .cbtn.attach:hover { background: var(--bg-field); color: var(--text-primary); }
+body.business-theme .tool-toggles { display: flex; align-items: center; gap: 2px; min-width: 0; }
+body.business-theme .tool-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, color 120ms ease-out;
+}
+body.business-theme .tool-toggle .i { width: 15px; height: 15px; flex: 0 0 auto; }
+body.business-theme .tool-toggle:hover { background: var(--bg-field); color: var(--text-primary); }
+body.business-theme .tool-toggle[aria-pressed="true"] { background: var(--accent-blue-bg); color: var(--accent-blue-fg); }
+body.business-theme .tool-toggle[aria-pressed="true"]:hover { background: var(--accent-blue-bg); }
+body.business-theme .tool-toggle:focus-visible,
+body.business-theme .cbtn.attach:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+@media (max-width: 760px) {
+  body.business-theme .tool-toggle { width: 32px; padding: 0; justify-content: center; }
+  body.business-theme .tool-toggle span { display: none; }
+}
+/* Inside the Translate Agent the whole chat is already translation, so its toggle is hidden there. */
+body.business-theme.specialist[data-agent="translate"] [data-tool-toggle="translate"] { display: none; }
+
+/* ---------- Multi-Agent chat: who is speaking ---------- */
+/* Speaker line above a reply: 20px avatar + name. A run of replies from the same speaker shows it once. */
+body.business-theme .ai-speaker { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: var(--text-primary); font-size: 13px; }
+body.business-theme .ai-speaker b { font-weight: 600; }
+body.business-theme .sp-ico {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--agent-sales-bg);
+  color: var(--agent-sales-fg);
+}
+body.business-theme .sp-ico .i { width: 12px; height: 12px; }
+body.business-theme .sp-ico[data-agent-key="test"] { background: var(--agent-test-bg); color: var(--agent-test-fg); }
+body.business-theme .sp-ico[data-agent-key="translate"] { background: var(--agent-translate-bg); color: var(--agent-translate-fg); }
+/* Gina's avatar in chat follows 外觀 → Gina: Thought (default), Buddy (hero-style-3) or Host (hero-style-cs). */
+body.business-theme .sp-ico.sp-gina { background: center / contain no-repeat url("assets/gina-thought-96.webp"); }
+body.business-theme.hero-style-3 .sp-ico.sp-gina { background-image: url("assets/gina-buddy-96.webp"); }
+body.business-theme.hero-style-cs .sp-ico.sp-gina { background: #fdf3ea center / cover no-repeat url("assets/gina-avatar-cs-240.png"); }
+body.business-theme .msg-ai.is-continued { margin-top: -8px; }
+
+/* @mentions use the mentioned Agent's colours. */
+body.business-theme .mention { padding: 0 4px; border-radius: 4px; background: var(--agent-sales-bg); color: var(--agent-sales-fg); font-weight: 500; white-space: nowrap; }
+body.business-theme .mention[data-agent-key="test"] { background: var(--agent-test-bg); color: var(--agent-test-fg); }
+body.business-theme .mention[data-agent-key="translate"] { background: var(--agent-translate-bg); color: var(--agent-translate-fg); }
+
+/* Hand-off line between speakers: quiet, centred, hairlines on both sides. */
+body.business-theme .handoff {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 18px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+body.business-theme .handoff::before,
+body.business-theme .handoff::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
+body.business-theme .handoff .i { width: 12px; height: 12px; }
+
+/* ---------- Chat header: conversation name ⌄ · Agent(s) ---------- */
+body.business-theme .chat-head {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(calc(100% - 40px), var(--layout-chat-max-width));
+  min-width: 0;
+  transform: translateX(-50%);
+  font-size: 14px;
+}
+body.business-theme .chat-head[hidden] { display: none; }
+body.business-theme .ch-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 55%;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+body.business-theme .ch-title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.business-theme .ch-title .i { flex: 0 0 auto; width: 14px; height: 14px; color: var(--icon-muted); }
+body.business-theme .ch-title:hover,
+body.business-theme .ch-title.active { background: var(--bg-field); }
+body.business-theme .ch-sep { color: var(--text-tertiary); }
+body.business-theme .ch-sep[hidden] { display: none; }
+body.business-theme .ch-agents { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; color: var(--text-secondary); font-size: 13px; }
+body.business-theme .ch-stack { display: inline-flex; }
+body.business-theme .ch-stack .sp-ico { box-shadow: 0 0 0 2px #f6f8fb; }
+body.business-theme .ch-stack .sp-ico + .sp-ico { margin-left: -5px; }
+body.business-theme .ch-agent-link { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+body.business-theme .ch-agent-link:hover { color: var(--text-primary); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---------- Agents from data: every Agent-tagged element reads --ag-bg / --ag-fg (set per Agent in #agent-colours) ---------- */
+body.business-theme .side-agents .side-nav-item > .i { background: var(--ag-bg); color: var(--ag-fg); }
+body.business-theme .side-agents .side-nav-item:hover > .i,
+body.business-theme .side-agents .side-nav-item.active > .i { color: var(--ag-fg); }
+body.business-theme .agent-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.business-theme .agent-label small { color: var(--text-tertiary); font-size: 13px; font-weight: 400; }
+body.business-theme .hist-agent,
+body.business-theme .sp-ico[data-agent-key],
+body.business-theme .mention[data-agent-key] { background: var(--ag-bg); color: var(--ag-fg); }
+body.business-theme .sp-role { color: var(--text-tertiary); font-size: 12px; font-weight: 400; }
+
+/* ---------- Agent photo: always-visible pencil badge, stronger on hover; click opens the file picker ---------- */
+body.business-theme .spec-big { position: relative; cursor: pointer; overflow: visible; }
+body.business-theme .spec-big::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: rgb(23 32 51 / 45%) center / 22px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z'/%3E%3Cpath d='m15 5 4 4'/%3E%3C/svg%3E");
+  opacity: 0;
+  transition: opacity 140ms ease-out;
+  pointer-events: none;
+}
+body.business-theme .spec-big:hover::after,
+body.business-theme .spec-big.active::after { opacity: 1; }
+body.business-theme .spec-big:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+body.business-theme .photo-badge {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--text-secondary);
+  box-shadow: 0 1px 3px rgb(28 42 61 / 14%);
+}
+body.business-theme .photo-badge .i { width: 12px; height: 12px; }
+
+/* Crop dialog */
+body.business-theme .photo-crop { width: min(340px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--border-default); border-radius: 12px; background: #ffffff; box-shadow: 0 20px 50px rgb(28 42 61 / 20%); }
+body.business-theme .photo-crop::backdrop { background: rgb(23 32 51 / 35%); }
+body.business-theme .photo-crop-body { display: grid; justify-items: center; gap: 12px; padding: 20px; }
+body.business-theme .photo-crop h2 { margin: 0; justify-self: start; font-size: 16px; font-weight: 600; }
+body.business-theme .photo-crop-note { margin: -6px 0 0; justify-self: start; color: var(--text-tertiary); font-size: 12px; }
+body.business-theme .crop-frame { position: relative; width: 240px; height: 240px; overflow: hidden; border-radius: 24px; background: #f3f5f8; cursor: grab; touch-action: none; }
+body.business-theme .crop-frame.is-dragging { cursor: grabbing; }
+body.business-theme .crop-frame img { position: absolute; top: 0; left: 0; max-width: none; user-select: none; pointer-events: none; }
+body.business-theme .crop-zoom { display: flex; align-items: center; gap: 8px; width: 240px; color: var(--icon-muted); }
+body.business-theme .crop-zoom .i { width: 14px; height: 14px; flex: 0 0 auto; }
+body.business-theme .crop-zoom input { flex: 1; accent-color: var(--action-primary-bg); }
+body.business-theme .photo-crop-actions { display: flex; justify-content: flex-end; gap: 8px; width: 100%; }
+body.business-theme .photo-crop-actions button { height: 36px; padding: 0 16px; border-radius: 8px; font: inherit; font-size: 14px; cursor: pointer; }
+/* Header title is plain text now (no menu). */
+body.business-theme .ch-title { cursor: default; padding: 0 2px 0 0; }
+body.business-theme .ch-title:hover { background: transparent; }
+/* Role in full-width parentheses sits right after the name. */
+body.business-theme .agent-label small { margin-left: 1px; }
+body.business-theme .ai-speaker .sp-role { margin-left: -6px; }
+/* On narrow screens content scrolls under the header: give it the canvas colour so the two never overlap. */
+body.business-theme .chat-head { padding-block: 4px; background: var(--bg-canvas, #f6f8fb); box-shadow: 0 8px 8px -8px var(--bg-canvas, #f6f8fb); }
+/* Phones: the header sits in the normal flow above the conversation (so nothing scrolls past it) and keeps
+   only the avatars after the name, leaving room for the conversation title. */
+@media (max-width: 640px) {
+  body.business-theme .chat-head { position: static; transform: none; width: auto; margin: 0 16px 6px; padding-block: 6px; box-shadow: none; }
+  body.business-theme .ch-title { flex: 1 1 auto; max-width: none; }
+  body.business-theme .ch-names { display: none; }
+}
+
+/* Role tag (top bar + speaker labels): neutral grey, no parentheses; the Agent colour stays on the avatar. */
+body.business-theme .role-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: #eef1f5;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+body.business-theme .ai-speaker .role-tag { margin-left: -2px; }
+body.business-theme .ch-names { display: inline-flex; align-items: center; flex-wrap: nowrap; }
+body.business-theme .ch-agent-link { display: inline-flex; align-items: center; }
+body.business-theme .ch-names { gap: 12px; }
+body.business-theme .ch-agent { display: inline-flex; align-items: center; }
+
+/* ---------- Agent 頭像 submenu (圖示 / 人物): previews show three Agents in each style ---------- */
+body.business-theme .av-cards-2 { grid-template-columns: repeat(2, minmax(76px, auto)); }
+body.business-theme .av-cards-2 .av-tile { width: 76px; }
+body.business-theme .as-preview { display: flex; align-items: center; }
+body.business-theme .as-chip {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 0 0 2px #f6f8fb;
+}
+body.business-theme .as-chip + .as-chip { margin-left: -3px; }
+body.business-theme .as-chip .i { width: 12px; height: 12px; }
+/* Role tag, option A: white with a hairline, so it reads on the #f6f8fb canvas like the white cards do. */
+body.business-theme .role-tag { background: #ffffff; border: 1px solid #e1e6ee; height: 20px; box-sizing: border-box; }
+
+/* Agent home: role tag beside the name (hidden for Agents without a role, e.g. 翻譯). */
+body.business-theme .spec-name-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+body.business-theme .spec-name-row .role-tag { margin-left: 0; height: 24px; padding: 0 8px; font-size: 13px; }
+body.business-theme .spec-name-row .role-tag[hidden] { display: none; }
+
+
+/* Fixed tools above the account (翻譯): always visible, same rows as the Agent list. */
+body.business-theme .side-dock { padding: 0 0 6px; }
+body.business-theme .side-dock:empty { display: none; }
+
+/* ---------- 翻譯 tool page (document translation): not an Agent, so no chats, no examples, no photo ---------- */
+body.business-theme.tool-page .agent-new,
+body.business-theme.tool-page .agent-empty,
+body.business-theme.tool-page .agent-examples-wrap,
+body.business-theme.tool-page .agent-recents { display: none !important; }
+body.business-theme.tool-page .spec-big { cursor: default; }
+body.business-theme.tool-page .spec-big::after { display: none; }
+body.business-theme .spec-title .s[hidden] { display: none; }
+body.business-theme .tr-tool[hidden] { display: none; }
+body.business-theme .tr-tool { margin-top: 24px; }
+
+/* One card: drop zone, the picked files, then 翻譯成 [語言] · 開始翻譯 on one row. */
+body.business-theme .tr-card {
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: #ffffff;
+}
+body.business-theme .tr-files { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+body.business-theme .tr-files[hidden] { display: none; }
+body.business-theme .tr-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 6px 0 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--bg-field);
+  font-size: 13px;
+}
+body.business-theme .tr-file-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); }
+body.business-theme .tr-file-size { flex: 0 0 auto; color: var(--text-tertiary); font-size: 12px; }
+body.business-theme .tr-x { width: 26px; height: 26px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--icon-muted); cursor: pointer; }
+body.business-theme .tr-x:hover { background: var(--bg-selected); color: var(--text-primary); }
+body.business-theme .tr-x .i { width: 14px; height: 14px; }
+
+/* File-type badge, used in the picked list and the log. */
+body.business-theme .tr-ext {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: #eef1f5;
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+body.business-theme .tr-ext[data-ext="pdf"] { background: #fbe9e9; color: #b54848; }
+body.business-theme .tr-ext[data-ext="doc"], body.business-theme .tr-ext[data-ext="docx"] { background: #e7ecfb; color: #3d5bc4; }
+body.business-theme .tr-ext[data-ext="ppt"], body.business-theme .tr-ext[data-ext="pptx"] { background: #fbeee3; color: #b8692a; }
+
+body.business-theme .tr-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+body.business-theme .tr-lang { display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 13px; }
+body.business-theme .tr-start {
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--action-primary-bg);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+body.business-theme .tr-start:hover:not(:disabled) { background: var(--action-primary-bg-hover); }
+body.business-theme .tr-start:disabled { background: #e5e9ef; color: var(--text-tertiary); cursor: not-allowed; }
+
+/* 翻譯紀錄: one row per file — name + language/size, then progress, failure + 重試, or date + 下載. */
+body.business-theme .tr-log { margin-top: 32px; }
+body.business-theme .tr-list { border-top: 1px solid var(--border-subtle); }
+body.business-theme .tr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background .6s;
+}
+body.business-theme .tr-row.is-new { animation: tr-flash 1.6s ease-out; }
+@keyframes tr-flash { 0% { background: var(--accent-blue-bg); } 100% { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { body.business-theme .tr-row.is-new { animation: none; } }
+body.business-theme .tr-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+body.business-theme .tr-row-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary); font-size: 14px; }
+body.business-theme .tr-row-meta { color: var(--text-tertiary); font-size: 12px; }
+body.business-theme .tr-row-status { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; color: var(--text-tertiary); font-size: 13px; }
+body.business-theme .tr-progress { width: 96px; height: 6px; border-radius: 99px; background: #eef1f5; overflow: hidden; }
+body.business-theme .tr-progress > span { display: block; height: 100%; border-radius: inherit; background: var(--action-primary-bg); transition: width .6s ease; }
+body.business-theme .tr-pct { width: 34px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+body.business-theme .tr-failed { display: inline-flex; align-items: center; gap: 4px; color: #b54848; }
+body.business-theme .tr-failed .i { width: 14px; height: 14px; }
+body.business-theme .tr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  background: #ffffff;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+body.business-theme .tr-btn:hover { background: var(--bg-field); }
+body.business-theme .tr-btn .i { width: 14px; height: 14px; }
+body.business-theme .tr-more {
+  display: block;
+  margin: 10px auto 0;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+body.business-theme .tr-more:hover { background: var(--bg-field); color: var(--text-primary); }
+body.business-theme .tr-more[hidden] { display: none; }
+body.business-theme .tr-empty { padding: 20px 12px; color: var(--text-tertiary); font-size: 13px; }
+
+@media (max-width: 640px) {
+  body.business-theme .tr-actions { flex-wrap: wrap; }
+  body.business-theme .tr-start { flex: 1 1 100%; }
+  body.business-theme .tr-progress { width: 56px; }
+  body.business-theme .tr-dl span { display: none; }
+}
+
+body.business-theme .tr-stopped { color: var(--text-tertiary); }
+
+/* Menu items switched off with the hidden attribute (e.g. Agent 頭像) stay hidden despite display:flex. */
+body.business-theme .menu-item[hidden] { display: none; }
+
+/* 文件翻譯 drop zone: one fixed size. Files list from the top; the pick area fills what is left (min one line). */
+body.business-theme .tr-drop {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: background .15s, border-color .15s;
+}
+body.business-theme .tr-drop.is-dragover { border-color: var(--accent-blue-fg); background: var(--accent-blue-bg); }
+body.business-theme .tr-drop .tr-files { flex: 0 1 auto; min-height: 0; margin: 0; overflow-y: auto; overscroll-behavior: contain; }
+body.business-theme .tr-pick {
+  position: relative;
+  flex: 1 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+body.business-theme .tr-pick input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+body.business-theme .tr-pick:hover { background: var(--accent-blue-bg); }
+body.business-theme .tr-drop:not(.has-files) .tr-pick:hover { background: none; }
+body.business-theme .tr-drop:not(.has-files):hover { border-color: var(--accent-blue-fg); background: var(--accent-blue-bg); }
+body.business-theme .tr-pick:has(input:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+body.business-theme .tr-drop-ico { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 8px; background: var(--accent-blue-bg); color: var(--accent-blue-fg); }
+body.business-theme .tr-drop-ico .i { width: 18px; height: 18px; }
+body.business-theme .tr-drop-title { color: var(--text-primary); font-size: 14px; font-weight: 500; }
+body.business-theme .tr-drop-title u { color: var(--accent-blue-fg); text-underline-offset: 3px; }
+body.business-theme .tr-drop-hint { color: var(--text-tertiary); font-size: 12px; }
+/* With files: the add line is a single row with a small icon, centred in the space left. */
+body.business-theme .tr-drop.has-files .tr-pick { flex-direction: row; gap: 8px; }
+body.business-theme .tr-drop.has-files .tr-drop-ico { width: 20px; height: 20px; background: none; }
+body.business-theme .tr-drop.has-files .tr-drop-title { font-size: 13px; color: var(--text-secondary); }
+body.business-theme .tr-drop.has-files .tr-drop-hint { display: none; }
+
+/* 翻譯成 language picker: a button + listbox in the same style as the other Gina menus. */
+body.business-theme .tr-select { position: relative; }
+body.business-theme .tr-select-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 156px;
+  height: 34px;
+  padding: 0 10px 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+body.business-theme .tr-select-btn:hover { border-color: var(--border-strong); }
+body.business-theme .tr-select-btn[aria-expanded="true"] { border-color: var(--action-primary-bg); box-shadow: var(--shadow-focus); }
+body.business-theme .tr-select-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+body.business-theme .tr-select-btn .i { width: 14px; height: 14px; color: var(--icon-muted); transition: transform .15s; }
+body.business-theme .tr-select-btn[aria-expanded="true"] .i { transform: rotate(180deg); }
+body.business-theme .tr-select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 40;
+  min-width: 100%;
+  width: 232px;
+  max-height: 296px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgb(15 23 42 / 12%), 0 2px 6px rgb(15 23 42 / 6%);
+  box-sizing: border-box;
+  outline: none;
+}
+body.business-theme .tr-select-menu[hidden] { display: none; }
+body.business-theme .tr-select-menu.is-up { top: auto; bottom: calc(100% + 6px); }
+body.business-theme .tr-select-menu li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+body.business-theme .tr-select-menu li.is-active { background: var(--bg-field); }
+body.business-theme .tr-select-menu li[aria-selected="true"] { background: var(--accent-blue-bg); }
+body.business-theme .tr-opt-name { white-space: nowrap; }
+body.business-theme .tr-opt-zh { color: var(--text-tertiary); font-size: 12px; white-space: nowrap; }
+body.business-theme .tr-select-menu li .i { width: 15px; height: 15px; margin-left: auto; color: var(--accent-blue-fg); visibility: hidden; }
+body.business-theme .tr-select-menu li[aria-selected="true"] .i { visibility: visible; }
+
+/* Toasts at the top (centre), sliding down; app.css (shared with other pages) keeps them at the bottom. */
+body.business-theme .toast { top: 20px; bottom: auto; width: max-content; max-width: calc(100vw - 32px); box-sizing: border-box; transform: translateX(-50%) translateY(-12px); }
+body.business-theme .toast.show { transform: translateX(-50%); }
+@media (prefers-reduced-motion: reduce) { body.business-theme .toast { transform: translateX(-50%); } }
+
+/* 翻譯 in the sidebar dock: status dot on the right (running / finished while away), like Recents rows. */
+body.business-theme .side-dock .side-nav-item { position: relative; }
+body.business-theme .side-status[hidden] { display: none; }
+
+/* ---------- 外觀 submenu: 主題 row (two wide cards) above the Gina row ---------- */
+body.business-theme .ap-label { padding: 0 2px 8px; color: var(--text-tertiary); font-size: 12px; font-weight: 500; }
+body.business-theme .ap-sep { height: 1px; margin: 12px 0; background: var(--border-subtle); }
+body.business-theme .av-themes { grid-template-columns: repeat(2, 1fr); }
+body.business-theme .av-themes .av-tile { width: 100%; overflow: hidden; }
+body.business-theme .ap-theme { position: relative; display: block; width: 100%; height: 100%; }
+/* Minimalism preview: white sidebar, grey canvas, one card. */
+body.business-theme .ap-minimal { background: #f6f8fb; }
+body.business-theme .ap-minimal::before { content: ""; position: absolute; inset: 0 64% 0 0; background: #ffffff; border-right: 1px solid #e1e6ef; }
+body.business-theme .ap-minimal::after { content: ""; position: absolute; left: 46%; right: 12%; top: 36%; height: 24%; border: 1px solid #e1e6ef; border-radius: 4px; background: #ffffff; }
+/* Aurora preview: white with colour in the corners, a frosted panel. */
+body.business-theme .ap-aurora {
+  background:
+    radial-gradient(60% 70% at 100% 0%, #e2c9f5, transparent 70%),
+    radial-gradient(60% 70% at 100% 100%, #f7cde4, transparent 70%),
+    radial-gradient(50% 60% at 0% 0%, #d6e6fa, transparent 70%),
+    #fbfbfd;
+}
+body.business-theme .ap-aurora::after { content: ""; position: absolute; left: 34%; right: 8%; top: 12%; bottom: 12%; border: 1px solid rgb(255 255 255 / 95%); border-radius: 8px; background: rgb(255 255 255 / 70%); box-shadow: 0 4px 10px rgb(80 70 160 / 14%); }
+
+/* Gina's latest reply: a live avatar (gina-speaker.js) in place of the still picture. Orb and face are drawn
+   with some empty margin, so they sit a little larger than the 20px tile and are not clipped. */
+body.business-theme .sp-ico.sp-gina.is-live { position: relative; overflow: visible; background: none; }
+body.business-theme .sp-gina .sp-live-orb { display: block; width: 26px; height: 26px; flex: 0 0 auto; }
+body.business-theme .sp-gina .face-mini { width: 26px; height: 26px; flex: 0 0 auto; }
+body.business-theme .sp-ico.sp-gina[data-live="host"] { overflow: hidden; background: #fdf3ea; }
+body.business-theme .sp-gina[data-live="host"] img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- 匯出對話: header button + format panel (chat-export.js) ---------- */
+body.business-theme .ch-export {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  margin-left: auto;
+  padding: 0 12px 0 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+body.business-theme .ch-export:hover,
+body.business-theme .ch-export.active { border-color: var(--border-strong); color: var(--text-primary); }
+body.business-theme .ch-export:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+body.business-theme .ch-export .i { width: 15px; height: 15px; }
+@media (max-width: 640px) {
+  body.business-theme .ch-export { width: 30px; padding: 0; justify-content: center; }
+  body.business-theme .ch-export span { display: none; }
+}
+body.business-theme .export-pop {
+  position: fixed;
+  z-index: 60;
+  width: 300px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgb(28 42 61 / 14%);
+  box-sizing: border-box;
+}
+body.business-theme .export-pop[hidden] { display: none; }
+body.business-theme .export-title { color: var(--text-primary); font-size: 14px; font-weight: 600; }
+body.business-theme .export-note { margin: 6px 0 12px; color: var(--text-tertiary); font-size: 13px; line-height: 1.55; }
+body.business-theme .export-formats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+body.business-theme .export-format {
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+body.business-theme .export-format:hover { border-color: var(--border-strong); background: var(--bg-field); }
+body.business-theme .export-format:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* The fixed app header is empty in this prototype but sits over the chat header: let clicks through
+   (it was blocking the 匯出 button and the Agent name link). */
+body.business-theme .header:empty { pointer-events: none; }
