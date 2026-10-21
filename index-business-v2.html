@@ -2060,27 +2060,21 @@ const speakerHTML=key=>key==='gina'
   ?`<div class="ai-speaker"><span class="sp-ico sp-gina" aria-hidden="true"></span><b>Gina</b></div>`
   :`<div class="ai-speaker"><span class="sp-ico" data-agent-key="${key}">${svg(AGENT_META[key].icon)}</span><b>${AGENT_META[key].name}</b>${AGENT_META[key].role?`<span class="role-tag">${AGENT_META[key].role}</span>`:''}</div>`;
 const mentionHTML=key=>`<span class="mention" data-agent-key="${key}">@${AGENT_META[key].name}</span>`;
-const handoffHTML=(from,to)=>`<div class="handoff" role="note"><span>${from==='gina'?'Gina':AGENT_META[from].name}</span>${svg('chevron-right')}<span>${AGENT_META[to].name}</span></div>`;
 function multiAgentDemoHTML(){
   // Consecutive replies from the same speaker show the name only once (grouping).
   const turns=[
     {who:'user',time:'10:02',text:'幫我準備 Q4 歐洲經銷商的業績報告，找出風險，並寫一封英文信給荷蘭的 Van der Linde 說明調整。'},
     {who:'gina',time:'10:02',html:`<p>好的，我請三位 Agent 分工處理：</p><ul><li>${mentionHTML('francis')}：整理 Q4 業績與風險</li><li>${mentionHTML('seth')}：核對營收與退貨</li><li>${mentionHTML('matt')}：確認英文信的措辭</li></ul>`},
-    {handoff:['gina','francis']},
     {who:'francis',time:'10:03',html:`<p>Q4 歐洲前五名經銷商如下：</p><div class="response-table-wrap"><table class="response-table"><thead><tr><th>經銷商</th><th>營收（USD）</th><th>較 Q3</th></tr></thead><tbody><tr><td>Van der Linde Almere BV</td><td>63,187.59</td><td>+18%</td></tr><tr><td>Eat Sleep Cycle</td><td>27,940.10</td><td>−6%</td></tr><tr><td>Biking Point</td><td>11,820.00</td><td>−21%</td></tr><tr><td>Velo Centrum</td><td>9,410.75</td><td>+3%</td></tr><tr><td>Rad &amp; Tour</td><td>7,905.30</td><td>−2%</td></tr></tbody></table></div><p>${mentionHTML('seth')} Van der Linde 成長特別高，請幫我確認是否已扣除退貨。</p>`},
-    {handoff:['francis','seth']},
     {who:'seth',time:'10:04',html:`<p>已核對：Van der Linde 的 63,187.59 <b>尚未扣除退貨 2,340.00</b>，實際為 <b>60,847.59</b>，較 Q3 為 +14%。其餘四家數字一致。</p>`},
-    {handoff:['seth','francis']},
     {who:'francis',time:'10:05',html:`<p>已更新表格。主要風險：</p><ul><li>Biking Point 連續兩季下滑，Q4 −21%，建議下週拜訪。</li><li>Van der Linde 退貨比例偏高（3.7%），需要對方說明原因。</li></ul>`},
     {who:'gina',time:'10:06',html:`<p>我先起草英文信，${mentionHTML('matt')} 請幫忙確認措辭：</p><blockquote><p>Dear Van der Linde team,</p><p>Thank you for a strong Q4. After reconciling returns of USD 2,340.00, your Q4 revenue is USD 60,847.59, up 14% from Q3. Could you share the main reasons for this quarter's returns?</p><p>Best regards</p></blockquote>`},
-    {handoff:['gina','matt']},
     {who:'matt',time:'10:07',html:`<p>措辭沒有法律疑慮。建議把「Could you share」改成較委婉的說法，避免被解讀成指責：</p><blockquote><p>We would appreciate it if you could share the main reasons for this quarter's returns, so we can support you better in Q1.</p></blockquote>`},
     {who:'matt',time:'10:07',html:`<p>另外，信中提到的營收數字請以 SAP 入帳金額為準，避免與對方帳務有出入。</p>`},
     {who:'gina',time:'10:08',html:`<p>完成了，整理如下：</p><ul><li>Q4 前五名業績表（已修正 Van der Linde 數字）</li><li>兩項風險與建議行動</li><li>給 Van der Linde 的英文說明信（已依法務建議修改）</li></ul><p>需要我把信件存成 Outlook 草稿嗎？</p>`}
   ];
   let last=null;
   return turns.map(t=>{
-    if(t.handoff){last=null;return handoffHTML(...t.handoff);}
     if(t.who==='user'){last=null;return `<div class="msg-user"><div class="col"><div class="bubble-user">${escapeHTML(t.text)}</div><div class="msg-time">${t.time}</div></div></div>`;}
     const head=t.who===last?'':speakerHTML(t.who);last=t.who;
     return `<div class="msg-ai${head?'':' is-continued'}"><div class="ai-col">${head}<div class="bubble-wrap"><div class="bubble-ai">${t.html}</div></div><div class="ai-meta"><div class="ai-time">${t.time}</div></div></div></div>`;

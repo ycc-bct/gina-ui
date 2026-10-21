@@ -1918,17 +1918,6 @@ body.business-theme .mention[data-agent-key="test"] { background: var(--agent-te
 body.business-theme .mention[data-agent-key="translate"] { background: var(--agent-translate-bg); color: var(--agent-translate-fg); }
 
 /* Hand-off line between speakers: quiet, centred, hairlines on both sides. */
-body.business-theme .handoff {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 4px 0 18px;
-  color: var(--text-tertiary);
-  font-size: 12px;
-}
-body.business-theme .handoff::before,
-body.business-theme .handoff::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
-body.business-theme .handoff .i { width: 12px; height: 12px; }
 
 /* ---------- Chat header: conversation name ⌄ · Agent(s) ---------- */
 body.business-theme .chat-head {

@@ -11,7 +11,7 @@
 
 - 8 位 Agent，依序：Tony（IT 架構）、Matt（法務）、Phil（會議）、Seth（財務）、Sapphire（SAP）、Francis（資料）、Maria（HR）、Nick（文件）。每位一組識別色（`--agent-{key}-bg / -fg / -action`），只用在 icon tile、Agent 圖示與該 Agent 頁的主要操作。
 - 側欄列寫成「名字 · 角色」，角色用 13px `--text-tertiary`。其他地方（Agent 首頁名字旁、對話標題列、發言者標籤）的角色用 **tag**：Minimalism 白底、1px `#e1e6ee`、高 20px、圓角 6px、12px；Agent 首頁名字旁放大為 24px、13px。不加括號。
-- 多人對話：每則回覆上方是發言者（頭像＋名字＋角色 tag），同一人連續回覆只顯示一次；換人時中間有一行「A › B」交接線；內文用 `@名字` 提及，顏色取該 Agent 的 fg。
+- 多人對話：每則回覆上方是發言者（頭像＋名字＋角色 tag），同一人連續回覆只顯示一次；換人時不加交接線（發言者標籤已足夠）；內文用 `@名字` 提及，顏色取該 Agent 的 fg。
 - 對話標題列：「對話名稱 · Agent 頭像疊放 + 名字 + 角色 tag」，右側為「匯出」按鈕（見下）。單一 Agent 時名字可點，回到該 Agent 首頁。窄於 640px 只留頭像。
 - Agent 照片編輯與「Agent 頭像（圖示／人物）」切換**目前關閉**：所有人看到預設頭像（Minimalism 為線條 icon、Aurora 為 3D icon）。程式保留，`AGENT_PHOTO_EDIT` 與 `AGENT_STYLE_ENABLED` 改為 true 即可開回。
 
