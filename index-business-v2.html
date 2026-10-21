@@ -2077,7 +2077,7 @@ function multiAgentDemoHTML(){
   return turns.map(t=>{
     if(t.who==='user'){last=null;return `<div class="msg-user"><div class="col"><div class="bubble-user">${escapeHTML(t.text)}</div><div class="msg-time">${t.time}</div></div></div>`;}
     const head=t.who===last?'':speakerHTML(t.who);last=t.who;
-    return `<div class="msg-ai${head?'':' is-continued'}"><div class="ai-col">${head}<div class="bubble-wrap"><div class="bubble-ai">${t.html}</div></div><div class="ai-meta"><div class="ai-time">${t.time}</div></div></div></div>`;
+    return `<div class="msg-ai${head?'':' is-continued'}"><div class="ai-col">${head}<div class="bubble-wrap"><div class="bubble-ai">${t.html}</div></div>${aiMetaHTML(t.time)}</div></div>`;
   }).join('');
 }
 {
@@ -2390,10 +2390,12 @@ function executionDetailsHTML(steps,agentName){
     </article>`).join('')}</div>
   </details>`;
 }
+// Time + Copy + Download under every finished AI reply (live replies, history and the multi-agent demo alike).
+function aiMetaHTML(time){return `<div class="ai-meta"><div class="ai-time">${time}</div><div class="ai-actions"><button data-action="copy-message" aria-label="複製回覆">${svg('copy')}</button><button data-action="toggle-download" aria-label="下載回覆" aria-haspopup="menu" aria-expanded="false">${svg('download')}</button><div class="download-menu" role="menu" hidden><button class="download-option" role="menuitem" data-format="txt">純文字 (.txt)</button><button class="download-option" role="menuitem" data-format="md">Markdown (.md)</button><button class="download-option" role="menuitem" data-format="png">圖片 (.png)</button><button class="download-option" role="menuitem" data-format="pdf">PDF (.pdf)</button><button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button></div></div></div>`}
 function finishAi(el,time,steps=5,agentName=body.classList.contains('specialist')?currentAgent().name:'Gina'){
   const col=el.querySelector('.ai-col');
   col.querySelector('.bubble-wrap').insertAdjacentHTML('beforebegin',executionDetailsHTML(steps,agentName));
-  col.insertAdjacentHTML('beforeend',`<div class="ai-meta"><div class="ai-time">${time}</div><div class="ai-actions"><button data-action="copy-message" aria-label="複製回覆">${svg('copy')}</button><button data-action="toggle-download" aria-label="下載回覆" aria-haspopup="menu" aria-expanded="false">${svg('download')}</button><div class="download-menu" role="menu" hidden><button class="download-option" role="menuitem" data-format="txt">純文字 (.txt)</button><button class="download-option" role="menuitem" data-format="md">Markdown (.md)</button><button class="download-option" role="menuitem" data-format="png">圖片 (.png)</button><button class="download-option" role="menuitem" data-format="pdf">PDF (.pdf)</button><button class="download-option" role="menuitem" data-format="docx">Word (.docx)</button></div></div></div>`);
+  col.insertAdjacentHTML('beforeend',aiMetaHTML(time));
 }
 
 const REPLY_NO_MAIL = `<p>目前我沒有連接郵件相關的工具或專門的郵件助理，因此<b>無法直接存取您的信箱</b>來查詢未讀信件數量。</p>
