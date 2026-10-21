@@ -1,0 +1,195 @@
+{
+  "theme": {
+    "$description": "Aurora 主題（外觀 → 主題 → Aurora）。只放和 Minimalism（theme.light）不同的值；其餘沿用 light。以 body.theme-aurora 或 [data-theme-variant=\"aurora\"] 套用。白為主、角落淡彩、毛玻璃面板、logo 色系漸層按鈕。",
+    "bg": {
+      "app": {
+        "$type": "color",
+        "$value": "#fbfbfd",
+        "$description": "頁面底色；四角另疊 aurora.gradient.page"
+      },
+      "canvas": {
+        "$type": "color",
+        "$value": "transparent",
+        "$description": "主面板本身是玻璃，畫布透明"
+      },
+      "surface": {
+        "$type": "color",
+        "$value": "rgb(255 255 255 / 62%)",
+        "$description": "玻璃表面（側欄搜尋、次要容器）"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "rgb(255 255 255 / 72%)",
+        "$description": "浮起的玻璃表面"
+      },
+      "field": {
+        "$type": "color",
+        "$value": "rgb(255 255 255 / 55%)",
+        "$description": "輸入欄位底"
+      },
+      "hover": {
+        "$type": "color",
+        "$value": "rgb(255 255 255 / 70%)",
+        "$description": "滑鼠移入"
+      }
+    },
+    "border": {
+      "subtle": {
+        "$type": "color",
+        "$value": "rgb(255 255 255 / 70%)",
+        "$description": "玻璃白邊（淡）"
+      },
+      "default": {
+        "$type": "color",
+        "$value": "rgb(255 255 255 / 85%)",
+        "$description": "玻璃白邊"
+      }
+    },
+    "action": {
+      "primary": {
+        "bg": {
+          "$type": "color",
+          "$value": "#2f44b8",
+          "$description": "單色主要操作（焦點、選中外框）；按鈕本身用 aurora.gradient.primary"
+        },
+        "bgHover": {
+          "$type": "color",
+          "$value": "#263a9e",
+          "$description": "單色主要操作 hover"
+        }
+      }
+    },
+    "aurora": {
+      "gradient": {
+        "page": {
+          "$type": "gradient",
+          "$value": "radial-gradient(40% 35% at 0% 0%, rgb(210 228 250 / 50%), transparent 70%), radial-gradient(45% 45% at 100% 0%, rgb(232 214 250 / 80%), transparent 70%), radial-gradient(45% 45% at 100% 100%, rgb(250 214 236 / 80%), transparent 70%), radial-gradient(35% 30% at 0% 100%, rgb(252 242 210 / 40%), transparent 70%)",
+          "$description": "四角淡彩：左上淡藍、右上淡紫、右下淡粉、左下淡黃；左側（側欄）刻意較淡"
+        },
+        "panel": {
+          "$type": "gradient",
+          "$value": "radial-gradient(60% 50% at 100% 0%, rgb(243 232 252 / 45%), transparent 70%), radial-gradient(50% 45% at 0% 100%, rgb(228 238 252 / 40%), transparent 70%)",
+          "$description": "主面板內的微光，疊在 aurora.glass.panel 上"
+        },
+        "primary": {
+          "$type": "gradient",
+          "$value": "linear-gradient(135deg, #4b97e0, #2a3cb6)",
+          "$description": "主要按鈕：取自 Gina logo，左上天藍、右下深海軍藍，比 logo 淡一階"
+        },
+        "tag": {
+          "$type": "gradient",
+          "$value": "linear-gradient(135deg, #f1f7fe, #e5eefb)",
+          "$description": "角色 tag、匯出格式 hover：按鈕同色系的淡藍"
+        },
+        "iconTile": {
+          "$type": "gradient",
+          "$value": "linear-gradient(160deg, #eef2fe, #ece6fb)",
+          "$description": "首頁卡片玻璃 icon 的底框"
+        }
+      },
+      "glass": {
+        "panel": {
+          "$type": "color",
+          "$value": "rgb(255 255 255 / 80%)",
+          "$description": "主面板"
+        },
+        "card": {
+          "$type": "color",
+          "$value": "rgb(255 255 255 / 82%)",
+          "$description": "卡片、輸入框、翻譯上傳卡"
+        },
+        "menu": {
+          "$type": "color",
+          "$value": "rgb(255 255 255 / 72%)",
+          "$description": "選單、彈出層"
+        },
+        "rim": {
+          "$type": "color",
+          "$value": "#ffffff",
+          "$description": "玻璃白邊、選中列外框"
+        },
+        "blurPanel": {
+          "$type": "dimension",
+          "$value": "30px",
+          "$description": "主面板背景模糊"
+        },
+        "blurCard": {
+          "$type": "dimension",
+          "$value": "18px",
+          "$description": "卡片背景模糊"
+        },
+        "blurMenu": {
+          "$type": "dimension",
+          "$value": "28px",
+          "$description": "選單背景模糊"
+        }
+      },
+      "text": {
+        "tag": {
+          "$type": "color",
+          "$value": "#2c4a94",
+          "$description": "角色 tag 文字（在 aurora.gradient.tag 上 7.1:1 以上）"
+        }
+      },
+      "shadow": {
+        "card": {
+          "$type": "shadow",
+          "$value": "0 1px 0 rgb(255 255 255 / 90%) inset, 0 6px 20px rgb(80 70 160 / 7%), 0 1px 3px rgb(80 70 160 / 8%)",
+          "$description": "卡片：上緣白色高光＋淡紫陰影"
+        },
+        "panel": {
+          "$type": "shadow",
+          "$value": "0 1px 0 rgb(255 255 255) inset, 0 12px 40px rgb(70 60 150 / 7%), 0 1px 3px rgb(70 60 150 / 5%)",
+          "$description": "主面板"
+        },
+        "menu": {
+          "$type": "shadow",
+          "$value": "0 1px 0 rgb(255 255 255) inset, 0 18px 48px rgb(60 50 140 / 18%)",
+          "$description": "選單、彈出層"
+        },
+        "button": {
+          "$type": "shadow",
+          "$value": "0 6px 16px rgb(36 70 180 / 24%), 0 1px 0 rgb(255 255 255 / 40%) inset",
+          "$description": "主要按鈕"
+        },
+        "selected": {
+          "$type": "shadow",
+          "$value": "0 1px 0 #ffffff inset, 0 4px 14px rgb(80 70 160 / 12%), 0 1px 2px rgb(80 70 160 / 10%)",
+          "$description": "側欄選中列（白邊玻璃）"
+        }
+      },
+      "radius": {
+        "panel": {
+          "$type": "dimension",
+          "$value": "24px",
+          "$description": "主面板"
+        },
+        "card": {
+          "$type": "dimension",
+          "$value": "20px",
+          "$description": "卡片"
+        },
+        "composer": {
+          "$type": "dimension",
+          "$value": "24px",
+          "$description": "輸入框"
+        },
+        "menu": {
+          "$type": "dimension",
+          "$value": "16px",
+          "$description": "選單、彈出層"
+        },
+        "item": {
+          "$type": "dimension",
+          "$value": "12px",
+          "$description": "側欄列、選單項目"
+        },
+        "pill": {
+          "$type": "dimension",
+          "$value": "999px",
+          "$description": "按鈕、tag、工具開關"
+        }
+      }
+    }
+  }
+}

@@ -218,8 +218,8 @@
       "$description": "首頁兩行招呼語（三款頭像共用）",
       "fontSize": {
         "$type": "dimension",
-        "$value": "32px",
-        "$description": "字級"
+        "$value": "28px",
+        "$description": "首頁招呼語（v1.7：所有 Gina 頭像皆 28px）"
       },
       "fontWeight": {
         "$type": "fontWeight",
@@ -230,6 +230,159 @@
         "$type": "number",
         "$value": 1.3,
         "$description": "行高"
+      }
+    },
+    "roleTag": {
+      "$description": "Agent 角色 tag：側欄「名字 · 角色」以外的地方（Agent 首頁名字旁、對話標題列、發言者標籤）。Minimalism 白底細框；Aurora 見 aurora.gradient.tag。",
+      "height": {
+        "$type": "dimension",
+        "$value": "20px",
+        "$description": "一般高度；Agent 首頁名字旁為 24px"
+      },
+      "heightLarge": {
+        "$type": "dimension",
+        "$value": "24px",
+        "$description": "Agent 首頁名字旁"
+      },
+      "paddingX": {
+        "$type": "dimension",
+        "$value": "6px",
+        "$description": "左右內距；大尺寸 8px"
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": "6px",
+        "$description": "Minimalism 圓角；Aurora 為膠囊"
+      },
+      "fontSize": {
+        "$type": "dimension",
+        "$value": "12px",
+        "$description": "字級；大尺寸 13px"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "#e1e6ee",
+        "$description": "Minimalism 1px 邊框"
+      },
+      "bg": {
+        "$type": "color",
+        "$value": "#ffffff",
+        "$description": "Minimalism 底色"
+      }
+    },
+    "chatHeader": {
+      "$description": "對話標題列：對話名稱 · Agent 頭像＋角色 tag，右側「匯出」按鈕。",
+      "exportHeight": {
+        "$type": "dimension",
+        "$value": "30px",
+        "$description": "匯出按鈕高度；窄於 640px 只留圖示（30×30）"
+      },
+      "exportPanelWidth": {
+        "$type": "dimension",
+        "$value": "300px",
+        "$description": "匯出對話面板寬"
+      },
+      "exportFormatHeight": {
+        "$type": "dimension",
+        "$value": "38px",
+        "$description": "格式按鈕（.txt / .md）高度"
+      }
+    },
+    "translate": {
+      "$description": "文件翻譯工具頁：固定大小的上傳區、語言選單、翻譯紀錄。",
+      "dropHeight": {
+        "$type": "dimension",
+        "$value": "200px",
+        "$description": "上傳區固定高度；檔案在框內往下排，超出就在框內捲動"
+      },
+      "dropRadius": {
+        "$type": "dimension",
+        "$value": "10px",
+        "$description": "上傳區圓角（1.5px 虛線）"
+      },
+      "fileRowHeight": {
+        "$type": "dimension",
+        "$value": "40px",
+        "$description": "已選檔案列"
+      },
+      "addLineMin": {
+        "$type": "dimension",
+        "$value": "40px",
+        "$description": "「拖曳更多檔案」列的最小高度"
+      },
+      "langMenuWidth": {
+        "$type": "dimension",
+        "$value": "232px",
+        "$description": "語言選單寬"
+      },
+      "langMenuMaxHeight": {
+        "$type": "dimension",
+        "$value": "296px",
+        "$description": "語言選單最高，超出捲動"
+      },
+      "langOptionHeight": {
+        "$type": "dimension",
+        "$value": "36px",
+        "$description": "語言選項高"
+      },
+      "logRowMinHeight": {
+        "$type": "dimension",
+        "$value": "56px",
+        "$description": "翻譯紀錄列"
+      },
+      "progressWidth": {
+        "$type": "dimension",
+        "$value": "96px",
+        "$description": "進度條寬；手機 56px"
+      },
+      "pageSize": {
+        "$type": "number",
+        "$value": "5",
+        "$description": "翻譯紀錄每次顯示筆數（顯示更多 +5）"
+      }
+    },
+    "speakerAvatar": {
+      "$description": "對話中的發言者頭像。Gina 跟著外觀 → Gina；只有最新一則 Gina 回覆會動。",
+      "size": {
+        "$type": "dimension",
+        "$value": "20px",
+        "$description": "頭像框"
+      },
+      "liveSize": {
+        "$type": "dimension",
+        "$value": "26px",
+        "$description": "會動的 Thought 球與 Buddy 臉（含留白，不裁切）"
+      }
+    },
+    "sidebarIcon": {
+      "$description": "側欄 Agent／新對話 icon 槽。",
+      "slot": {
+        "$type": "dimension",
+        "$value": "26px",
+        "$description": "icon tile"
+      },
+      "auroraIcon": {
+        "$type": "dimension",
+        "$value": "80%",
+        "$description": "Aurora 3D icon 佔 tile 的比例（約 21px）"
+      },
+      "auroraRowIcon": {
+        "$type": "dimension",
+        "$value": "88%",
+        "$description": "Aurora Recents／Pinned 18px 小圖示比例"
+      }
+    },
+    "toast": {
+      "$description": "提示訊息位置（Business v2）。",
+      "top": {
+        "$type": "dimension",
+        "$value": "20px",
+        "$description": "顯示在畫面上方中央，由上滑入"
+      },
+      "maxWidth": {
+        "$type": "dimension",
+        "$value": "calc(100vw - 32px)",
+        "$description": "窄螢幕換行，不超出畫面"
       }
     }
   }

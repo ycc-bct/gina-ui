@@ -67,3 +67,38 @@ Business v2 第三輪調整。新增 token：`theme.agent.*`、`theme.text.reply
 - `DESIGN.md` 新增「2026-10-14 商業版更新」，並修正 10-08 段落中已不適用的條目。
 - `orb.md` 改為 Thought 規格：外框 80px、顏色 `#2f67d5`、不跟隨游標、不可點擊。
 - 移除 `STUDIO-V3.md`（Studio V3 已不再使用）。
+
+## v1.7-business · 2026-10-21
+
+| # | 議題 | 決定 | 原因 |
+|---|---|---|---|
+| D27 | 業務助理、測試助手是示範用，與實際職能不符 | 改為 **8 位具名 Agent**（Tony、Matt、Phil、Seth、Sapphire、Francis、Maria、Nick），各一組識別色；token `agent.sales / agent.test` 移除 | 以人名＋職能呈現，使用者看歷史對話時知道在跟誰說話 |
+| D28 | 角色寫在括號裡（IT 架構）不易掃讀 | 側欄用「名字 · 角色」；其他地方用 **角色 tag**（白底細框） | 側欄空間窄，tag 會擠壓名字；標題列與發言者需要明顯分隔。灰底 tag 在 #f6f8fb 上看不清，改白底細框 |
+| D29 | Recents 右側加角色 tag 會截掉標題 | **不加**（已試做後移除） | 標題被截太多；左側 icon 已可辨識 Agent |
+| D30 | 翻譯做成 Agent 會產生對話，但實際需求是檔案翻譯 | 翻譯改為**工具頁**，固定在側欄底部，不進 Recents，只做文件翻譯 | 工作性質是批次處理檔案，不是對話；文字翻譯交給 Gina 對話 |
+| D31 | 上傳區選檔後縮成一行，單檔時下方空一大塊；卡片高度跟著變 | 上傳區**固定 200px**，檔案列在框內、剩餘空白即拖放區 | 版面不跳動；空白有「可再丟」的意義 |
+| D32 | 系統原生下拉在各平台長相不一，和 Gina 選單不一致 | 自訂 listbox，母語名＋中文名 | 一致外觀；不是每個人都認得 ไทย、Tiếng Việt |
+| D33 | 完成後另顯示成功框＋第二張卡，與紀錄重複 | 完成狀態只放在紀錄列；開始後卡片立即清空 | 支援多批連續上傳；資訊不重複 |
+| D34 | 想提供另一種視覺風格 | 新增 **Aurora** 主題（與 Minimalism 並列），只覆寫差異值 | 參考 M365 Copilot：白為主、毛玻璃、圓角；命名不用 Fluent 以免誤認為官方 |
+| D35 | Aurora 第一版漸層太飽和、側欄字不清 | **以白為主**，彩色只留在角落，左側更淡；主面板白 80%、卡片白 82% | 工作畫面需要長時間閱讀 |
+| D36 | Aurora 按鈕原為藍紫漸層，與品牌無關 | 改用 **Gina logo 色系**（天藍 → 深海軍藍），左上淺、右下深 | 品牌一致；光源在左上較自然 |
+| D37 | 角色 tag 在 Aurora 白面板上消失，淡紫又太紫 | 淡藍玻璃膠囊、文字 `#2c4a94`（7.1:1 以上） | 與按鈕同色系、可讀 |
+| D38 | 3D icon 在側欄 26px 太搶眼 | 側欄佔 80%、對話列 88% | 保留質感但降低視覺重量 |
+| D39 | Gina 頭像在對話中固定是 G 標誌，與使用者選的 Gina 不一致 | 全站跟著外觀 → Gina；只有**最新一則**會動 | 一致性；多個動態頭像會分散注意力 |
+| D40 | 匯出只放在 ⋯ 選單不易發現 | 對話標題列放「圖示＋匯出」按鈕，⋯ 選單保留 | 閱讀對話時視線在標題列附近 |
+| D41 | 匯出說明用「已持久化」「串流」等工程用語 | 改寫為「只包含已完成的訊息…」 | 使用者語言 |
+| D42 | Agent 照片編輯、人物頭像尚未定案 | **暫時關閉**，程式保留（`AGENT_PHOTO_EDIT`、`AGENT_STYLE_ENABLED`） | 全站先統一使用預設頭像 |
+| D43 | 原型中空的固定 header 疊在對話標題列上，擋住點擊 | `.header:empty` 不攔截點擊 | 匯出按鈕與 Agent 名稱連結原本點不到 |
+
+### 待處理
+
+- **Aurora 主要按鈕文字對比**：白字在漸層淺端 `#4b97e0` 上只有 3.1:1（深端 8.7:1），14px 文字未達 AA 4.5:1。可選方案：淺端加深到 `#3577c4`（4.6:1，剛好達 AA）、或讓淺色只出現在按鈕左上角、不在文字後方。需設計確認後調整。
+- Aurora 只驗證淺色；深色模式未定義。
+
+### 同時更新
+
+- `tokens/theme.light.json`：`theme.agent` 改為 8 位 Agent ＋ translate。
+- 新增 `tokens/theme.aurora.json`；`build-tokens.mjs` 產生 `.theme-aurora, [data-theme-variant="aurora"]` 區塊、`tokens.flat.json` 的 `aurora` 區、Tailwind 主題的 Aurora 覆寫與 `--aurora-*` 變數；Agent 的 Tailwind 色名改為 `agent-{key}`、`agent-{key}-soft`、`agent-{key}-action`。
+- `tokens/component.json`：greeting 改 28px；新增 roleTag、chatHeader、translate、speakerAvatar、sidebarIcon、toast。
+- `preview.html`：Agent 色票改為新名單，新增 Aurora 色票（在 `.theme-aurora` 內繪製）。
+- `DESIGN.md` 新增「2026-10-21 更新（v1.7）」，並標示 10-14 中被取代的項目。

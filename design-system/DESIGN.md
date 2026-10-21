@@ -1,11 +1,70 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.6-business · 2026-10-14 · 決策紀錄見 `decisions.md`
+> 版本：v1.7-business · 2026-10-21 · 決策紀錄見 `decisions.md`
+
+### 2026-10-21 更新（v1.7）
+
+本節優先於下方 10-14 與更早的段落。數值對應 `tokens/theme.light.json` 的 `theme.agent.*`、新增的 `tokens/theme.aurora.json`，以及 `component.roleTag`、`component.chatHeader`、`component.translate`、`component.speakerAvatar`、`component.sidebarIcon`、`component.toast`。原型檔：`index-business-v2.html`、`app-business-v2.css`、`theme-aurora.css`、`appearance.js`、`agent-photo.js`、`gina-speaker.js`、`chat-export.js`。
+
+**Agents（取代業務助理、測試助手）**
+
+- 8 位 Agent，依序：Tony（IT 架構）、Matt（法務）、Phil（會議）、Seth（財務）、Sapphire（SAP）、Francis（資料）、Maria（HR）、Nick（文件）。每位一組識別色（`--agent-{key}-bg / -fg / -action`），只用在 icon tile、Agent 圖示與該 Agent 頁的主要操作。
+- 側欄列寫成「名字 · 角色」，角色用 13px `--text-tertiary`。其他地方（Agent 首頁名字旁、對話標題列、發言者標籤）的角色用 **tag**：Minimalism 白底、1px `#e1e6ee`、高 20px、圓角 6px、12px；Agent 首頁名字旁放大為 24px、13px。不加括號。
+- 多人對話：每則回覆上方是發言者（頭像＋名字＋角色 tag），同一人連續回覆只顯示一次；換人時中間有一行「A › B」交接線；內文用 `@名字` 提及，顏色取該 Agent 的 fg。
+- 對話標題列：「對話名稱 · Agent 頭像疊放 + 名字 + 角色 tag」，右側為「匯出」按鈕（見下）。單一 Agent 時名字可點，回到該 Agent 首頁。窄於 640px 只留頭像。
+- Agent 照片編輯與「Agent 頭像（圖示／人物）」切換**目前關閉**：所有人看到預設頭像（Minimalism 為線條 icon、Aurora 為 3D icon）。程式保留，`AGENT_PHOTO_EDIT` 與 `AGENT_STYLE_ENABLED` 改為 true 即可開回。
+
+**文件翻譯（翻譯改為工具，不是 Agent）**
+
+- 側欄最下方、帳號上方的固定區，不隨 Recents 捲動；不產生對話、不進 Recents。
+- 頁首：不可點的 icon、「文件翻譯」、一行說明。下方一張上傳卡：
+  - 上傳區**固定 200px 高**、1.5px 虛線、圓角 10px。沒有檔案時置中顯示圖示、「拖曳檔案到這裡，或 選擇檔案」與格式說明。選了檔案後，檔案列（類型標籤、檔名、大小、✕；高 40px）從框內上方往下排，剩下的空白置中顯示「拖曳更多檔案，或 選擇檔案」，最少 40px；檔案太多時只有清單在框內捲動。整框隨時可拖放。
+  - 同一列：左「翻譯成 [語言]」、右主要按鈕「開始翻譯」／「開始翻譯 N 個檔案」，沒有檔案時停用。
+  - 語言選單為自訂 listbox：母語名稱＋灰色中文名（繁中、簡中不加），選中淺色底＋右側勾；寬 232px、最高 296px 後捲動；空間不足時往上開；上下鍵、Home/End、Enter、Esc、首字母跳選。記住上次選擇。不選原文語言（自動偵測、紀錄中也不顯示）。
+  - 支援 PDF、Word、PPT、JPG、PNG、WebP，每檔最大 20MB，可一次多檔；不支援的檔案略過並提示。
+- 按下開始後檔案立即進入下方「翻譯紀錄」，上傳卡清空可接著上傳。紀錄每列：類型標籤、檔名、「目標語言 · 大小」，右側為進度條＋百分比＋「停止」／「今天 10:09」＋「下載」／「翻譯失敗」＋「重試」／「已停止」＋「重新翻譯」。完成的列淡淡亮一下並跳提示。每次顯示 5 筆，底部「顯示更多」。
+- 側欄「翻譯」右側狀態點：不在翻譯頁且有檔案翻譯中為呼吸點，翻譯期間完成為實心藍點；進入翻譯頁即清除。
+
+**輸入框**
+
+- 下排左側：迴紋針（附加檔案），接著三個工具開關「網路搜尋、個人知識、Skills」（開啟時為選中樣式）。不再有「＋」選單，翻譯不在輸入框。
+
+**外觀（帳號選單）**
+
+- 「外觀 ›」取代「Gina Avatar ›」，下方小字顯示「主題 · Gina」（例：Aurora · Host）。子選單同一面板兩區：**主題**（Minimalism 預設、Aurora，兩張寬卡）與 **Gina**（Thought、Buddy、Host）。點了立即套用並收起，記在瀏覽器（`gina-theme`、`gina-hero-style`）。
+- 帳號選單的子選單（外觀、語言）與觸發列齊平；若會超過帳號選單底部，改為兩者下緣對齊。
+- 對話中的 Gina 頭像跟著 Gina 選擇改變。只有**最新一則** Gina 回覆的頭像會動（Thought 球轉動、Buddy 眨眼、Host 眨眼並看向滑鼠），較早的為靜態圖；減少動態效果時全部靜止。
+
+**主題：Minimalism（預設）與 Aurora**
+
+- Minimalism 即本文件既有的商業版樣式。
+- Aurora 只覆寫與 Minimalism 不同的值（`tokens/theme.aurora.json`，以 `body.theme-aurora` 或 `[data-theme-variant="aurora"]` 套用）：
+  - 底色幾乎全白 `#fbfbfd`，四角淡彩（左上淡藍、右上淡紫、右下淡粉、左下淡黃），**左側側欄區刻意更淡**以利閱讀。
+  - 側欄直接放在底色上；主內容區是一大片圓角 24px 的毛玻璃面板（白 80%、模糊 30px），內含右上與左下微光。輸入框與面板下緣保留 20px（手機 12px）。
+  - 卡片、輸入框、上傳卡：白 82% 玻璃、模糊 18px、白邊、上緣白色高光、淡紫陰影；圓角 20–24px。選單與彈出層：白 72%、模糊 28px、圓角 16px。
+  - 主要按鈕：Gina logo 色系漸層，**左上淺天藍 `#4b97e0` → 右下深海軍藍 `#2a3cb6`**，膠囊形、白色上緣高光；發送鍵沒有內容時整顆 40% 透明。次要按鈕、工具開關、語言選單為白色玻璃膠囊。
+  - 角色 tag：淡藍玻璃膠囊（`#f1f7fe → #e5eefb`、白邊、文字 `#2c4a94`）。
+  - 側欄選中列：白色玻璃（白邊、上緣高光、淡紫陰影）；滑過為同款較淡。
+  - 圖示：Agent、翻譯、新對話、對話列改用 **3D icon**（`assets/aurora/*.webp`，透明底），側欄佔 26px 槽的 80%、對話列 88%；Agent 首頁與新對話空狀態的大 icon 放在白色玻璃方框內。首頁三張建議卡使用**毛玻璃 icon**（藍紫色系，與對話泡泡同色），放在淡紫藍玻璃小方框中。
+  - 系統開啟「減少透明度」時，玻璃面板改為不透明白底。
+
+**匯出對話**
+
+- 入口：對話標題列右側「⤓ 匯出」次要按鈕（窄螢幕只留圖示，提示「匯出對話」），以及對話列 ⋯ 選單（順序改為「重新命名、釘選／取消釘選、匯出對話、刪除」；從側欄匯出會先開啟該對話）。
+- 面板：標題「匯出對話」、說明「只包含已完成的訊息，正在產生的回覆、附件和圖表原始檔不會匯出。」、兩個格式按鈕「純文字 (.txt)」「Markdown (.md)」。點了直接下載並關閉，提示「已匯出 {檔名}」。Esc 或點外部關閉，焦點回到匯出按鈕。
+- 檔名「對話名稱_YYYY-MM-DD」。.md 每則訊息為「### 發言者 · 時間」，保留清單、表格、粗體、引用；.txt 為「[時間] 發言者」加內文。
+
+**其他**
+
+- 首頁招呼語 28px（所有 Gina 頭像）；英文介面第二行為「What can we get done today?」。
+- Toast 顯示在畫面上方中央、由上滑入，窄螢幕最寬為畫面寬減 32px。
+- 被 10-21 取代的 10-14 內容：側欄「業務助理、測試助手、翻譯」列、翻譯 Agent 首頁與拖拉範例卡、測試助手陶土色、使用者選單「Gina Avatar」、⋯ 選單順序、招呼語 32px。
+
 
 ### 2026-10-14 商業版更新
 
-本節是 Business v2 目前的規格，優先於下方 10-08 與更早的段落。數值對應 `tokens/` 裡的 `theme.agent.*`、`theme.text.reply`、`component.ginaAvatar.*` 與 `component.greeting.*`。
+本節為 10-14 的規格；與上方 2026-10-21 更新衝突時以 10-21 為準，其餘仍適用。優先於下方 10-08 與更早的段落。數值對應 `tokens/` 裡的 `theme.agent.*`、`theme.text.reply`、`component.ginaAvatar.*` 與 `component.greeting.*`。
 
 **Sidebar 與對話管理**
 

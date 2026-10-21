@@ -223,8 +223,13 @@ const SEMANTIC = {
   '文字與圖示': ['text-primary','text-secondary','text-tertiary','text-reply','text-placeholder','text-inverse','icon-default','icon-muted'],
   '框線與 focus': ['border-subtle','border-default','border-strong','border-focus','focus-ring'],
   '動作': ['action-primary-bg','action-primary-bg-hover','action-primary-fg','action-secondary-bg','action-secondary-bg-hover','action-secondary-border','action-disabled-bg','action-disabled-fg'],
-  'Agent（Business v2，fg 只用於 icon）': ['agent-sales-bg','agent-sales-fg','agent-sales-action','agent-test-bg','agent-test-fg','agent-test-action','agent-translate-bg','agent-translate-fg','agent-translate-action'],
+  'Agent（Business v2，fg 只用於 icon）': ['tony','matt','phil','seth','sapphire','francis','maria','nick','translate'].flatMap(k => [`agent-${k}-bg`,`agent-${k}-fg`,`agent-${k}-action`]),
+  // Aurora values only exist under .theme-aurora: this group is drawn inside that class.
+  'Aurora 主題（.theme-aurora）': ['bg-app','bg-surface','bg-field','border-default','action-primary-bg','aurora-gradient-primary','aurora-gradient-tag','aurora-text-tag','aurora-glass-card','aurora-glass-menu','aurora-gradient-icon-tile','aurora-gradient-page'],
 };
+const auroraProbe = Object.assign(document.createElement('div'), { className: 'theme-aurora', hidden: true });
+document.body.appendChild(auroraProbe);
+const readAurora = name => getComputedStyle(auroraProbe).getPropertyValue(name).trim();
 const GRAYS = ['0','25','50','75','100','150','200','300','400','500','550','600','700','800','900','950'];
 const STATUS = ['success','danger','warning','info'];
 
@@ -236,14 +241,15 @@ function luminance(hex){
 }
 const contrast = (a,b) => { const x=luminance(a), y=luminance(b); return x==null||y==null ? '' : ((Math.max(x,y)+.05)/(Math.min(x,y)+.05)).toFixed(2); };
 
-function swatch(name, extra=''){
-  const v = read('--'+name);
+function swatch(name, extra='', reader=read){
+  const v = reader('--'+name);
   return `<div class="swatch"><div class="chip" style="background:var(--${name})"></div><div class="meta"><code>--${name}</code><div>${v}${extra}</div></div></div>`;
 }
 function renderColors(){
   const canvas = read('--bg-canvas');
-  document.getElementById('semantic').innerHTML = Object.entries(SEMANTIC).map(([group, names]) =>
-    `<h3>${group}</h3><div class="grid">${names.map(n => {
+  document.getElementById('semantic').innerHTML = Object.entries(SEMANTIC).map(([group, names]) => group.startsWith('Aurora')
+    ? `<h3>${group}</h3><div class="grid theme-aurora">${names.map(n => swatch(n, '', readAurora)).join('')}</div>`
+    : `<h3>${group}</h3><div class="grid">${names.map(n => {
       const isText = /^(text|icon|focus)/.test(n);
       const cr = isText ? contrast(read('--'+n), n === 'text-inverse' ? read('--action-primary-bg') : canvas) : '';
       const cls = cr === '' ? '' : cr >= 4.5 ? 'ok' : cr >= 3 ? 'warn' : 'bad';

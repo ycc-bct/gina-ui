@@ -11,6 +11,7 @@ const base = load('base.json');
 const component = load('component.json');
 const light = load('theme.light.json');
 const dark = load('theme.dark.json');
+const aurora = load('theme.aurora.json');
 
 // Collect leaf tokens as { path: 'a.b.c', value, type, description }
 function flatten(node, path = [], inheritedType, out = []) {
@@ -28,6 +29,7 @@ function flatten(node, path = [], inheritedType, out = []) {
 const baseTokens = flatten(base);
 const lightTokens = flatten(light);
 const darkTokens = flatten(dark);
+const auroraTokens = flatten(aurora);
 const componentTokens = flatten(component);
 const lookup = new Map([...baseTokens, ...lightTokens].map(t => [t.path, t]));
 
@@ -76,6 +78,8 @@ ${block(':root', baseTokens.filter(t => !isHiddenBase(t)))}
 ${block(':root,\n[data-theme="light"]', lightTokens)}
 /* Dark theme (draft — not yet validated on screens) */
 ${block('[data-theme="dark"]', darkTokens)}
+/* Aurora theme variant (外觀 → 主題 → Aurora): only the values that differ from light, plus aurora-* tokens */
+${block('.theme-aurora,\n[data-theme-variant="aurora"]', auroraTokens)}
 /* To follow the OS setting later, wrap the dark block in:
    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ... } } */
 
@@ -86,6 +90,7 @@ const flat = {
   light: Object.fromEntries([...baseTokens.filter(t => !t.path.startsWith('shadow.')), ...lightTokens, ...componentTokens]
     .map(t => [t.path.replace(/^theme\./, ''), resolve(t, lightTokens)])),
   dark: Object.fromEntries(darkTokens.map(t => [t.path.replace(/^theme\./, ''), resolve(t, darkTokens)])),
+  aurora: Object.fromEntries(auroraTokens.map(t => [t.path.replace(/^theme\./, ''), resolve(t, auroraTokens)])),
 };
 
 // ---------- Tailwind CSS v4 theme ----------
@@ -107,10 +112,9 @@ const TW_COLORS = {
   'status.danger.fg': 'danger', 'status.danger.bg': 'danger-soft',
   'status.warning.fg': 'warning', 'status.warning.bg': 'warning-soft',
   'status.info.fg': 'info', 'status.info.bg': 'info-soft',
-  // Business v2 Agent identity: bg-agent-test-soft / text-agent-test / bg-agent-test-action
-  'agent.sales.bg': 'agent-sales-soft', 'agent.sales.fg': 'agent-sales', 'agent.sales.action': 'agent-sales-action',
-  'agent.test.bg': 'agent-test-soft', 'agent.test.fg': 'agent-test', 'agent.test.action': 'agent-test-action',
-  'agent.translate.bg': 'agent-translate-soft', 'agent.translate.fg': 'agent-translate', 'agent.translate.action': 'agent-translate-action',
+  // Business v2 Agent identity: bg-agent-tony-soft / text-agent-tony / bg-agent-tony-action
+  ...Object.fromEntries(['tony', 'matt', 'phil', 'seth', 'sapphire', 'francis', 'maria', 'nick', 'translate'].flatMap(k => [
+    [`agent.${k}.bg`, `agent-${k}-soft`], [`agent.${k}.fg`, `agent-${k}`], [`agent.${k}.action`, `agent-${k}-action`]])),
 };
 const L = flat.light, D = flat.dark;
 const pick = prefix => Object.entries(L).filter(([k]) => k.startsWith(prefix));
@@ -191,6 +195,14 @@ ${runtime(L, lightRuntimeKeys)}
 ${runtime(D)}
 }
 
+/* Aurora theme variant: overrides the colours it changes; aurora-* values are plain variables for arbitrary values,
+   e.g. bg-(image:--aurora-gradient-primary), rounded-(--aurora-radius-card). */
+.theme-aurora,
+[data-theme-variant="aurora"] {
+${runtime(flat.aurora, Object.keys(flat.aurora).filter(k => k in TW_COLORS || k.startsWith('shadow.')))}
+${Object.entries(flat.aurora).filter(([k]) => k.startsWith('aurora.')).map(([k, v]) => `  --${k.replace(/\./g, '-').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}: ${v};`).join('\n')}
+}
+
 /* Non-theme tokens used with arbitrary values, e.g. z-(--z-popover), h-(--component-button-height) */
 :root {
 ${pick('z.').map(([k, v]) => `  --${k.replace(/\./g, '-').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}: ${v};`).join('\n')}
@@ -204,4 +216,4 @@ mkdirSync(join(root, 'dist'), { recursive: true });
 writeFileSync(join(root, 'dist', 'tokens.css'), css);
 writeFileSync(join(root, 'dist', 'tokens.flat.json'), JSON.stringify(flat, null, 2) + '\n');
 writeFileSync(join(root, 'dist', 'gina-theme.css'), tailwind);
-console.log(`tokens.css: ${baseTokens.length + lightTokens.length + componentTokens.length} light, ${darkTokens.length} dark tokens; gina-theme.css for Tailwind v4`);
+console.log(`tokens.css: ${baseTokens.length + lightTokens.length + componentTokens.length} light, ${darkTokens.length} dark, ${auroraTokens.length} aurora tokens; gina-theme.css for Tailwind v4`);

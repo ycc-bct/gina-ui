@@ -328,56 +328,158 @@
       }
     },
     "agent": {
-      "$description": "Business v2 的 Agent 識別色。bg/fg 只用在 icon tile 與 Agent 圖示（非文字 3:1）；action 是該 Agent 對話中的送出按鈕與焦點色。不要拿 fg 當內文顏色。",
-      "sales": {
+      "$description": "Business v2 的 Agent 識別色（v1.7：8 位 Agent ＋ 翻譯工具）。bg/fg 只用在 icon tile 與 Agent 圖示（非文字 3:1）；action 是該 Agent 對話中的送出按鈕與焦點色。不要拿 fg 當內文顏色。業務助理（sales）、測試助手（test）已移除。",
+      "tony": {
         "bg": {
           "$type": "color",
-          "$value": "#f1edfa",
-          "$description": "業務助理 icon 底"
+          "$value": "#fbeee3",
+          "$description": "Tony · IT 架構 icon 底"
         },
         "fg": {
           "$type": "color",
-          "$value": "#766493",
-          "$description": "業務助理 icon"
+          "$value": "#b8692a",
+          "$description": "Tony · IT 架構 icon"
         },
         "action": {
           "$type": "color",
-          "$value": "#806ba1",
-          "$description": "業務助理對話中的主要操作"
+          "$value": "#c27434",
+          "$description": "Tony · IT 架構 頁面的主要操作"
         }
       },
-      "test": {
+      "matt": {
         "bg": {
           "$type": "color",
-          "$value": "#f9e9e2",
-          "$description": "測試助手 icon 底（陶土，取自 #D97757 加深）"
+          "$value": "#fbe9e9",
+          "$description": "Matt · 法務 icon 底"
         },
         "fg": {
           "$type": "color",
-          "$value": "#b35f43",
-          "$description": "測試助手 icon"
+          "$value": "#b54848",
+          "$description": "Matt · 法務 icon"
         },
         "action": {
           "$type": "color",
-          "$value": "#c4674a",
-          "$description": "測試助手對話中的主要操作"
+          "$value": "#c05252",
+          "$description": "Matt · 法務 頁面的主要操作"
+        }
+      },
+      "phil": {
+        "bg": {
+          "$type": "color",
+          "$value": "#efeafb",
+          "$description": "Phil · 會議 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#6d55b5",
+          "$description": "Phil · 會議 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#7660c0",
+          "$description": "Phil · 會議 頁面的主要操作"
+        }
+      },
+      "seth": {
+        "bg": {
+          "$type": "color",
+          "$value": "#e6f4ea",
+          "$description": "Seth · 財務 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#3f8a55",
+          "$description": "Seth · 財務 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#46935d",
+          "$description": "Seth · 財務 頁面的主要操作"
+        }
+      },
+      "sapphire": {
+        "bg": {
+          "$type": "color",
+          "$value": "#e3f0f8",
+          "$description": "Sapphire · SAP icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#2f7aa6",
+          "$description": "Sapphire · SAP icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#3584b2",
+          "$description": "Sapphire · SAP 頁面的主要操作"
+        }
+      },
+      "francis": {
+        "bg": {
+          "$type": "color",
+          "$value": "#e2f2f1",
+          "$description": "Francis · 資料 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#2f8580",
+          "$description": "Francis · 資料 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#348f89",
+          "$description": "Francis · 資料 頁面的主要操作"
+        }
+      },
+      "maria": {
+        "bg": {
+          "$type": "color",
+          "$value": "#eceff3",
+          "$description": "Maria · HR icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#4f5d70",
+          "$description": "Maria · HR icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#5a687c",
+          "$description": "Maria · HR 頁面的主要操作"
+        }
+      },
+      "nick": {
+        "bg": {
+          "$type": "color",
+          "$value": "#e7ecfb",
+          "$description": "Nick · 文件 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#3d5bc4",
+          "$description": "Nick · 文件 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#4664cc",
+          "$description": "Nick · 文件 頁面的主要操作"
         }
       },
       "translate": {
         "bg": {
           "$type": "color",
           "$value": "#eaf5f1",
-          "$description": "翻譯 icon 底"
+          "$description": "翻譯（工具，不是 Agent） icon 底"
         },
         "fg": {
           "$type": "color",
           "$value": "#527b70",
-          "$description": "翻譯 icon"
+          "$description": "翻譯（工具，不是 Agent） icon"
         },
         "action": {
           "$type": "color",
           "$value": "#5d897d",
-          "$description": "翻譯對話中的主要操作"
+          "$description": "翻譯（工具，不是 Agent） 頁面的主要操作"
         }
       }
     }
