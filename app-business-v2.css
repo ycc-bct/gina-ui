@@ -150,7 +150,7 @@ body.business-theme .sidebar-brand {
 body.business-theme .sidebar-brand img {
   display: block;
   width: auto;
-  height: 15px;
+  height: 18px; /* GINA wordmark (group typeface), about 86px wide */
 }
 
 body.business-theme .side-top {

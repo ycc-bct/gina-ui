@@ -9,7 +9,7 @@
 
 **品牌 Logo（10-22 更新，取代所有舊 wordmark）**
 
-- GINA wordmark 一律使用**集團字體**版本：`assets/gina-wordmark-new.svg`（330×69、`#172033`）。Sidebar 高 15px（寬約 72px），登入頁寬 220px（手機 190px），保持原圖比例。
+- GINA wordmark 一律使用**集團字體**版本：`assets/gina-wordmark-new.svg`（330×69、`#172033`）。Sidebar 高 18px（寬約 86px），登入頁寬 220px（手機 190px），保持原圖比例。
 - **不可使用捷安特（Giant）品牌字體**繪製或重做 GINA 字樣。舊檔 `gina-wordmark.svg`、`gina-wordmark-dark.svg`、`gina-wordmark.png` 為品牌字體版本，已停用，不要再引用。
 - 需要其他顏色或尺寸時，從 `gina-wordmark-new.svg` 改 `fill`，不要重新排字。
 
