@@ -113,7 +113,7 @@ const TW_COLORS = {
   'status.warning.fg': 'warning', 'status.warning.bg': 'warning-soft',
   'status.info.fg': 'info', 'status.info.bg': 'info-soft',
   // Business v2 Agent identity: bg-agent-tony-soft / text-agent-tony / bg-agent-tony-action
-  ...Object.fromEntries(['tony', 'matt', 'phil', 'seth', 'sapphire', 'francis', 'maria', 'nick', 'translate'].flatMap(k => [
+  ...Object.fromEntries(['tony', 'matt', 'phil', 'seth', 'sapphire', 'francis', 'maria', 'nick', 'ada', 'wen', 'translate'].flatMap(k => [
     [`agent.${k}.bg`, `agent-${k}-soft`], [`agent.${k}.fg`, `agent-${k}`], [`agent.${k}.action`, `agent-${k}-action`]])),
 };
 const L = flat.light, D = flat.dark;

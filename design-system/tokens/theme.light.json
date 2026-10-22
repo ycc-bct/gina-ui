@@ -328,7 +328,7 @@
       }
     },
     "agent": {
-      "$description": "Business v2 的 Agent 識別色（v1.7：8 位 Agent ＋ 翻譯工具）。bg/fg 只用在 icon tile 與 Agent 圖示（非文字 3:1）；action 是該 Agent 對話中的送出按鈕與焦點色。不要拿 fg 當內文顏色。業務助理（sales）、測試助手（test）已移除。",
+      "$description": "Business v2 的 Agent 識別色（v1.7：10 位 Agent ＋ 翻譯工具）。bg/fg 只用在 icon tile 與 Agent 圖示（非文字 3:1）；action 是該 Agent 對話中的送出按鈕與焦點色。不要拿 fg 當內文顏色。業務助理（sales）、測試助手（test）已移除。",
       "tony": {
         "bg": {
           "$type": "color",
@@ -463,6 +463,40 @@
           "$type": "color",
           "$value": "#4664cc",
           "$description": "Nick · 文件 頁面的主要操作"
+        }
+      },
+      "ada": {
+        "bg": {
+          "$type": "color",
+          "$value": "#fbe8f3",
+          "$description": "Ada · 研究 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#b0457f",
+          "$description": "Ada · 研究 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#bb4d8a",
+          "$description": "Ada · 研究 頁面的主要操作"
+        }
+      },
+      "wen": {
+        "bg": {
+          "$type": "color",
+          "$value": "#fbf3dc",
+          "$description": "Wen · 掃描 icon 底"
+        },
+        "fg": {
+          "$type": "color",
+          "$value": "#9a6b12",
+          "$description": "Wen · 掃描 icon"
+        },
+        "action": {
+          "$type": "color",
+          "$value": "#a8761a",
+          "$description": "Wen · 掃描 頁面的主要操作"
         }
       },
       "translate": {

@@ -146,6 +146,12 @@
   --color-agent-nick-soft: var(--gina-agent-nick-bg);
   --color-agent-nick: var(--gina-agent-nick-fg);
   --color-agent-nick-action: var(--gina-agent-nick-action);
+  --color-agent-ada-soft: var(--gina-agent-ada-bg);
+  --color-agent-ada: var(--gina-agent-ada-fg);
+  --color-agent-ada-action: var(--gina-agent-ada-action);
+  --color-agent-wen-soft: var(--gina-agent-wen-bg);
+  --color-agent-wen: var(--gina-agent-wen-fg);
+  --color-agent-wen-action: var(--gina-agent-wen-action);
   --color-agent-translate-soft: var(--gina-agent-translate-bg);
   --color-agent-translate: var(--gina-agent-translate-fg);
   --color-agent-translate-action: var(--gina-agent-translate-action);
@@ -229,6 +235,12 @@
   --gina-agent-nick-bg: #e7ecfb;
   --gina-agent-nick-fg: #3d5bc4;
   --gina-agent-nick-action: #4664cc;
+  --gina-agent-ada-bg: #fbe8f3;
+  --gina-agent-ada-fg: #b0457f;
+  --gina-agent-ada-action: #bb4d8a;
+  --gina-agent-wen-bg: #fbf3dc;
+  --gina-agent-wen-fg: #9a6b12;
+  --gina-agent-wen-action: #a8761a;
   --gina-agent-translate-bg: #eaf5f1;
   --gina-agent-translate-fg: #527b70;
   --gina-agent-translate-action: #5d897d;

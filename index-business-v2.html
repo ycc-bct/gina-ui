@@ -1386,6 +1386,8 @@ window.mountGinaOrb=mountGinaOrb;
 <script>
 /* ---------- Icons (lucide-style) ---------- */
 const ICONS = {
+  "brain":'<path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/>',
+  "scan-text":'<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8h8"/><path d="M7 12h10"/><path d="M7 16h6"/>',
   "camera":'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
   "scale":'<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
   "banknote":'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
@@ -2032,6 +2034,18 @@ const AGENTS=[
     templates:[T('file-text','文件摘要','一頁看懂長文件','把這份文件摘要成一頁重點：\n'),T('list-box','格式轉換','整理成表格或清單','把以下內容整理成表格：\n'),T('check','版本比對','標出兩版差異','比較以下兩個版本的差異：\n'),T('pencil','改寫潤飾','讓內容更清楚易讀','幫我潤飾以下內容，讓它更清楚：\n')],
     history:[{title:'產品規格書摘要',prompt:'把產品規格書摘要成一頁重點',time:'昨天',html:'<p>規格書重點：</p><ul><li>適用車型：XR-200、XR-300</li><li>主要變更：電池容量提升至 750Wh，重量增加 0.4kg</li><li>待確認：歐盟認證文件預計 11 月取得</li></ul>'},
       {title:'合約新舊版本比對',prompt:'比較合約 v2 與 v3 的差異',time:'週一',html:'<p>v3 共有 4 處修改：付款期限、違約金上限、保密期限與管轄法院。其中付款期限由 90 天改為 60 天影響最大。</p>'}]},
+  {key:'ada',name:'Ada',role:'研究',icon:'brain',bg:'#fbe8f3',fg:'#b0457f',action:'#bb4d8a',
+    subtitle:'深度研究、推理與彙整',description:'跨文件、信件與網路資料做深度研究，比較不同來源，整理出有依據的結論與建議。',
+    placeholder:'交給 Ada，研究或分析一個問題…',cta:'新研究',
+    templates:[T('search','市場研究','整理競品與市場趨勢','幫我研究以下市場與主要競品：\n'),T('book-open','資料彙整','整合多份文件的重點','把以下幾份資料的重點彙整成一份摘要：\n'),T('chart','比較分析','列出選項的優缺點','比較以下幾個選項，列出優缺點與建議：\n'),T('list-box','研究報告','產出有出處的報告','針對以下主題寫一份附出處的研究報告：\n')],
+    history:[{title:'電動自行車歐洲市場研究',prompt:'研究 2026 年歐洲電動自行車市場與主要競品',time:'昨天',html:'<p>2026 年歐洲電動自行車市場重點：</p><ul><li>市場規模約 <b>EUR 7.8B</b>，年成長 6%，荷蘭、德國佔 45%</li><li>主要競品：VanMoof、Cowboy、Gazelle，皆往中高價位與訂閱制發展</li><li>機會：通勤族換車週期約 4 年，2027 年將迎來換車潮</li></ul><p>資料來源：EU Bicycle Market Report 2026、各品牌年報。</p>'},
+      {title:'三家物流商比較',prompt:'比較三家歐洲物流商的報價與交期',time:'週二',html:'<p>綜合價格、交期與破損率，建議以 <b>DHL Freight</b> 為主、DB Schenker 為備援；Kuehne+Nagel 報價最低，但旺季交期不穩定。</p>'}]},
+  {key:'wen',name:'Wen',role:'掃描',icon:'scan-text',bg:'#fbf3dc',fg:'#9a6b12',action:'#a8761a',
+    subtitle:'掃描辨識紙本、名片與單據',description:'把紙本、照片與掃描檔辨識成文字與表格，抽出發票、名片與表單裡的欄位，整理成可以直接使用的資料。',
+    placeholder:'交給 Wen，上傳掃描檔或照片…',cta:'新掃描',
+    templates:[T('camera','名片辨識','整理成聯絡人資料','把這些名片整理成聯絡人表格：\n'),T('list-box','發票單據','抽出金額、日期與統編','辨識以下發票，整理出日期、金額與統編：\n'),T('file-text','紙本轉文字','掃描檔轉成可編輯文字','把這份掃描檔轉成可編輯的文字：\n'),T('check','表單擷取','填寫內容整理成表格','把這些手寫表單的內容整理成表格：\n')],
+    history:[{title:'展場名片整理',prompt:'把 Eurobike 展場收到的名片整理成聯絡人表格',time:'昨天',html:'<p>已辨識 <b>12 張</b>名片，整理成聯絡人表格（姓名、公司、職稱、Email、電話）。2 張字跡模糊的欄位已標註「待確認」。</p>'},
+      {title:'10 月差旅發票辨識',prompt:'辨識 10 月差旅發票並加總',time:'週一',html:'<p>共 8 張發票，總額 <b>NT$ 18,460</b>：交通 6,200、住宿 9,800、餐費 2,460。其中 1 張缺統編，建議補開。</p>'}]},
   // 翻譯 is a tool, not an Agent: file translation only, its own page (see "Document translation"), no chats, no photo.
   {key:'translate',dock:true,tool:true,name:'翻譯',title:'文件翻譯',role:'',icon:'languages',bg:'#eaf5f1',fg:'#527b70',action:'#5d897d',
     subtitle:'',description:'上傳文件，保留原本的版面與格式，翻譯成你選的語言。',

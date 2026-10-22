@@ -90,6 +90,7 @@ Business v2 第三輪調整。新增 token：`theme.agent.*`、`theme.text.reply
 | D42 | Agent 照片編輯、人物頭像尚未定案 | **暫時關閉**，程式保留（`AGENT_PHOTO_EDIT`、`AGENT_STYLE_ENABLED`） | 全站先統一使用預設頭像 |
 | D43 | 原型中空的固定 header 疊在對話標題列上，擋住點擊 | `.header:empty` 不攔截點擊 | 匯出按鈕與 Agent 名稱連結原本點不到 |
 | D44 | 多人對話換人時的「A › B」交接線 | **移除** | 每則回覆上方已有發言者標籤，交接線重複且打斷閱讀 |
+| D45 | 新增 Ada、Wen，原本角色寫「專員」看不出職能 | **Ada · 研究**（大腦 icon、玫瑰色 `#fbe8f3 / #b0457f / #bb4d8a`）、**Wen · 掃描**（掃描 icon、琥珀色 `#fbf3dc / #9a6b12 / #a8761a`）；側欄排在 Nick 後 | 角色寫職能才好選；兩色與既有 8 位不重複；Aurora 另做 3D icon |
 
 ### 待處理
 
@@ -98,7 +99,7 @@ Business v2 第三輪調整。新增 token：`theme.agent.*`、`theme.text.reply
 
 ### 同時更新
 
-- `tokens/theme.light.json`：`theme.agent` 改為 8 位 Agent ＋ translate。
+- `tokens/theme.light.json`：`theme.agent` 改為 10 位 Agent（含 10-22 新增的 Ada、Wen）＋ translate。
 - 新增 `tokens/theme.aurora.json`；`build-tokens.mjs` 產生 `.theme-aurora, [data-theme-variant="aurora"]` 區塊、`tokens.flat.json` 的 `aurora` 區、Tailwind 主題的 Aurora 覆寫與 `--aurora-*` 變數；Agent 的 Tailwind 色名改為 `agent-{key}`、`agent-{key}-soft`、`agent-{key}-action`。
 - `tokens/component.json`：greeting 改 28px；新增 roleTag、chatHeader、translate、speakerAvatar、sidebarIcon、toast。
 - `preview.html`：Agent 色票改為新名單，新增 Aurora 色票（在 `.theme-aurora` 內繪製）。
