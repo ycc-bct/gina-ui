@@ -1,11 +1,17 @@
 # Gina Design System
 
 > Giant 內部 AI 助理 Gina 的設計規範。給 RD 實作與後續設計使用。
-> 版本：v1.7-business · 2026-10-21 · 決策紀錄見 `decisions.md`
+> 版本：v1.7-business · 2026-10-22 · 決策紀錄見 `decisions.md`
 
 ### 2026-10-21 更新（v1.7）
 
 本節優先於下方 10-14 與更早的段落。數值對應 `tokens/theme.light.json` 的 `theme.agent.*`、新增的 `tokens/theme.aurora.json`，以及 `component.roleTag`、`component.chatHeader`、`component.translate`、`component.speakerAvatar`、`component.sidebarIcon`、`component.toast`。原型檔：`index-business-v2.html`、`app-business-v2.css`、`theme-aurora.css`、`appearance.js`、`agent-photo.js`、`gina-speaker.js`、`chat-export.js`。
+
+**品牌 Logo（10-22 更新，取代所有舊 wordmark）**
+
+- GINA wordmark 一律使用**集團字體**版本：`assets/gina-wordmark-new.svg`（330×69、`#172033`）。Sidebar 高 15px（寬約 72px），登入頁寬 220px（手機 190px），保持原圖比例。
+- **不可使用捷安特（Giant）品牌字體**繪製或重做 GINA 字樣。舊檔 `gina-wordmark.svg`、`gina-wordmark-dark.svg`、`gina-wordmark.png` 為品牌字體版本，已停用，不要再引用。
+- 需要其他顏色或尺寸時，從 `gina-wordmark-new.svg` 改 `fill`，不要重新排字。
 
 **Agents（取代業務助理、測試助手）**
 
@@ -107,7 +113,7 @@
 **其他**
 
 - 測試助手識別色改為陶土色：底 `#f9e9e2`、icon `#b35f43`、主要操作 `#c4674a`。Agent 的 fg 只用於 icon（非文字對比 3:1），不可當內文色。
-- Sidebar Logo 改用深色 `assets/gina-wordmark-dark.svg`（`#172033`）。
+- ~~Sidebar Logo 改用深色 `assets/gina-wordmark-dark.svg`（`#172033`）。~~ 已由 10-22 集團字體版 `gina-wordmark-new.svg` 取代。
 - 使用者選單間距：選單內距 6px；單行項目 40px；含說明的兩行項目（Outlook、語言、Gina Avatar）上下各 8px；分隔線上下各 6px；標籤 14px、說明 12px。
 
 ### 2026-10-08 商業版覆寫
@@ -126,7 +132,7 @@
 
 - 第二版首頁不顯示「嗨，我是 Gina」標題，保留動態頭像與工作說明。Sidebar 與登入頁 Logo 使用真正透明背景 PNG，不使用混色方式模擬去背。
 
-- 品牌使用 GINA wordmark：Sidebar 使用深色 `assets/gina-wordmark-dark.svg`（10-14 更新），登入頁寬 220px，保持原圖比例。Sidebar 移除原本的 Gina 與「Giant 內部 AI 助理」文字。右上角暫時隱藏 Account 和 Agents 入口，保留 Outlook 狀態。
+- 品牌使用 GINA wordmark：Sidebar 與登入頁使用集團字體版 `assets/gina-wordmark-new.svg`（10-22 更新；舊的 `gina-wordmark-dark.svg` 為品牌字體，已停用），登入頁寬 220px，保持原圖比例。Sidebar 移除原本的 Gina 與「Giant 內部 AI 助理」文字。右上角暫時隱藏 Account 和 Agents 入口，保留 Outlook 狀態。
 
 - 首頁 Gina 頭像見 10-14「Gina Avatar 與首頁」。Chat Screen 不顯示 Gina 頭像，回覆內容直接與對話欄左緣對齊。
 - 商業版採三層文字色階：Title 使用 `--text-primary` `#172033`；一般內文使用 `--text-secondary` `#344258`；Gina 回覆內文改用 `--text-reply` `#1f2a3d`（10-14 更新）；時間、狀態與補充說明使用 `--text-tertiary` `#56657a`。內文提高對比，但仍與 Title 保持清楚區別。

@@ -91,6 +91,7 @@ Business v2 第三輪調整。新增 token：`theme.agent.*`、`theme.text.reply
 | D43 | 原型中空的固定 header 疊在對話標題列上，擋住點擊 | `.header:empty` 不攔截點擊 | 匯出按鈕與 Agent 名稱連結原本點不到 |
 | D44 | 多人對話換人時的「A › B」交接線 | **移除** | 每則回覆上方已有發言者標籤，交接線重複且打斷閱讀 |
 | D45 | 新增 Ada、Wen，原本角色寫「專員」看不出職能 | **Ada · 研究**（大腦 icon、玫瑰色 `#fbe8f3 / #b0457f / #bb4d8a`）、**Wen · 掃描**（掃描 icon、琥珀色 `#fbf3dc / #9a6b12 / #a8761a`）；側欄排在 Nick 後 | 角色寫職能才好選；兩色與既有 8 位不重複；Aurora 另做 3D icon |
+| D46 | GINA wordmark 先前用了捷安特品牌字體，被指出用錯 | 改用**集團字體**版 `gina-wordmark-new.svg`（Sidebar、登入頁）；舊品牌字體版停用 | Gina 屬於集團、不屬於捷安特品牌；之後新增或修改 Logo 一律以集團字體版為準 |
 
 ### 待處理
 
